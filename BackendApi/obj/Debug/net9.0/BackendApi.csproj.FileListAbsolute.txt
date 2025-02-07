@@ -31,3 +31,4 @@ C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\obj\Debug\ne
 C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\obj\Debug\net9.0\BackendApi.pdb
 C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\obj\Debug\net9.0\BackendApi.genruntimeconfig.cache
 C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\obj\Debug\net9.0\ref\BackendApi.dll
+C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\obj\Debug\net9.0\BackendApi.sourcelink.json
