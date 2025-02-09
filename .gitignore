@@ -459,5 +459,5 @@ $RECYCLE.BIN/
 
 wwwroot/dist/
 
-# GoogleCloudStorage
-bucket-credential-key.json
+/DAL/Docker/postgres_db/
+
