@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Collections.Generic;
+using Domain;
 using Domain.Enums;
 
 namespace DAL.EF;
@@ -16,6 +17,21 @@ public class VitalRoutesInitializer
     private static void Seed(VitalRoutesDbContext context)
     {
         Hospital hospital1 = new Hospital("UZ Groenplaats");
+
+        List<Floorplan> gpFloorplans = new List<Floorplan>
+        {
+            new ("kelder", -1, "1/200", "floor_minus1.svg"),
+            new ("gelijkvloers", 0, "1/200","floor0.svg"),
+            new ("eerste verdiep", 1, "1/200","floor1.svg"),
+            new ("tweede verdiep", 2, "1/200","floor2.svg"),
+            new ("derde verdiep", 3, "1/200","floor3.svg"),
+            new ("vierde verdiep", 4, "1/200","floor4.svg"),
+            new ("vijfde verdiep", 5, "1/200","floor5.svg"),
+            new ("zesde verdiep", 6, "1/200","floor6.svg"),
+        };
+        
+        hospital1.Floorplans = gpFloorplans;
+        
         UserLocation userLocation1 = new UserLocation(1, 1);
         UserLocation userLocation2 = new UserLocation(2, 2);
         UserLocation userLocation3 = new UserLocation(3, 3);
@@ -29,6 +45,7 @@ public class VitalRoutesInitializer
         context.Hospitals.Add(hospital1);
         context.UserLocations.AddRange(userLocation1, userLocation2, userLocation3, userLocation4);
         context.Users.AddRange(user1, user2, user3, user4);
+        context.Floorplans.AddRange(gpFloorplans);
         context.SaveChanges();
         context.ChangeTracker.Clear();
     }

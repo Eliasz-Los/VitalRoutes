@@ -461,3 +461,6 @@ wwwroot/dist/
 
 /DAL/Docker/postgres_db/
 
+bin/
+obj/
+
