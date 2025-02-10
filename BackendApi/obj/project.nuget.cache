@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "pIibkTu8eT0=",
+  "dgSpecHash": "VrjoYD6q50k=",
   "success": true,
   "projectFilePath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BackendApi\\BackendApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\peril\\.nuget\\packages\\firebaseadmin\\3.1.0\\firebaseadmin.3.1.0.nupkg.sha512",
+    "C:\\Users\\peril\\.nuget\\packages\\firebaseauthentication.net\\4.1.0\\firebaseauthentication.net.4.1.0.nupkg.sha512",
     "C:\\Users\\peril\\.nuget\\packages\\google.api.gax\\4.8.0\\google.api.gax.4.8.0.nupkg.sha512",
     "C:\\Users\\peril\\.nuget\\packages\\google.api.gax.rest\\4.8.0\\google.api.gax.rest.4.8.0.nupkg.sha512",
     "C:\\Users\\peril\\.nuget\\packages\\google.apis\\1.68.0\\google.apis.1.68.0.nupkg.sha512",

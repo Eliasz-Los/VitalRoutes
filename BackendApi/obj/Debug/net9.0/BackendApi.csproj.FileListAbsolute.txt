@@ -251,3 +251,4 @@ C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\bin\Debug\ne
 C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\bin\Debug\net9.0\System.Management.dll
 C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\bin\Debug\net9.0\runtimes\win\lib\net7.0\System.Management.dll
+C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\bin\Debug\net9.0\Firebase.Auth.dll

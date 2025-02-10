@@ -1,5 +1,9 @@
+using BackendApi.Controllers.auth;
+using BL;
+using DAL;
 using DAL.EF;
 using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +34,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddSingleton<FirebaseAuth>(FirebaseAuth.DefaultInstance);
+builder.Services.AddScoped<FirebaseTokenValidator>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<UserManager>();
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();

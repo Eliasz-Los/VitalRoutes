@@ -5,6 +5,7 @@ namespace Domain;
 public class User
 {
     public Guid Id {get; set;}
+    public string? FirebaseUid {get; set;}
     public string FirstName {get; set;}
     public string LastName {get; set;}
     public string Email {get; set;}
@@ -27,6 +28,16 @@ public class User
         Function = function;
     }
 
+    public User(string firebaseUid, string firstName, string lastName, string email, string telephoneNr, Function function)
+    {
+        FirebaseUid = firebaseUid;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        TelephoneNr = telephoneNr;
+        Function = function;
+    }
+
     public User(string firstName, string lastName, string email, string telephoneNr, Function function, UserLocation location, Hospital hospital)
     {
         FirstName = firstName;
@@ -37,4 +48,5 @@ public class User
         Location = location;
         Hospital = hospital;
     }
+    
 }
