@@ -1,5 +1,9 @@
 using DAL.EF;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,19 +11,39 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<VitalRoutesDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("postgres_db")));
 
+//TODO: FireBase Admin SDK initiliazation & JWT token generation
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("vitalroutes-58c59-firebase-adminsdk-fbsvc-668129add2.json")
+});
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://securetoken.google.com/vitalroutes-58c59";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/vitalroutes-58c59",
+            ValidateAudience = true,
+            ValidAudience = "vitalroutes-58c59",
+            ValidateLifetime = true
+        };
+    });
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
 //TODO: automatic Migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VitalRoutesDbContext>();
     db.Database.Migrate();
 }
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -29,6 +53,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
