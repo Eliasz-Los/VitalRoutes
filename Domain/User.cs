@@ -26,4 +26,15 @@ public class User
         TelephoneNr = telephoneNr;
         Function = function;
     }
+
+    public User(string firstName, string lastName, string email, string telephoneNr, Function function, UserLocation location, Hospital hospital)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        TelephoneNr = telephoneNr;
+        Function = function;
+        Location = location;
+        Hospital = hospital;
+    }
 }

@@ -12,3 +12,9 @@ services:
       - "54326:5432"
     volumes:
       - ./postgres_db/postgres/data:/var/lib/postgresql/data
+    networks:
+      - postgres_network
+
+networks:
+    postgres_network:
+        driver: bridge

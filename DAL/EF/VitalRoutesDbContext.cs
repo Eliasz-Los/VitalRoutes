@@ -19,7 +19,7 @@ public class VitalRoutesDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=postgres_db;Username=user;Password=postgres");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=54326;Database=postgres_db;Username=user;Password=postgres");
         }
         optionsBuilder.LogTo(message => Debug.WriteLine(message), LogLevel.Information);
     }
@@ -30,13 +30,23 @@ public class VitalRoutesDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Hospital>().ToTable("Hospitals").HasIndex(hosp => hosp.Id).IsUnique();
+        modelBuilder.Entity<Notification>().ToTable("Notifications").HasIndex(not => not.Id).IsUnique();
+        modelBuilder.Entity<Emergency>().ToTable("Emergencies").HasIndex(em => em.Id).IsUnique();
+        modelBuilder.Entity<User>().ToTable("Users").HasIndex(user => user.Id).IsUnique();  
+        modelBuilder.Entity<UserLocation>().ToTable("UserLocations").HasIndex(userLoc => userLoc.Id).IsUnique();
+        modelBuilder.Entity<Floorplan>().ToTable("Floorplans").HasIndex(floor => floor.Id).IsUnique();
+        modelBuilder.Entity<Point>().ToTable("Points").HasIndex(point => point.Id).IsUnique();
+        
         //TODO in beide richtingen navigeerbaar maken
-        modelBuilder.Entity<Notification>()
+        /*modelBuilder.Entity<Notification>()
             .HasOne(notification => notification.Emergency)
-            .WithOne(emergency => emergency.Notification);
+            .WithOne(emergency => emergency.Notification)
+            .HasForeignKey("EmergencyId");*/
         modelBuilder.Entity<Emergency>()
             .HasOne(emergency => emergency.Notification)
-            .WithOne(notification => notification.Emergency);
+            .WithOne(notification => notification.Emergency)
+            .HasForeignKey<Emergency>("EmergencyFK");
         
         modelBuilder.Entity<Emergency>()
             .HasOne(em => em.User)
@@ -50,11 +60,14 @@ public class VitalRoutesDbContext : DbContext
 
         modelBuilder.Entity<User>()
             .HasOne(user => user.Location)
-            .WithOne(userLocation => userLocation.User);
+            .WithOne(userLocation => userLocation.User)
+            .HasForeignKey<User>("UserLocationFK");
 
-        modelBuilder.Entity<UserLocation>()
-            .HasOne(userLocation => userLocation.User)
-            .WithOne(user => user.Location);
+        modelBuilder.Entity<User>()
+            .HasOne(user => user.Hospital)
+            .WithMany(hospital => hospital.Users);
+
+
     }
     
   

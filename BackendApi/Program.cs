@@ -5,13 +5,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<VitalRoutesDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Host=localhost;Database=postgres_db;Username=user;Password=postgres")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("postgres_db")));
+
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+//TODO: automatic Migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<VitalRoutesDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
