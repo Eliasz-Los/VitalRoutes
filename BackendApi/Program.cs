@@ -24,6 +24,7 @@ FirebaseApp.Create(new AppOptions()
     Credential = GoogleCredential.FromFile("vitalroutes-58c59-firebase-adminsdk-fbsvc-668129add2.json"),
     ServiceAccountId ="firebase-adminsdk-fbsvc@vitalroutes-58c59.iam.gserviceaccount.com"
 });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -37,6 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true
         };
     });
+
 builder.Services.AddSingleton(new FirebaseAuthClient(new FirebaseAuthConfig
 {
     ApiKey = "AIzaSyDWYFqsbgB3GWl0MWzu-ZBmYdG3cLnEQTk",
@@ -59,7 +61,6 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-//TODO: automatic Migrations
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VitalRoutesDbContext>();

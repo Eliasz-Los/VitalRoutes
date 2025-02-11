@@ -38,8 +38,8 @@ class _SignInScreenState extends State<SignInScreen> {
        password: _passwordController.text,
      );
      await AuthService.signInWithEmailAndPassword(userCredentials);
-     //doorsturen naar UserProfileScreen
-     Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),);
+     //doorsturen naar  homepage waarbij je geen callback hebt naar de sign in screen
+     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),);
    } catch (e) {
      setState(() {
        _errorMessage = e.toString();

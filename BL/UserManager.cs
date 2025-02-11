@@ -29,29 +29,4 @@ public class UserManager
             user.Function);
         await _userRepository.CreateUserAsync(newUser);
     }
-    
-    /*public async Task RegisterUserAsync(AddUserDto addUserDto, string password)
-    {
-        //create user in firebase
-        var userRecordArgs = new UserRecordArgs()
-        {
-            Email = addUserDto.Email,
-            EmailVerified = false,
-            Password = password,
-            DisplayName = $"{addUserDto.FirstName} {addUserDto.LastName}",
-            Disabled = false
-        }; 
-        
-        UserRecord userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userRecordArgs);
-       
-        var user = new User(
-            addUserDto.FirebaseUid, 
-            addUserDto.FirstName, 
-            addUserDto.LastName, 
-            addUserDto.Email, 
-            addUserDto.TelephoneNr, 
-            addUserDto.Function);
-        
-        await AddUserAsync(user);
-    }*/
 }

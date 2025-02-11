@@ -25,10 +25,7 @@ public class FireBaseAuthController : ControllerBase
         {
             return BadRequest(new { message = "User registration failed" });
         }
-        //TODO als dit werkt die uitwerken om die toe te voegen aan de database
-        // Additional logic to save user details in the database...
-
-        _userManager.AddUserAsync(registerUserDto.AddUserDto);
+        await _userManager.AddUserAsync(registerUserDto.AddUserDto);
         var user = registerUserDto.AddUserDto; //TODO fix
 
         return Ok(new { message = "User registered successfully", token, user });

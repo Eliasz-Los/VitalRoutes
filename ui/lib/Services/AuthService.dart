@@ -10,7 +10,7 @@ class AuthService {
   static Future<void> registerUser(RegisterUser registerUser) async {
     try {
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/FirebaseAuth/register',
+        'http://10.0.2.2:5028/api/firebaseauth/register',
         data: registerUser.toJson(),
         options: Options(
           headers: {
@@ -19,7 +19,7 @@ class AuthService {
         ),
       );
 
-      if (response.statusCode != 200) {
+      if (response.statusCode != 200 || response.statusCode != 201) {
         throw Exception('Failed to register user');
       }
     } catch (e) {
