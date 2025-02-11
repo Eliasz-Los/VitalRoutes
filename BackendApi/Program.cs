@@ -2,12 +2,15 @@ using BackendApi.Controllers.auth;
 using BL;
 using DAL;
 using DAL.EF;
+using Firebase.Auth;
+using Firebase.Auth.Providers;
 using FirebaseAdmin;
 using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using UserManager = BL.UserManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +21,8 @@ builder.Services.AddDbContext<VitalRoutesDbContext>(options =>
 //TODO: FireBase Admin SDK initiliazation & JWT token generation
 FirebaseApp.Create(new AppOptions()
 {
-    Credential = GoogleCredential.FromFile("vitalroutes-58c59-firebase-adminsdk-fbsvc-668129add2.json")
+    Credential = GoogleCredential.FromFile("vitalroutes-58c59-firebase-adminsdk-fbsvc-668129add2.json"),
+    ServiceAccountId ="firebase-adminsdk-fbsvc@vitalroutes-58c59.iam.gserviceaccount.com"
 });
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -33,9 +37,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true
         };
     });
+builder.Services.AddSingleton(new FirebaseAuthClient(new FirebaseAuthConfig
+{
+    ApiKey = "AIzaSyDWYFqsbgB3GWl0MWzu-ZBmYdG3cLnEQTk",
+    AuthDomain = "vitalroutes-58c59.firebaseapp.com",
+    Providers = new FirebaseAuthProvider[]
+    {
+        new EmailProvider()
+    }
+}));
 
 builder.Services.AddSingleton<FirebaseAuth>(FirebaseAuth.DefaultInstance);
 builder.Services.AddScoped<FirebaseTokenValidator>();
+
+builder.Services.AddScoped<FirebaseAuthManager>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddAuthorization();

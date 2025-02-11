@@ -1800,7 +1800,9 @@
       "System.Threading.Tasks.Dataflow/8.0.0": {},
       "BL/1.0.0": {
         "dependencies": {
-          "DAL": "1.0.0"
+          "DAL": "1.0.0",
+          "FirebaseAdmin": "3.1.0",
+          "FirebaseAuthentication.net": "4.1.0"
         },
         "runtime": {
           "BL.dll": {

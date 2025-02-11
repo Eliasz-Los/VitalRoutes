@@ -2457,7 +2457,9 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
-          "DAL": "1.0.0"
+          "DAL": "1.0.0",
+          "FirebaseAdmin": "3.1.0",
+          "FirebaseAuthentication.net": "4.1.0"
         },
         "compile": {
           "bin/placeholder/BL.dll": {}

@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import './Pages/SignInScreen.dart';
+import './Pages/Users/SignInScreen.dart';
 import 'firebase_options.dart';
+import './Pages/Users/UserMenuWidget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,16 +40,34 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  User? _user;
 
   static final List<Widget> _widgetOptions = <Widget>[
     Text('Home Page'),
     SignInScreen(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _checkUser();
+  }
+
+  void _checkUser() {
+    setState(() {
+      _user = FirebaseAuth.instance.currentUser;
+    });
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+  
+  void _viewProfile() {
+    //TODO: komt later
+    // Navigator.push(context, MaterialPageRoute(builder: (context) => UserMenuWidget(user: _user!, onProfile: _checkUser)));
   }
 
   @override
@@ -56,6 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          if (_user != null)
+          UserMenuWidget(user: _user!, onProfile: _viewProfile)
+        ],
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

@@ -1,5 +1,7 @@
-﻿using DAL;
+﻿using BL.Dto_s;
+using DAL;
 using Domain;
+using FirebaseAdmin.Auth;
 
 namespace BL;
 
@@ -17,8 +19,39 @@ public class UserManager
         return await _userRepository.ReadUserByFirebaseUidAsync(firebaseUid);
     }
     
-    public async Task AddUserAsync(User user)
+    public async Task AddUserAsync(AddUserDto user)
     {
-        await _userRepository.CreateUserAsync(user);
+        User newUser = new User(
+            user.FirstName, 
+            user.LastName, 
+            user.Email, 
+            user.TelephoneNr, 
+            user.Function);
+        await _userRepository.CreateUserAsync(newUser);
     }
+    
+    /*public async Task RegisterUserAsync(AddUserDto addUserDto, string password)
+    {
+        //create user in firebase
+        var userRecordArgs = new UserRecordArgs()
+        {
+            Email = addUserDto.Email,
+            EmailVerified = false,
+            Password = password,
+            DisplayName = $"{addUserDto.FirstName} {addUserDto.LastName}",
+            Disabled = false
+        }; 
+        
+        UserRecord userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(userRecordArgs);
+       
+        var user = new User(
+            addUserDto.FirebaseUid, 
+            addUserDto.FirstName, 
+            addUserDto.LastName, 
+            addUserDto.Email, 
+            addUserDto.TelephoneNr, 
+            addUserDto.Function);
+        
+        await AddUserAsync(user);
+    }*/
 }
