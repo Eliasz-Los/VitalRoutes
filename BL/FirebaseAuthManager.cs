@@ -37,10 +37,8 @@ public class FirebaseAuthManager
             _logger.LogError("Failed to authenticate user with email: {Email}", email);
             return null;
         }
-        var token = await userCredentials.User.GetIdTokenAsync();
-        _logger.LogInformation("Generated token for user {Email}: {Token}", email, token);
-        //validatie van de token
        var uid = userCredentials.User.Uid;
+       //generatie van de token om te gebruiken in de frontend en dus user koppelen aan firebase auth
        var customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid);
         _logger.LogInformation("Generated custom token for user {Email}: {Token}", email, customToken);
         return customToken;

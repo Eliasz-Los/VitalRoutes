@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../Services/AuthService.dart';
+import '../../main.dart';
 
 class UserMenuWidget extends StatelessWidget {
   final User user;
@@ -15,7 +16,7 @@ class UserMenuWidget extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       await AuthService.signOut();
-      // Navigator.of(context).pushReplacementNamed('/signIn');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error signing out: $e')),
@@ -25,31 +26,29 @@ class UserMenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(user.email ?? 'User'),
-        SizedBox(width: 8),
-        Icon(Icons.person),
-        PopupMenuButton<String>(
-          onSelected: (String result) {
-            if (result == 'profile') {
-              onProfile();
-            } else if (result == 'logout') {
-              _signOut(context);
-            }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-            const PopupMenuItem<String>(
-              value: 'profile',
-              child: Text('Profile'),
-            ),
-            const PopupMenuItem<String>(
-              value: 'logout',
-              child: Text('Logout'),
-            ),
-          ],
-        ),
-      ],
+    return GestureDetector(
+      onTap: () {
+        showMenu(
+            context: context, position: RelativeRect.fromLTRB(100, 100, 0, 0),
+            items: <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(value: 'profile', child: Text('Profile')),
+              PopupMenuItem<String>(value: 'logout', child: Text('Logout')),
+            ]
+        ).then((value) {
+          if (value == 'profile') {
+            onProfile();
+          } else if (value == 'logout') {
+            _signOut(context);
+          }
+        });
+      },
+      child: Row(
+        children: [
+          Text(user.email ?? 'User'),
+          const SizedBox(width: 6),
+         Icon(Icons.person),
+        ],
+      ),
     );
   }
 }

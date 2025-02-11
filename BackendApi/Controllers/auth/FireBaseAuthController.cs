@@ -20,15 +20,22 @@ public class FireBaseAuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
     {
-        var token = await _firebaseAuthManager.SignUp(registerUserDto.AddUserDto.Email, registerUserDto.Password);
+        var token = await _firebaseAuthManager.SignUp(registerUserDto.Email, registerUserDto.Password);
         if (token == null)
         {
             return BadRequest(new { message = "User registration failed" });
         }
-        await _userManager.AddUserAsync(registerUserDto.AddUserDto);
-        var user = registerUserDto.AddUserDto; //TODO fix
+        AddUserDto addUserDto = new AddUserDto
+        {
+            FirstName = registerUserDto.FirstName,
+            LastName = registerUserDto.LastName,
+            Email = registerUserDto.Email,
+            TelephoneNr = registerUserDto.TelephoneNr,
+            Function = registerUserDto.Function
+        };
+        await _userManager.AddUserAsync(addUserDto);
 
-        return Ok(new { message = "User registered successfully", token, user });
+        return Ok(new { message = "User registered successfully", token, addUserDto });
     }
 
     [HttpPost("login")]

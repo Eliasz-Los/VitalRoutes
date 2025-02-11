@@ -24,4 +24,4 @@ class RegisterUser {
   Map<String, dynamic> toJson() => _$RegisterUserToJson(this);
 }
 
-/*TODO: run altijd dit erna : 'flutter pub run build_runner build'*/
+/*TODO: run altijd dit na veranderingen: 'flutter pub run build_runner build'*/

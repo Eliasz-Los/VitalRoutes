@@ -30,7 +30,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       await AuthService.registerUser(registerUser);
       Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _emailController.text)));
-      Navigator.pop(context);
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();

@@ -13,11 +13,6 @@ public class UserRepository
         _context = context;
     }
     
-    public async Task<User> ReadUserByFirebaseUidAsync(string firebaseUid)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
-    }
-    
     public async Task CreateUserAsync(User user)
     {
         _context.Users.Add(user);

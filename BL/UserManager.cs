@@ -14,10 +14,6 @@ public class UserManager
         _userRepository = userRepository;
     }
     
-    public async Task<User> GetUserByFirebaseUidAsync(string firebaseUid)
-    {
-        return await _userRepository.ReadUserByFirebaseUidAsync(firebaseUid);
-    }
     
     public async Task AddUserAsync(AddUserDto user)
     {

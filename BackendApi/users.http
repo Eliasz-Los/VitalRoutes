@@ -16,12 +16,11 @@ POST http://localhost:5028/api/FireBaseAuth/register
 Content-Type: application/json
 
 {
-    "AddUserDto": {
-        "FirstName" : "Chomper",
-        "LastName": "Womper",
-        "Email" : "chomper.womper@gmail.com",
-        "TelephoneNr": "123456789",
-        "Function": 0
-    },
+   
+    "FirstName" : "Chomper",
+    "LastName": "Womper",
+    "Email" : "chomper.womper@gmail.com",
+    "TelephoneNr": "123456789",
+    "Function": 0,
     "Password" : "123456"
 }
