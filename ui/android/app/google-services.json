@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "64737425690",
+    "project_id": "vitalroutes-58c59",
+    "storage_bucket": "vitalroutes-58c59.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64737425690:android:336e425c5e1713e8d0d4a3",
+        "android_client_info": {
+          "package_name": "com.example.ui"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUZ_UbrzP-7-k0jaP1SwI3RK2XqkBLsBQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
