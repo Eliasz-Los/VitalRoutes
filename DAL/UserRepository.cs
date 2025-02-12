@@ -15,6 +15,7 @@ public class UserRepository
     
     public async Task CreateUserAsync(User user)
     {
+        user.Hospital = await _context.Hospitals.FirstOrDefaultAsync();
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
     }

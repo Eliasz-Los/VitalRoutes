@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import './Pages/Users/SignInScreen.dart';
+import 'Pages/Users/UserProvider.dart';
 import 'firebase_options.dart';
 import './Pages/Users/UserMenuWidget.dart';
 
@@ -19,13 +21,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Vital Routes',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (_) => UserProvider(),
+      child: MaterialApp(
+        title: 'Vital Routes',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'Vital Routes'),
       ),
-      home: const MyHomePage(title: 'Vital Routes'),
     );
   }
 }
@@ -67,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   
   void _viewProfile() {
-    //TODO: komt later
      Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _user!.email!)));
   }
 

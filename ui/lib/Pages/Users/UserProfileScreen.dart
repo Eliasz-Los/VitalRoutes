@@ -24,6 +24,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),
@@ -48,7 +49,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   Text('Last Name: ${user.lastName}'),
                   Text('Email: ${user.email}'),
                   Text('Telephone Number: ${user.telephoneNr}'),
-                  Text('Function: ${user.function}'),
+                  Text('Function: ${user.function?.name}'),
                 ],
               ),
             );

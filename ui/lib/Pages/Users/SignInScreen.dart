@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserMenuWidget.dart';
+import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/AuthService.dart';
 import 'package:ui/main.dart';
 
@@ -37,6 +39,8 @@ class _SignInScreenState extends State<SignInScreen> {
        password: _passwordController.text,
      );
      await AuthService.signInWithEmailAndPassword(userCredentials);
+      User? user = FirebaseAuth.instance.currentUser;
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
      //doorsturen naar  homepage waarbij je geen callback hebt naar de sign in screen
      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),);
    } catch (e) {

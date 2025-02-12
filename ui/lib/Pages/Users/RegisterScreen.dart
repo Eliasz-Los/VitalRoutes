@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ui/Models/Enums/FunctionType.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
+import 'package:ui/Pages/Users/UserProvider.dart';
 
 import '../../Models/Users/RegisterUser.dart';
 import '../../Services/AuthService.dart';
@@ -30,7 +33,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       await AuthService.registerUser(registerUser);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _emailController.text)));
+      User? user = FirebaseAuth.instance.currentUser;
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _emailController.text)));
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
