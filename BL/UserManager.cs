@@ -25,4 +25,9 @@ public class UserManager
             user.Function);
         await _userRepository.CreateUserAsync(newUser);
     }
+    
+    public async Task<User> GetUserByEmailAsync(string email)
+    {
+        return await _userRepository.ReadUserByEmailAsync(email);
+    }
 }

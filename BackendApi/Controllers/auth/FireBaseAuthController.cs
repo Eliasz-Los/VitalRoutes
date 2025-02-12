@@ -55,4 +55,15 @@ public class FireBaseAuthController : ControllerBase
         _firebaseAuthManager.SignOut();
         return Ok(new { message = "User signed out" });
     }
+    
+    [HttpGet("user/{email}")]
+    public async Task<IActionResult> GetUserByEmail(string email)
+    {
+        var user = await _userManager.GetUserByEmailAsync(email);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+        return Ok(user);
+    }
 }

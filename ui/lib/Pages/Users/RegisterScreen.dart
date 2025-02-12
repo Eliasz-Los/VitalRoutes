@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui/Models/Enums/FunctionType.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 
 import '../../Models/Users/RegisterUser.dart';
@@ -25,7 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text,
         password: _passwordController.text,
         telephoneNr: _telephoneNrController.text,
-        function: 0, //TODO zien dat de function goed wordt ingevuld door de enum
+        function: FunctionType.Patient, //TODO zien dat de function goed wordt ingevuld door de enum
       );
 
       await AuthService.registerUser(registerUser);

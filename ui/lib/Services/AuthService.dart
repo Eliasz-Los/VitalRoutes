@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ui/Models/Users/RegisterUser.dart';
@@ -19,7 +21,7 @@ class AuthService {
         ),
       );
 
-      if (response.statusCode != 200 || response.statusCode != 201) {
+      if (response.statusCode != 200) {
         throw Exception('Failed to register user');
       }
     } catch (e) {
@@ -44,7 +46,6 @@ class AuthService {
       
       //Handling response, saving token
       final token = response.data['token'];
-      print('Token: $token');
       await _auth.signInWithCustomToken(token);
     } catch(e){
       throw Exception('Error signing in: $e');
@@ -56,6 +57,21 @@ class AuthService {
       await _auth.signOut();
     }catch(e){
       throw Exception('Error signing out: $e');
+    }
+  }
+  
+  static Future<RegisterUser> getUserByEmail(String email) async{
+    try{
+      final response = await _dio.get('http://10.0.2.2:5028/api/firebaseauth/user/$email');
+      if(response.statusCode != 200){
+        throw Exception('Failed to load user data');
+      }
+      if(response.data == null){
+        throw Exception('User not found');
+      }
+      return RegisterUser.fromJson(response.data);
+    }catch(e){
+      throw Exception('Error getting user by email $email: \n$e');
     }
   }
 }

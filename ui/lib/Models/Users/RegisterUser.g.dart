@@ -7,12 +7,12 @@ part of 'RegisterUser.dart';
 // **************************************************************************
 
 RegisterUser _$RegisterUserFromJson(Map<String, dynamic> json) => RegisterUser(
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      email: json['email'] as String,
-      password: json['password'] as String,
-      telephoneNr: json['telephoneNr'] as String,
-      function: (json['function'] as num).toInt(),
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
+      email: json['email'] as String?,
+      password: json['password'] as String?,
+      telephoneNr: json['telephoneNr'] as String?,
+      function: _functionTypeFromJson((json['function'] as num?)?.toInt()),
     );
 
 Map<String, dynamic> _$RegisterUserToJson(RegisterUser instance) =>
@@ -22,5 +22,5 @@ Map<String, dynamic> _$RegisterUserToJson(RegisterUser instance) =>
       'email': instance.email,
       'password': instance.password,
       'telephoneNr': instance.telephoneNr,
-      'function': instance.function,
+      'function': _functionTypeToJson(instance.function),
     };

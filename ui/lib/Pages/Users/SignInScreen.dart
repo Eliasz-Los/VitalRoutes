@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserMenuWidget.dart';
-import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import 'package:ui/Services/AuthService.dart';
 import 'package:ui/main.dart';
 

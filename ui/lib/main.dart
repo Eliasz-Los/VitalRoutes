@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import './Pages/Users/SignInScreen.dart';
 import 'firebase_options.dart';
 import './Pages/Users/UserMenuWidget.dart';
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
   
   void _viewProfile() {
     //TODO: komt later
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => UserMenuWidget(user: _user!, onProfile: _checkUser)));
+     Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _user!.email!)));
   }
 
   @override
