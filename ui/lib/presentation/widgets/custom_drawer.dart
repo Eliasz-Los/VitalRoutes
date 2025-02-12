@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import '../SystemAdminPage.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
@@ -21,6 +22,16 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.person),
             title: Text('Profile'),
             onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.admin_panel_settings),
+            title: Text('System Admin'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SystemAdminPage()),
+              );
+            },
           ),
         ],
       ),

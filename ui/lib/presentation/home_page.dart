@@ -25,20 +25,22 @@ class HomePage extends StatelessWidget {
               'Home',
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            // Placeholder afbeelding
-            Container(
-              width: 200,
-              height: 200,
-              color: Colors.grey[300],
-              child: Icon(
-                Icons.image,
-                size: 100,
-                color: Colors.grey[600],
-              ),
+            SizedBox(height: 30),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                double imageWidth = MediaQuery.of(context).size.width * 0.75;
+                double imageHeight = imageWidth * (733 / 1024);
+
+                return Image.asset(
+                  'assets/route.png',
+                  width: imageWidth,
+                  height: imageHeight,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
-            Image.asset('assets/route.png', width: 200, height: 200),
-            SizedBox(height: 30), // Meer witruimte
+            // Meer witruimte
+            SizedBox(height: 30),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               height: MediaQuery.of(context).size.width * 0.18,

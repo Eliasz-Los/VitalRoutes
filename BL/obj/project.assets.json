@@ -720,19 +720,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\peril\\.nuget\\packages\\": {}
+    "C:\\Users\\ilyas\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj",
+      "projectUniqueName": "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj",
       "projectName": "BL",
-      "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj",
-      "packagesPath": "C:\\Users\\peril\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\obj\\",
+      "projectPath": "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj",
+      "packagesPath": "C:\\Users\\ilyas\\.nuget\\packages\\",
+      "outputPath": "C:\\The_Lab\\vitalroutes\\BL\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\peril\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\ilyas\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -744,8 +744,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj": {
-              "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj"
+            "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj": {
+              "projectPath": "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj"
             }
           }
         }
@@ -781,7 +781,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Users\\peril\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Users\\ilyas\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

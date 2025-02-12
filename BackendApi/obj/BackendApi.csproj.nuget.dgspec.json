@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BackendApi\\BackendApi.csproj": {}
+    "C:\\The_Lab\\vitalroutes\\BackendApi\\BackendApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BackendApi\\BackendApi.csproj": {
+    "C:\\The_Lab\\vitalroutes\\BackendApi\\BackendApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BackendApi\\BackendApi.csproj",
+        "projectUniqueName": "C:\\The_Lab\\vitalroutes\\BackendApi\\BackendApi.csproj",
         "projectName": "BackendApi",
-        "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BackendApi\\BackendApi.csproj",
-        "packagesPath": "C:\\Users\\peril\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BackendApi\\obj\\",
+        "projectPath": "C:\\The_Lab\\vitalroutes\\BackendApi\\BackendApi.csproj",
+        "packagesPath": "C:\\Users\\ilyas\\.nuget\\packages\\",
+        "outputPath": "C:\\The_Lab\\vitalroutes\\BackendApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\peril\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ilyas\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -26,14 +26,14 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj": {
-                "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj"
+              "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj": {
+                "projectPath": "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj"
               },
-              "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj": {
-                "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj"
+              "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj": {
+                "projectPath": "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj"
               },
-              "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj"
+              "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj"
               }
             }
           }
@@ -82,21 +82,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\peril\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\ilyas\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj": {
+    "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj",
+        "projectUniqueName": "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj",
         "projectName": "BL",
-        "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\BL.csproj",
-        "packagesPath": "C:\\Users\\peril\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\BL\\obj\\",
+        "projectPath": "C:\\The_Lab\\vitalroutes\\BL\\BL.csproj",
+        "packagesPath": "C:\\Users\\ilyas\\.nuget\\packages\\",
+        "outputPath": "C:\\The_Lab\\vitalroutes\\BL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\peril\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ilyas\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -108,8 +108,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj": {
-                "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj"
+              "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj": {
+                "projectPath": "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj"
               }
             }
           }
@@ -145,21 +145,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\peril\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\ilyas\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj": {
+    "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj",
+        "projectUniqueName": "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\DAL.csproj",
-        "packagesPath": "C:\\Users\\peril\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\DAL\\obj\\",
+        "projectPath": "C:\\The_Lab\\vitalroutes\\DAL\\DAL.csproj",
+        "packagesPath": "C:\\Users\\ilyas\\.nuget\\packages\\",
+        "outputPath": "C:\\The_Lab\\vitalroutes\\DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\peril\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ilyas\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -171,8 +171,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj"
+              "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj"
               }
             }
           }
@@ -218,21 +218,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\peril\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\ilyas\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj": {
+    "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\peril\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\peril\\Documents\\KDG4\\TheLab\\Project\\VitalRoutes\\Domain\\obj\\",
+        "projectPath": "C:\\The_Lab\\vitalroutes\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\ilyas\\.nuget\\packages\\",
+        "outputPath": "C:\\The_Lab\\vitalroutes\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\peril\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ilyas\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -277,7 +277,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\peril\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\ilyas\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
