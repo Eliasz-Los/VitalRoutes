@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BackendApi.Models.Dto;
 using DAL.EF;
 using Domain;
 
@@ -24,8 +25,34 @@ public class FloorplanManager
         return _floorplanRepository.ReadFloorplan(id);
     }
 
-    public IEnumerable<Floorplan> GetFloorplansByHospitalName(string hospitalName)
+    public IEnumerable<FloorplanDto> GetFloorplansByHospitalName(string hospitalName, string folderPath)
     {
-        return _floorplanRepository.ReadFloorplanByHospitalName(hospitalName);
+        var floorPlans =  _floorplanRepository.ReadFloorplanByHospitalName(hospitalName).ToList();
+        
+        var result = new List<FloorplanDto>();
+        
+        foreach (var floorPlan in floorPlans)
+        {
+            var filePath = Path.Combine(folderPath,floorPlan.Image);
+
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"File not found for floorplan: {floorPlan.Image}", filePath);
+            }
+            
+            var svgData = Convert.ToBase64String(File.ReadAllBytes(filePath));
+            
+            result.Add(new FloorplanDto
+            {
+                Id = floorPlan.Id,
+                Name = floorPlan.Name,
+                FloorNumber = floorPlan.FloorNumber,
+                Scale = floorPlan.Scale,
+                Nodes = floorPlan.Nodes,
+                Hospital = floorPlan.Hospital,
+                SvgData = svgData
+            });
+        }
+        return result;
     }
 }
