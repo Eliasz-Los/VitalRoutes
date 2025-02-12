@@ -1,0 +1,26 @@
+### LOGIN test
+POST http://localhost:5028/api/FireBaseAuth/login
+Content-Type: application/json
+
+{
+  "email": "eliasz.los@student.kdg.be",
+  "password": "kijztym123"
+}
+
+### LOGOUT test
+POST http://localhost:5028/api/FireBaseAuth/signout
+Content-Type: application/json
+
+### Register user
+POST http://localhost:5028/api/FireBaseAuth/register
+Content-Type: application/json
+
+{
+   
+    "FirstName" : "Chomper",
+    "LastName": "Womper",
+    "Email" : "chomper.womper@gmail.com",
+    "TelephoneNr": "123456789",
+    "Function": 0,
+    "Password" : "123456"
+}

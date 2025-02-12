@@ -460,6 +460,11 @@ $RECYCLE.BIN/
 wwwroot/dist/
 
 /DAL/Docker/postgres_db/
+bin/
+obj/
+
+## firebase auth
+/BackendApi/vitalroutes-58c59-firebase-adminsdk-fbsvc-668129add2.json
 
 bin/
 obj/
