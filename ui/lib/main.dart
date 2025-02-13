@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
+import 'package:ui/Pages/Users/UserProvider.dart';
 import './Pages/Users/SignInScreen.dart';
-import 'Pages/Users/UserProvider.dart';
 import 'firebase_options.dart';
 import './Pages/Users/UserMenuWidget.dart';
 
@@ -46,7 +46,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  User? _user;
+  User? _user; 
 
   static final List<Widget> _widgetOptions = <Widget>[
     Text('Home Page'),
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _checkUser() {
     setState(() {
-      _user = FirebaseAuth.instance.currentUser;
+      _user = Provider.of<UserProvider>(context, listen: false).user;
     });
   }
 

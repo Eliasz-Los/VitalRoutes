@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:ui/Models/Enums/FunctionType.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/main.dart';
 
 import '../../Models/Users/RegisterUser.dart';
 import '../../Services/AuthService.dart';
@@ -33,9 +34,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       await AuthService.registerUser(registerUser);
-      User? user = FirebaseAuth.instance.currentUser;
-      Provider.of<UserProvider>(context, listen: false).setUser(user);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _emailController.text)));
+      
+      User? user = await FirebaseAuth.instance.authStateChanges().first;
+      
+      if(user != null){
+        // Persist authentication session
+        await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+
+        Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes'))
+            , (route) => false);
+      }else{
+        setState(() {
+          _errorMessage = 'Registration successful, but user session not found.';
+        });
+      }
+      
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();

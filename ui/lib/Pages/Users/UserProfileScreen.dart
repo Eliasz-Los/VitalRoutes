@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Models/Users/UpdateUser.dart';
 import 'package:ui/Models/Users/User.dart' as custom_user;
+import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/Services/AuthService.dart';
 import 'package:ui/Services/UserService.dart';
 import 'package:ui/main.dart';
 
@@ -51,12 +54,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         telephoneNr: _telephoneNrController.text,
       );
       await UserService.updateUser(updateUser);
-      //als da op true was kon ik nie navigeren naar de homepage, nu wel 
-      Provider.of<UserProvider>(context, listen: false).setUser(firebaseUser);
-      //Zodat de user geen callback kan doen naar de vorige waardes want die zijn verandert, errort anders
-      Navigator.pushAndRemoveUntil(context, 
+      await AuthService.signInWithEmailAndPassword(UserCredentials(email: _emailController.text, password: 'azerty'));
+      firebase_auth.User? reAuthenticatedUser = FirebaseAuth.instance.currentUser;
+      //TODO: password moet uit database komen
+      Provider.of<UserProvider>(context, listen: false).setUser(reAuthenticatedUser);
+      
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Changes accepted'),
+        backgroundColor: Colors.green,
+      ));
+      
+      setState(() {
+        _userData = UserService.getUserByEmail(_emailController.text);
+      });
+      
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),
-          (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false,
+        );
+      });
     }
   }
 
@@ -118,6 +135,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your telephone number';
+                        }
+                        final phoneRegExp = RegExp(r'^\+[1-9]\d{0,2}\s?\d{1,14}$');
+                        if (!phoneRegExp.hasMatch(value)) {
+                          return 'Please enter a valid phone number: +32 123456789';
                         }
                         return null;
                       },
