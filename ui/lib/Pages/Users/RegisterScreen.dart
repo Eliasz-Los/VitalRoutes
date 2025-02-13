@@ -29,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text,
         password: _passwordController.text,
         telephoneNr: _telephoneNrController.text,
-        function: FunctionType.Patient, //TODO zien dat de function goed wordt ingevuld door de enum
+        function: FunctionType.Patient, 
       );
 
       await AuthService.registerUser(registerUser);
