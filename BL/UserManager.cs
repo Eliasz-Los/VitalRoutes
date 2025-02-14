@@ -38,21 +38,26 @@ public class UserManager
     
     public async Task<UpdateUserDto> UpdateUser(UpdateUserDto userDto)
     {
-
-        var user = _userRepository.ReadUserById(userDto.Id).Result;
-        user.FirstName = userDto.FirstName;
-        user.LastName = userDto.LastName;
-        user.TelephoneNr = userDto.TelephoneNr;
-        user.Email = userDto.Email;
-        var updatedUser = await _userRepository.UpdateUser(user);
-        await FirebaseAuth.DefaultInstance.UpdateUserAsync(new UserRecordArgs
+        try
         {
-            Email = userDto.Email,
-            PhoneNumber = userDto.TelephoneNr,
-            Uid = userDto.Uid,
-            Password = userDto.Password
-        });
-        await _firebaseAuthManager.Login(userDto.Email, userDto.Password);
-        return _mapper.Map<UpdateUserDto>(updatedUser);
+            var user = _userRepository.ReadUserById(userDto.Id).Result;
+            user.FirstName = userDto.FirstName;
+            user.LastName = userDto.LastName;
+            user.TelephoneNr = userDto.TelephoneNr;
+            user.Email = userDto.Email;
+            var updatedUser = await _userRepository.UpdateUser(user);
+            await FirebaseAuth.DefaultInstance.UpdateUserAsync(new UserRecordArgs
+            {
+                Email = userDto.Email,
+                PhoneNumber = userDto.TelephoneNr,
+                Uid = userDto.Uid,
+                Password = userDto.Password
+            });
+            await _firebaseAuthManager.Login(userDto.Email, userDto.Password);
+            return _mapper.Map<UpdateUserDto>(updatedUser);
+        }catch(FirebaseAuthException e)
+        {
+            throw new Exception($"Firebase error: {e.Message}");
+        }
     }
 }
