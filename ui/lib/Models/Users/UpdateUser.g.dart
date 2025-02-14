@@ -13,6 +13,7 @@ UpdateUser _$UpdateUserFromJson(Map<String, dynamic> json) => UpdateUser(
       lastName: json['lastName'] as String,
       email: json['email'] as String,
       telephoneNr: json['telephoneNr'] as String,
+      password: json['password'] as String,
     );
 
 Map<String, dynamic> _$UpdateUserToJson(UpdateUser instance) =>
@@ -23,4 +24,5 @@ Map<String, dynamic> _$UpdateUserToJson(UpdateUser instance) =>
       'lastName': instance.lastName,
       'email': instance.email,
       'telephoneNr': instance.telephoneNr,
+      'password': instance.password,
     };

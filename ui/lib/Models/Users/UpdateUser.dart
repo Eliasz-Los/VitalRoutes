@@ -10,6 +10,7 @@ class UpdateUser {
   final String lastName;
   final String email;
   final String telephoneNr;
+  final String password;
 
   UpdateUser({
     required this.id,
@@ -18,6 +19,7 @@ class UpdateUser {
     required this.lastName,
     required this.email,
     required this.telephoneNr,
+    required this.password,
   });
 
   factory UpdateUser.fromJson(Map<String, dynamic> json) => _$UpdateUserFromJson(json);

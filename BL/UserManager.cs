@@ -10,10 +10,12 @@ public class UserManager
 {
     private readonly UserRepository _userRepository;
     private readonly IMapper _mapper;
-    public UserManager(UserRepository userRepository, IMapper mapper)
+    private readonly FirebaseAuthManager _firebaseAuthManager;
+    public UserManager(UserRepository userRepository, IMapper mapper, FirebaseAuthManager firebaseAuthManager)
     {
         _userRepository = userRepository;
         _mapper = mapper;
+        _firebaseAuthManager = firebaseAuthManager;
     }
     
     
@@ -47,8 +49,10 @@ public class UserManager
         {
             Email = userDto.Email,
             PhoneNumber = userDto.TelephoneNr,
-            Uid = userDto.Uid
+            Uid = userDto.Uid,
+            Password = userDto.Password
         });
+        await _firebaseAuthManager.Login(userDto.Email, userDto.Password);
         return _mapper.Map<UpdateUserDto>(updatedUser);
     }
 }

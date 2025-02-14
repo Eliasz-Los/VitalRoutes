@@ -26,8 +26,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _telephoneNrController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _functionController = TextEditingController();
   var firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -52,9 +54,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         lastName: _lastNameController.text,
         email: _emailController.text,
         telephoneNr: _telephoneNrController.text,
+        password: _passwordController.text,
       );
       await UserService.updateUser(updateUser);
-      await AuthService.signInWithEmailAndPassword(UserCredentials(email: _emailController.text, password: 'azerty'));
+      await AuthService.signInWithEmailAndPassword(UserCredentials(email: _emailController.text, password: _passwordController.text));
       firebase_auth.User? reAuthenticatedUser = FirebaseAuth.instance.currentUser;
       //TODO: password moet uit database komen
       Provider.of<UserProvider>(context, listen: false).setUser(reAuthenticatedUser);
@@ -128,6 +131,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         }
                         return null;
                       },
+                    ),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(labelText: 'Password'),
+                      obscureText: !_showPassword,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _showPassword,
+                          onChanged: (value) {
+                            setState(() {
+                              _showPassword = value!;
+                            });
+                          },
+                        ),
+                        Text('Show password'),
+                      ],
                     ),
                     TextFormField(
                       controller: _telephoneNrController,

@@ -45,32 +45,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
-  // User? _user; 
-
-  static final List<Widget> _widgetOptions = <Widget>[
-    Text('Home Page'),
-    SignInScreen(),
-  ];
-
-/*  @override
-  void initState() {
-    super.initState();
-    // _checkUser();
-  }*/
-
-/*  void _checkUser() {
-    setState(() {
-      _user = Provider.of<UserProvider>(context, listen: false).user;
-    });
-    
-  }*/
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
   
   void _viewProfile(User user) {
      Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: user.email!)));
@@ -99,24 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           ),
         ],
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.login),
-            label: 'Sign In',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
       ),
     );
   }
