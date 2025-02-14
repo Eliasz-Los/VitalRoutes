@@ -46,24 +46,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  User? _user; 
+  // User? _user; 
 
   static final List<Widget> _widgetOptions = <Widget>[
     Text('Home Page'),
     SignInScreen(),
   ];
 
-  @override
+/*  @override
   void initState() {
     super.initState();
-    _checkUser();
-  }
+    // _checkUser();
+  }*/
 
-  void _checkUser() {
+/*  void _checkUser() {
     setState(() {
       _user = Provider.of<UserProvider>(context, listen: false).user;
     });
-  }
+    
+  }*/
 
   void _onItemTapped(int index) {
     setState(() {
@@ -71,8 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
   
-  void _viewProfile() {
-     Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _user!.email!)));
+  void _viewProfile(User user) {
+     Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: user.email!)));
   }
 
   @override
@@ -82,8 +83,21 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
         actions: [
-          if (_user != null)
-          UserMenuWidget(user: _user!, onProfile: _viewProfile)
+          Consumer<UserProvider>(
+          builder: (context, userProvider, child) {
+            final user = userProvider.user;
+            if (user != null) {
+             return UserMenuWidget(user: user, onProfile: () => _viewProfile(user));
+            }else{
+              return TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+                },
+                child: Text('Sign In'),
+              );
+            }
+          },
+          ),
         ],
       ),
       body: Center(

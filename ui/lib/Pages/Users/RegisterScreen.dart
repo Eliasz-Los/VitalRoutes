@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Models/Enums/FunctionType.dart';
+import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/main.dart';
@@ -34,23 +35,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       await AuthService.registerUser(registerUser);
+      //Inloggen zodat de begin wordt token gegenereerd
+      UserCredentials userCredentials = UserCredentials(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      await AuthService.signInWithEmailAndPassword(userCredentials);
       
-      User? user = await FirebaseAuth.instance.authStateChanges().first;
+      User? user = await FirebaseAuth.instance.currentUser;
+    
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
       
-      if(user != null){
-        // Persist authentication session
-        await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),
+              (Route<dynamic> route) => false,
+        );
 
-        Provider.of<UserProvider>(context, listen: false).setUser(user);
 
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes'))
-            , (route) => false);
-      }else{
-        setState(() {
-          _errorMessage = 'Registration successful, but user session not found.';
-        });
-      }
-      
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
