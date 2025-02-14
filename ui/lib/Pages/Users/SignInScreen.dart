@@ -7,7 +7,10 @@ import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/AuthService.dart';
 import 'package:ui/main.dart';
 
+import '../../presentation/home_page.dart';
+import '../../presentation/widgets/custom_drawer.dart';
 import 'RegisterScreen.dart';
+import 'package:ui/presentation/widgets/MainScaffold.dart';
 
 class SignInScreen extends StatefulWidget {
  @override
@@ -42,7 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
       User? user = FirebaseAuth.instance.currentUser;
       Provider.of<UserProvider>(context, listen: false).setUser(user);
      //doorsturen naar  homepage waarbij je geen callback hebt naar de sign in screen
-     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),);
+     Navigator.pop(context); // 
    } catch (e) {
      setState(() {
        _errorMessage = e.toString();

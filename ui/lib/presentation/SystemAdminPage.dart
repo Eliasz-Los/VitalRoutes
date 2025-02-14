@@ -1,4 +1,6 @@
 ﻿import 'package:flutter/material.dart';
+import './widgets/custom_drawer.dart';
+import 'package:ui/presentation/widgets/MainScaffold.dart';
 
 class SystemAdminPage extends StatefulWidget {
   @override
@@ -24,31 +26,20 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('System Admin', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
-      ),
+    return MainScaffold(
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
             _buildSectionTitle('Koppeling Dokter - Patiënt'),
-
-            // Dokters sectie
             _buildSectionTitle('Dokter(s)'),
             ..._buildDoctorFields(),
             _buildAddButton(_addDoctorField),
-
-            // Verpleegsters sectie
             _buildSectionTitle('Verpleegster(s)'),
             ..._buildNurseFields(),
             _buildAddButton(_addNurseField),
-
-            // Patiënt sectie (geen plus knop)
             _buildSectionTitle('Patiënt'),
             _buildInputField(patientController, 'Naam patiënt'),
-
             SizedBox(height: 20),
           ],
         ),

@@ -1,7 +1,10 @@
 ﻿import 'package:flutter/material.dart';
-import '../SystemAdminPage.dart';
 
 class CustomDrawer extends StatelessWidget {
+  final Function(int) onItemSelected;
+
+  CustomDrawer({required this.onItemSelected, Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -12,29 +15,24 @@ class CustomDrawer extends StatelessWidget {
             decoration: BoxDecoration(color: Colors.blue),
             child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
-          ListTile(
-            
-            leading: Icon(Icons.home),
-            title: Text('Home'),
-            onTap: () => Navigator.pop(context),
-          ),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text('Profile'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: Icon(Icons.admin_panel_settings),
-            title: Text('System Admin'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SystemAdminPage()),
-              );
-            },
-          ),
+          _buildDrawerItem(Icons.home, 'Home', context, 0),
+          _buildDrawerItem(Icons.login, 'Sign In', context, 1),
+          _buildDrawerItem(Icons.app_registration, 'Register', context, 2),
+          _buildDrawerItem(Icons.person, 'Profile', context, 3),
+          _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 4),
         ],
       ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, BuildContext context, int index) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: () {
+        onItemSelected(index); //
+        Navigator.pop(context); //
+      },
     );
   }
 }
