@@ -55,6 +55,8 @@ builder.Services.AddScoped<FirebaseTokenValidator>();
 builder.Services.AddScoped<FirebaseAuthManager>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserManager>();
+builder.Services.AddScoped<FloorplanRepository>();
+builder.Services.AddScoped<FloorplanManager>();
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();

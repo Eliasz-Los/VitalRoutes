@@ -20,14 +20,14 @@ public class VitalRoutesInitializer
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
-            new ("kelder", -1, "1/200", "floor_minus1.svg"),
-            new ("gelijkvloers", 0, "1/200","floor0.svg"),
-            new ("eerste verdiep", 1, "1/200","floor1.svg"),
-            new ("tweede verdiep", 2, "1/200","floor2.svg"),
-            new ("derde verdiep", 3, "1/200","floor3.svg"),
-            new ("vierde verdiep", 4, "1/200","floor4.svg"),
-            new ("vijfde verdiep", 5, "1/200","floor5.svg"),
-            new ("zesde verdiep", 6, "1/200","floor6.svg"),
+            new ("kelder", -1, "1/200", "floor_minus1.png"),
+            new ("gelijkvloers", 0, "1/200","floor0.png"),
+            new ("eerste verdiep", 1, "1/200","floor1.png"),
+            new ("tweede verdiep", 2, "1/200","floor2.png"),
+            new ("derde verdiep", 3, "1/200","floor3.png"),
+            new ("vierde verdiep", 4, "1/200","floor4.png"),
+            new ("vijfde verdiep", 5, "1/200","floor5.png"),
+            new ("zesde verdiep", 6, "1/200","floor6.png"),
         };
         
         hospital1.Floorplans = gpFloorplans;

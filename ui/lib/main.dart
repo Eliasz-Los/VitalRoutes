@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import './Pages/Users/SignInScreen.dart';
+import 'Pages/Floorplan/FloorplanScreen.dart';
 import 'Pages/Users/UserProvider.dart';
 import 'firebase_options.dart';
 import './Pages/Users/UserMenuWidget.dart';
@@ -11,7 +12,7 @@ import './Pages/Users/UserMenuWidget.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
+      options: DefaultFirebaseOptions.currentPlatform
   );
   runApp(const MyApp());
 }
@@ -51,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static final List<Widget> _widgetOptions = <Widget>[
     Text('Home Page'),
     SignInScreen(),
+    FloorplanPage(hospitalName: 'UZ Groenplaats'),
   ];
 
   @override
@@ -70,9 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
   }
-  
+
   void _viewProfile() {
-     Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _user!.email!)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _user!.email!)));
   }
 
   @override
@@ -83,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           if (_user != null)
-          UserMenuWidget(user: _user!, onProfile: _viewProfile)
+            UserMenuWidget(user: _user!, onProfile: _viewProfile)
         ],
       ),
       body: Center(
@@ -98,6 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.login),
             label: 'Sign In',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Floorplan',
           ),
         ],
         currentIndex: _selectedIndex,
