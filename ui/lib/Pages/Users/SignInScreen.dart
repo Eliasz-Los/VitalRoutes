@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Models/Users/UserCredentials.dart';
-import 'package:ui/Pages/Users/UserMenuWidget.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/AuthService.dart';
 import 'package:ui/main.dart';
@@ -60,10 +59,6 @@ class _SignInScreenState extends State<SignInScreen> {
    return Scaffold(
      appBar: AppBar(
        title: Text('Sign In'),
-       actions: [
-         if (_user != null)
-           UserMenuWidget(user: _user!, onProfile: _checkUser)
-       ],
      ), 
      body: Padding(
        padding: const EdgeInsets.all(16.0),

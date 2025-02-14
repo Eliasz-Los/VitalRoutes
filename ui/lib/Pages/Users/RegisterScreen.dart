@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Models/Enums/FunctionType.dart';
+import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/main.dart';
 
 import '../../Models/Users/RegisterUser.dart';
 import '../../Services/AuthService.dart';
@@ -29,13 +31,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text,
         password: _passwordController.text,
         telephoneNr: _telephoneNrController.text,
-        function: FunctionType.Patient, //TODO zien dat de function goed wordt ingevuld door de enum
+        function: FunctionType.Patient, 
       );
 
       await AuthService.registerUser(registerUser);
-      User? user = FirebaseAuth.instance.currentUser;
+      //Inloggen zodat de begin wordt token gegenereerd
+      UserCredentials userCredentials = UserCredentials(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      await AuthService.signInWithEmailAndPassword(userCredentials);
+      
+      User? user = await FirebaseAuth.instance.currentUser;
+    
       Provider.of<UserProvider>(context, listen: false).setUser(user);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UserProfileScreen(email: _emailController.text)));
+      
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),
+              (Route<dynamic> route) => false,
+        );
+
+
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();

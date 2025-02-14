@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Services/AuthService.dart';
 import '../../main.dart';
 
@@ -16,6 +18,7 @@ class UserMenuWidget extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       await AuthService.signOut();
+      Provider.of<UserProvider>(context, listen: false).setUser(null);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
