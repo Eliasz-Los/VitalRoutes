@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/presentation/home_page.dart';
+import 'package:ui/presentation/widgets/MainScaffold.dart';
 import './Pages/Users/SignInScreen.dart';
 import 'firebase_options.dart';
 import './Pages/Users/UserMenuWidget.dart';
@@ -29,12 +31,33 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MyHomePage(title: 'Vital Routes'),
+        home: MainScaffold(body: HomePage()), // Gebruik MainScaffold als basis!
       ),
     );
   }
 }
 
+
+/*
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => UserProvider(),
+      child: MaterialApp(
+        title: 'Vital Routes',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'Vital Routes'),
+      ),
+    );
+  }
+}
+*/
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 

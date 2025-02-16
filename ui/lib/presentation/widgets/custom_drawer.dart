@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import '../home_page.dart';
 import '../SystemAdminPage.dart';
 import '../../Pages/Users/SignInScreen.dart';
@@ -39,14 +40,39 @@ class CustomDrawer extends StatelessWidget {
         onItemSelected(index);
         Navigator.pop(context);
 
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => MainScaffold(body: _getPage(index), hasScaffold: hasScaffold)),
-              (route) => false,
-        );
+
+        if (index == 3) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Please log in first!')),
+            );
+            return;
+          }/*
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(body: UserProfileScreen(email: user.email!)),
+            ),
+          );*/
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserProfileScreen(email: user.email!),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(body: _getPage(index), hasScaffold: hasScaffold),
+            ),
+          );
+        }
       },
     );
   }
+
 
   Widget _getPage(int index) {
     switch (index) {
