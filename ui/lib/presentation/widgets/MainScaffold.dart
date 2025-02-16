@@ -47,7 +47,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     return widget.hasScaffold 
         ? widget.body
         : Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( //appbar
         title: Text('VitalRoutes', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
