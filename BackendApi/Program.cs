@@ -1,5 +1,6 @@
 using BackendApi.Controllers.auth;
 using BL;
+using BL.Mappers;
 using DAL;
 using DAL.EF;
 using Firebase.Auth;
@@ -58,6 +59,8 @@ builder.Services.AddScoped<UserManager>();
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+//TODO voeg meerder mappers toe met , typeof(AndereMappingProfile)
+builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
 var app = builder.Build();
 
