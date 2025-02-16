@@ -7,6 +7,7 @@ import 'package:ui/Pages/Users/UserProvider.dart';
 
 import '../../Models/Users/RegisterUser.dart';
 import '../../Services/AuthService.dart';
+import '../../presentation/widgets/MainScaffold.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -45,10 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Register'),
-      ),
+    return MainScaffold(   
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

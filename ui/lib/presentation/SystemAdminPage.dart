@@ -26,7 +26,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(
+    return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: ListView(

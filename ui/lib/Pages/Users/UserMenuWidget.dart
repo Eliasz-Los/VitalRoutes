@@ -19,7 +19,7 @@ class UserMenuWidget extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
     try {
       await AuthService.signOut();
-      Navigator.pop(context); // 
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error signing out: $e')),

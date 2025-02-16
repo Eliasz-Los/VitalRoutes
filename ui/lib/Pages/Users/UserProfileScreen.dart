@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ui/Services/AuthService.dart';
-
 import '../../Models/Users/RegisterUser.dart';
+import '../../presentation/widgets/MainScaffold.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final String email;
@@ -25,10 +25,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Profile'),
-      ),
+    return MainScaffold(
       body: FutureBuilder<RegisterUser>(
         future: _userData,
         builder: (context, snapshot) {

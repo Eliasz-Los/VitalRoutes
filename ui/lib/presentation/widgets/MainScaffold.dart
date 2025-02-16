@@ -7,9 +7,10 @@ import '../../Pages/Users/UserProfileScreen.dart';
 import 'custom_drawer.dart';
 
 class MainScaffold extends StatefulWidget {
-  final Widget body; // 
+  final Widget body;
+  final bool hasScaffold; 
 
-  MainScaffold({required this.body, Key? key}) : super(key: key); //
+  MainScaffold({required this.body, this.hasScaffold = false, Key? key}) : super(key: key);
 
   @override
   _MainScaffoldState createState() => _MainScaffoldState();
@@ -27,29 +28,31 @@ class _MainScaffoldState extends State<MainScaffold> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    bool hasScaffold = index == 1 || index == 2 || index == 3;
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => hasScaffold
+            ? _pages[index] 
+            : MainScaffold(body: _pages[index], hasScaffold: false), 
+      ),
+          (route) => false,
+    );
   }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return widget.hasScaffold 
+        ? widget.body
+        : Scaffold(
       appBar: AppBar(
         title: Text('VitalRoutes', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
-      drawer: CustomDrawer(onItemSelected: _onItemTapped), // 
-      body: widget.body, // Toont de juiste pagina
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.login), label: 'Sign In'),
-        ],
-        currentIndex: _selectedIndex > 1 ? 0 : _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
-    );
+      drawer: CustomDrawer(onItemSelected: _onItemTapped),
+      body: widget.body);
   }
 }
+
