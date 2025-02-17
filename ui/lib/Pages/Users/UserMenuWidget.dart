@@ -3,9 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Services/AuthService.dart';
-import '../../main.dart';
-import '../../presentation/home_page.dart';
-import '../../presentation/widgets/MainScaffold.dart';
+import '../Navigation/MainScaffold.dart';
+import '../home_page.dart';
 
 class UserMenuWidget extends StatelessWidget {
   final User user;

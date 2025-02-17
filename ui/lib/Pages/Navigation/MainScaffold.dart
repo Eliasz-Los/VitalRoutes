@@ -1,13 +1,11 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
-import '../home_page.dart';
-import '../SystemAdminPage.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
+import '../Admin/SystemAdminPage.dart';
+import '../home_page.dart';
 import 'custom_drawer.dart';
 import '../../Services/AuthService.dart';
-import '../../Pages/Users/UserProvider.dart';
 
 class MainScaffold extends StatefulWidget {
   final Widget body;
@@ -20,7 +18,6 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  int _selectedIndex = 0;
 
   static final List<Widget> _pages = [
     HomePage(),

@@ -1,11 +1,11 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../home_page.dart';
-import '../SystemAdminPage.dart';
+import '../Admin/SystemAdminPage.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
-import '../widgets/MainScaffold.dart';
 import '../../Services/AuthService.dart';
+import '../home_page.dart';
+import 'MainScaffold.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Function(int) onItemSelected;

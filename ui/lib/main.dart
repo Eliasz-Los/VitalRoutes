@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
-import 'package:ui/presentation/home_page.dart';
-import 'package:ui/presentation/widgets/MainScaffold.dart';
+import 'Pages/Navigation/MainScaffold.dart';
+import 'Pages/home_page.dart';
 import 'firebase_options.dart';
 
 

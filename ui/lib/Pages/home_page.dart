@@ -1,7 +1,4 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:ui/Pages/Users/UserProvider.dart';
-import 'package:ui/Pages/Users/SignInScreen.dart';
 
 class HomePage extends StatelessWidget {
   final String title = "VitalRoutes";

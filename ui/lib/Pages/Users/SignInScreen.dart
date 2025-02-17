@@ -4,9 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/AuthService.dart';
-import 'package:ui/main.dart';
-
-import '../../presentation/widgets/MainScaffold.dart';
+import '../Navigation/MainScaffold.dart';
 import 'RegisterScreen.dart';
 import 'UserProfileScreen.dart';
 

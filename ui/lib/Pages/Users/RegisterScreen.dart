@@ -7,8 +7,8 @@ import 'package:ui/Pages/Users/UserProvider.dart';
 
 import '../../Models/Users/RegisterUser.dart';
 import '../../Services/AuthService.dart';
-import '../../presentation/home_page.dart';
-import '../../presentation/widgets/MainScaffold.dart';
+import '../Navigation/MainScaffold.dart';
+import '../home_page.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override

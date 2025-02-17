@@ -8,8 +8,8 @@ import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/AuthService.dart';
 import 'package:ui/Services/UserService.dart';
-import '../../presentation/home_page.dart';
-import '../../presentation/widgets/MainScaffold.dart';
+import '../Navigation/MainScaffold.dart';
+import '../home_page.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final String email;
