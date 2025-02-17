@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class SystemAdminPage extends StatefulWidget {
   @override
@@ -10,33 +11,26 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
   List<TextEditingController> nurseControllers = [TextEditingController()];
   TextEditingController patientController = TextEditingController();
 
-  void _addDoctorField() {
-    setState(() {
-      doctorControllers.add(TextEditingController());
-    });
-  }
+  Future<void> _addSupervision(String supervisorEmail, String superviseeEmail) async {
+    try {
+      final supervisorResponse = await Dio().get('http://10.0.2.2:5028/api/user/$supervisorEmail');
+      final superviseeResponse = await Dio().get('http://10.0.2.2:5028/api/user/$superviseeEmail');
 
-  void _addNurseField() {
-    setState(() {
-      nurseControllers.add(TextEditingController());
-    });
-  }
+      if (supervisorResponse.statusCode == 200 && superviseeResponse.statusCode == 200) {
+        final supervisorId = supervisorResponse.data['id'];
+        final superviseeId = superviseeResponse.data['id'];
 
-  void _removeDoctorField(int index) {
-    if (doctorControllers.length > 1) {
-      setState(() {
-        doctorControllers[index].dispose();
-        doctorControllers.removeAt(index);
-      });
-    }
-  }
-
-  void _removeNurseField(int index) {
-    if (nurseControllers.length > 1) {
-      setState(() {
-        nurseControllers[index].dispose();
-        nurseControllers.removeAt(index);
-      });
+        final response = await Dio().post('http://10.0.2.2:5028/api/user/$supervisorId/addUnderSupervision/$superviseeId');
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Supervision added successfully')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add supervision')));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User not found')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error adding supervision: $e')));
     }
   }
 
@@ -56,6 +50,16 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
           _buildSectionTitle('Patiënt'),
           _buildInputField(patientController, 'Naam patiënt'),
           SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              for (var doctorController in doctorControllers) {
+                for (var nurseController in nurseControllers) {
+                  _addSupervision(doctorController.text, nurseController.text);
+                }
+              }
+            },
+            child: Text('Koppel'),
+          ),
         ],
       ),
     );
@@ -81,7 +85,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
     return Row(
       children: [
         Expanded(child: _buildInputField(doctorControllers[index], 'Naam dokter')),
-        if (doctorControllers.length > 1) 
+        if (doctorControllers.length > 1)
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () => _removeDoctorField(index),
@@ -130,5 +134,35 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
         onPressed: onPressed,
       ),
     );
+  }
+
+  void _addDoctorField() {
+    setState(() {
+      doctorControllers.add(TextEditingController());
+    });
+  }
+
+  void _addNurseField() {
+    setState(() {
+      nurseControllers.add(TextEditingController());
+    });
+  }
+
+  void _removeDoctorField(int index) {
+    if (doctorControllers.length > 1) {
+      setState(() {
+        doctorControllers[index].dispose();
+        doctorControllers.removeAt(index);
+      });
+    }
+  }
+
+  void _removeNurseField(int index) {
+    if (nurseControllers.length > 1) {
+      setState(() {
+        nurseControllers[index].dispose();
+        nurseControllers.removeAt(index);
+      });
+    }
   }
 }
