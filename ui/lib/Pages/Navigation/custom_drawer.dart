@@ -4,6 +4,7 @@ import '../Admin/SystemAdminPage.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../../Services/AuthService.dart';
+import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'MainScaffold.dart';
 
@@ -42,6 +43,7 @@ class CustomDrawer extends StatelessWidget {
           if (user == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
           if (user != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
           _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
+          _buildDrawerItem(Icons.map, 'Floorplan', context, 4, false),
           Divider(),
           if (user != null)
             ListTile(
@@ -105,6 +107,8 @@ class CustomDrawer extends StatelessWidget {
         return UserProfileScreen(email: "example@email.com");
       case 3:
         return SystemAdminPage();
+      case 4:
+        return FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1);
       default:
         return HomePage();
     }

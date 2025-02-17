@@ -68,6 +68,10 @@ public class VitalRoutesDbContext : DbContext
             .HasOne(user => user.Hospital)
             .WithMany(hospital => hospital.Users);
 
+        modelBuilder.Entity<Floorplan>()
+            .HasOne(fp => fp.Hospital)
+            .WithMany(h => h.Floorplans);
+
 
     }
     

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../Admin/SystemAdminPage.dart';
+import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'custom_drawer.dart';
 import '../../Services/AuthService.dart';
@@ -24,6 +25,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     SignInScreen(),
     UserProfileScreen(email: "example@email.com"),
     SystemAdminPage(),
+    FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1),
   ];
 
   void _onItemTapped(int index) {
