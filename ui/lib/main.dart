@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static final List<Widget> _widgetOptions = <Widget>[
     Text('Home Page'),
     SignInScreen(),
-    FloorplanPage(hospitalName: 'UZ Groenplaats'),
+    FloorplanPage(hospitalName: 'UZ Groenplaats', floorNumber: -1,),
   ];
 
   @override

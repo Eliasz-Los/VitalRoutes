@@ -28,4 +28,10 @@ public class FloorplanRepository
     {
         return _context.Floorplans.Where(f => f.Hospital.Name == hospitalName);
     }
+
+    public Floorplan? ReadFloorplanByHospitalNameAndFloorNumber(string hospitalName, int floorNumber)
+    {
+        return _context.Floorplans
+            .FirstOrDefault(f => f.Hospital.Name == hospitalName && f.FloorNumber == floorNumber);
+    }
 }

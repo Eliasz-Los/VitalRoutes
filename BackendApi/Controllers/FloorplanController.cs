@@ -18,12 +18,12 @@ public class FloorplanController : ControllerBase
     }
     
     [HttpGet("getFloorPlans/{hospitalName}")]
-    public IActionResult GetFloorPlans(string hospitalName)
+    public async Task<IActionResult> GetFloorPlans(string hospitalName)
     {
         var hospital = hospitalName.Replace(" ", "_");
         var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Floorplans", hospital);
         
-        var floorPlans = _floorplanManager.GetFloorplansByHospitalName(hospitalName, folderPath);
+        var floorPlans = await _floorplanManager.GetFloorplansByHospitalName(hospitalName, folderPath);
         
         if (!floorPlans.Any())
         {
@@ -31,5 +31,26 @@ public class FloorplanController : ControllerBase
         }
         
         return Ok(floorPlans);
+    }
+    
+    [HttpGet("getFloorplan/{hospitalName}/{floorNumber}")]
+    public async Task<IActionResult> GetFloorplan(string hospitalName, int floorNumber)
+    {
+        var hospital = hospitalName.Replace(" ", "_");
+        var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Floorplans", hospital);
+
+        try
+        {
+            var floorPlan = await _floorplanManager.GetFloorplanByHospitalNameAndFloorNumber(hospitalName, floorNumber, folderPath);
+            return Ok(floorPlan);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound($"No floorplan found for hospital {hospitalName} and floor number {floorNumber}");
+        }
+        catch (FileNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }

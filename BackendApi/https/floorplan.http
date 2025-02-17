@@ -1,0 +1,5 @@
+### Get floorplans for UZ Groenplaats test
+GET http://localhost:5028/api/Floorplan/getFloorPlans/UZ Groenplaats
+
+### Get basement floorplan for UZ Groenplaats test
+GET http://localhost:5028/api/Floorplan/getFloorPlan/UZ Groenplaats/-1
