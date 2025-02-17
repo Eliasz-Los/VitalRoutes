@@ -37,4 +37,32 @@ public class UserRepository
         return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
     
+    
+    public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
+    {
+        var supervisor = await _context.Users.Include(u => u.UnderSupervisions).FirstOrDefaultAsync(u => u.Id == supervisorId);
+        var supervisee = await _context.Users.FirstOrDefaultAsync(u => u.Id == superviseeId);
+
+        if (supervisor != null && supervisee != null)
+        {
+            if (supervisor.UnderSupervisions == null)
+            {
+                supervisor.UnderSupervisions = new List<User>();
+            }
+            ((List<User>)supervisor.UnderSupervisions).Add(supervisee);
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task RemoveUnderSupervision(Guid supervisorId, Guid superviseeId)
+    {
+        var supervisor = await _context.Users.Include(u => u.UnderSupervisions).FirstOrDefaultAsync(u => u.Id == supervisorId);
+        var supervisee = await _context.Users.FirstOrDefaultAsync(u => u.Id == superviseeId);
+
+        if (supervisor != null && supervisee != null && supervisor.UnderSupervisions != null)
+        {
+            ((List<User>)supervisor.UnderSupervisions).Remove(supervisee);
+            await _context.SaveChangesAsync();
+        }
+    }
 }
