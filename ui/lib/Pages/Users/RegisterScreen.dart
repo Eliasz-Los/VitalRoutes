@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Models/Enums/FunctionType.dart';
 import 'package:ui/Models/Users/UserCredentials.dart';
-import 'package:ui/Pages/Users/UserProfileScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
-import 'package:ui/main.dart';
 
 import '../../Models/Users/RegisterUser.dart';
 import '../../Services/AuthService.dart';
+import '../../presentation/home_page.dart';
 import '../../presentation/widgets/MainScaffold.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -48,11 +47,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Provider.of<UserProvider>(context, listen: false).setUser(user);
       
       Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),
+          MaterialPageRoute(builder: (context) => MainScaffold(body: HomePage())),
               (Route<dynamic> route) => false,
         );
-
-
+      
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -62,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainScaffold(   
+    return Scaffold(   
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -93,7 +91,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _register,
-              child: Text('Register'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
+              child: Text('Register', style: TextStyle(color: Colors.white)),
             ),
             if (_errorMessage != null) ...[
               SizedBox(height: 20),

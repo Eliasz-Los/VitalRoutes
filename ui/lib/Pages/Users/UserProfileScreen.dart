@@ -8,8 +8,7 @@ import 'package:ui/Models/Users/UserCredentials.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/AuthService.dart';
 import 'package:ui/Services/UserService.dart';
-import 'package:ui/main.dart';
-
+import '../../presentation/home_page.dart';
 import '../../presentation/widgets/MainScaffold.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -72,11 +71,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       setState(() {
         _userData = UserService.getUserByEmail(_emailController.text);
       });
-      
+
       Future.delayed(Duration(seconds: 2), () {
         Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Vital Routes')),
-          (Route<dynamic> route) => false,
+          MaterialPageRoute(builder: (context) => MainScaffold(body: HomePage())),
+              (Route<dynamic> route) => false,
         );
       });
     }
@@ -84,6 +83,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (firebaseUser == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text('VitalRoutes')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.warning, size: 80, color: Colors.red),
+              SizedBox(height: 20),
+              Text(
+                "You have to be logged in to view your profile",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return MainScaffold(
       body: FutureBuilder<custom_user.User>(
         future: _userData,
@@ -177,7 +195,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _updateUser,
-                      child: Text('Update'),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
+                      child: Text('Update', style: TextStyle(color: Colors.white))
                     ),
                   ],
                 ),

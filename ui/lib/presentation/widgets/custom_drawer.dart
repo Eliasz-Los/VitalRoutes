@@ -3,17 +3,33 @@ import 'package:flutter/material.dart';
 import '../home_page.dart';
 import '../SystemAdminPage.dart';
 import '../../Pages/Users/SignInScreen.dart';
-import '../../Pages/Users/RegisterScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../widgets/MainScaffold.dart';
+import '../../Services/AuthService.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Function(int) onItemSelected;
 
   CustomDrawer({required this.onItemSelected, Key? key}) : super(key: key);
 
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      await AuthService.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SignInScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error signing out: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -23,10 +39,16 @@ class CustomDrawer extends StatelessWidget {
             child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
           _buildDrawerItem(Icons.home, 'Home', context, 0, false),
-          _buildDrawerItem(Icons.login, 'Sign In', context, 1, true),
-          _buildDrawerItem(Icons.app_registration, 'Register', context, 2, true),
-          _buildDrawerItem(Icons.person, 'Profile', context, 3, true),
-          _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 4, false),
+          if (user == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
+          if (user != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
+          _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
+          Divider(),
+          if (user != null)
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () => _signOut(context),
+            ),
         ],
       ),
     );
@@ -40,25 +62,25 @@ class CustomDrawer extends StatelessWidget {
         onItemSelected(index);
         Navigator.pop(context);
 
-
-        if (index == 3) {
+        if (index == 2) {
           final user = FirebaseAuth.instance.currentUser;
           if (user == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Please log in first!')),
             );
             return;
-          }/*
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainScaffold(body: UserProfileScreen(email: user.email!)),
-            ),
-          );*/
+          }
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => UserProfileScreen(email: user.email!),
+            ),
+          );
+        } else if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SignInScreen(),
             ),
           );
         } else {
@@ -73,7 +95,6 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-
   Widget _getPage(int index) {
     switch (index) {
       case 0:
@@ -81,10 +102,8 @@ class CustomDrawer extends StatelessWidget {
       case 1:
         return SignInScreen();
       case 2:
-        return RegisterScreen();
-      case 3:
         return UserProfileScreen(email: "example@email.com");
-      case 4:
+      case 3:
         return SystemAdminPage();
       default:
         return HomePage();

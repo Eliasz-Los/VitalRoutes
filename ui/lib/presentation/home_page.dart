@@ -1,7 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
-import 'package:ui/Pages/Users/UserMenuWidget.dart';
 import 'package:ui/Pages/Users/SignInScreen.dart';
 
 class HomePage extends StatelessWidget {
@@ -53,11 +52,4 @@ class HomePage extends StatelessWidget {
     );
   }
 
-
-  void _viewProfile(BuildContext context, user) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UserMenuWidget(user: user, onProfile: () {})),
-    );
-  }
 }
