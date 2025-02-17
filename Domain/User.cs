@@ -21,6 +21,15 @@ public class User
     public IEnumerable<Emergency> Emergencies {get; set;}
     public Hospital? Hospital {get; set;} //voor nu ook geen ziekenhuis
 
+    
+    public User(string firstName, string lastName, string email, string telephoneNr)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        TelephoneNr = telephoneNr;
+    }
+    
     public User(string firstName, string lastName, string email, string telephoneNr, Function function)
     {
         FirstName = firstName;

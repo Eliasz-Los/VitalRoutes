@@ -33,7 +33,7 @@ public class FireBaseAuthController : ControllerBase
             TelephoneNr = registerUserDto.TelephoneNr,
             Function = registerUserDto.Function
         };
-        await _userManager.AddUserAsync(addUserDto);
+        await _userManager.AddUser(addUserDto);
 
         return Ok(new { message = "User registered successfully", token, addUserDto });
     }
@@ -54,16 +54,5 @@ public class FireBaseAuthController : ControllerBase
     {
         _firebaseAuthManager.SignOut();
         return Ok(new { message = "User signed out" });
-    }
-    
-    [HttpGet("user/{email}")]
-    public async Task<IActionResult> GetUserByEmail(string email)
-    {
-        var user = await _userManager.GetUserByEmailAsync(email);
-        if (user == null)
-        {
-            return NotFound(new { message = "User not found" });
-        }
-        return Ok(user);
     }
 }

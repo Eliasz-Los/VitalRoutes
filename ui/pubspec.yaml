@@ -32,6 +32,8 @@ dev_dependencies:
 
 
 flutter:
+  assets:
+    - assets/route.png
 
 
   uses-material-design: true
