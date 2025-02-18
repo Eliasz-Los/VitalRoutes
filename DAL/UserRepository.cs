@@ -37,7 +37,6 @@ public class UserRepository
         return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
     
-    
     public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
         var supervisor = await _context.Users.Include(u => u.UnderSupervisions).FirstOrDefaultAsync(u => u.Id == supervisorId);
@@ -51,6 +50,10 @@ public class UserRepository
             }
             ((List<User>)supervisor.UnderSupervisions).Add(supervisee);
             await _context.SaveChangesAsync();
+        }
+        else
+        {
+            throw new Exception("Supervisor or supervisee not found");
         }
     }
 
