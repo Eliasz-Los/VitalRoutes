@@ -44,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => UserProfileScreen(email: user!.email!),
+          builder: (context) => UserProfileScreen(firebaseUser: user!),
         ),
       );
     } catch (e) {
