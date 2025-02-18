@@ -12,9 +12,10 @@ import '../Navigation/MainScaffold.dart';
 import '../home_page.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  final String email;
+  //final String email;
+  final User firebaseUser;
 
-  const UserProfileScreen({super.key, required this.email});
+  const UserProfileScreen({super.key, required this.firebaseUser});
 
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
@@ -29,13 +30,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final TextEditingController _telephoneNrController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _functionController = TextEditingController();
-  var firebaseUser = firebase_auth.FirebaseAuth.instance.currentUser;
   bool _showPassword = false;
 
   @override
   void initState() {
     super.initState();
-    _userData = UserService.getUserByEmail(widget.email);
+    _userData = UserService.getUserByEmail(widget.firebaseUser.email.toString());
     _userData.then((user) {
       _firstNameController.text = user.firstName!;
       _lastNameController.text = user.lastName!;
@@ -50,7 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       final user = await _userData;
       final updateUser = UpdateUser(
         id: user.id!,
-        Uid: firebaseUser!.uid,
+        Uid: widget.firebaseUser.uid, //firebase instance given trough provider
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         email: _emailController.text,
@@ -60,7 +60,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       await UserService.updateUser(updateUser);
       await AuthService.signInWithEmailAndPassword(UserCredentials(email: _emailController.text, password: _passwordController.text));
       firebase_auth.User? reAuthenticatedUser = FirebaseAuth.instance.currentUser;
-      //TODO: password moet uit database komen
       Provider.of<UserProvider>(context, listen: false).setUser(reAuthenticatedUser);
       
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -83,25 +82,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (firebaseUser == null) {
-      return Scaffold(
-        appBar: AppBar(title: Text('VitalRoutes')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.warning, size: 80, color: Colors.red),
-              SizedBox(height: 20),
-              Text(
-                "You have to be logged in to view your profile",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
     return MainScaffold(
       body: FutureBuilder<custom_user.User>(
         future: _userData,
