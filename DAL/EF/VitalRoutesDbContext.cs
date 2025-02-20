@@ -26,11 +26,16 @@ public class VitalRoutesDbContext : DbContext
     public VitalRoutesDbContext(DbContextOptions options) : base(options)
     {
         //TODO: door op true, werd na registreren van user, user opgeslagen maar dan kijkenn aar de user page, andere api call werd hele databank her gecreeerd
-        VitalRoutesInitializer.Initialize(this, false);
+        VitalRoutesInitializer.Initialize(this, true);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UnderSupervisions)
+            .WithOne()
+            .HasForeignKey(u => u.SupervisorId); 
+        
         modelBuilder.Entity<Hospital>().ToTable("Hospitals").HasIndex(hosp => hosp.Id).IsUnique();
         modelBuilder.Entity<Notification>().ToTable("Notifications").HasIndex(not => not.Id).IsUnique();
         modelBuilder.Entity<Emergency>().ToTable("Emergencies").HasIndex(em => em.Id).IsUnique();
@@ -67,9 +72,8 @@ public class VitalRoutesDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasOne(user => user.Hospital)
             .WithMany(hospital => hospital.Users);
-
-
+        
     }
-    
-  
+
+
 }

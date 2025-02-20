@@ -39,24 +39,32 @@ public class UserRepository
     
     public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
-        var supervisor = await _context.Users.Include(u => u.UnderSupervisions).FirstOrDefaultAsync(u => u.Id == supervisorId);
+        var supervisor = await _context.Users.Include(u => u.UnderSupervisions)
+            .FirstOrDefaultAsync(u => u.Id == supervisorId);
         var supervisee = await _context.Users.FirstOrDefaultAsync(u => u.Id == superviseeId);
 
-        if (supervisor != null && supervisee != null)
+        if (supervisor == null)
         {
-            if (supervisor.UnderSupervisions == null)
-            {
-                supervisor.UnderSupervisions = new List<User>();
-            }
-            ((List<User>)supervisor.UnderSupervisions).Add(supervisee);
-            await _context.SaveChangesAsync();
+            throw new Exception($"Supervisor with ID {supervisorId} not found");
         }
-        else
+        if (supervisee == null)
         {
-            throw new Exception("Supervisor or supervisee not found");
+            throw new Exception($"Supervisee with ID {superviseeId} not found");
         }
-    }
 
+        // Voeg de supervisee toe aan de UnderSupervisions van de supervisor, zelfs als deze leeg is
+        if (supervisor.UnderSupervisions == null)
+        {
+            supervisor.UnderSupervisions = new List<User>();
+        }
+        supervisor.UnderSupervisions.Add(supervisee);
+
+        // Optioneel: Stel SupervisorId in voor de supervisee (als je dat wilt bijhouden)
+        supervisee.SupervisorId = supervisorId;
+
+        await _context.SaveChangesAsync();
+    }
+    
     public async Task RemoveUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
         var supervisor = await _context.Users.Include(u => u.UnderSupervisions).FirstOrDefaultAsync(u => u.Id == supervisorId);

@@ -33,11 +33,22 @@ public class UserController : Controller
         var updatedUser = await _userManager.UpdateUser(userDto);
         return Ok(updatedUser);
     }
-    
+    /*
     [HttpPost("{supervisorId}/addUnderSupervision/{superviseeId}")]
     public async Task<IActionResult> AddUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
         await _userManager.AddUnderSupervision(supervisorId, superviseeId);
+        return Ok(new { message = "Supervision added successfully" });
+    }*/
+    
+    [HttpPost("{supervisorId}/addUnderSupervision/{superviseeId}")]
+    public async Task<IActionResult> AddUnderSupervision(string supervisorId, string superviseeId)
+    {
+        if (!Guid.TryParse(supervisorId, out Guid supervisorGuid) || !Guid.TryParse(superviseeId, out Guid superviseeGuid))
+        {
+            return BadRequest(new { message = "Invalid GUID format" });
+        }
+        await _userManager.AddUnderSupervision(supervisorGuid, superviseeGuid);
         return Ok(new { message = "Supervision added successfully" });
     }
 

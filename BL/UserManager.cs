@@ -62,7 +62,7 @@ public class UserManager
     }
     
     public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
-    {
+    { //als string opnemen en casten naar uid (mss)
         await _userRepository.AddUnderSupervision(supervisorId, superviseeId);
     }
 

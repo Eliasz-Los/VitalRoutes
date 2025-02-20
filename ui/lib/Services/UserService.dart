@@ -4,8 +4,7 @@ import 'package:ui/Models/Users/User.dart';
 
 class UserService{
   static final Dio _dio = Dio();
-
-
+  
   static Future<User> getUserByEmail(String email) async{
     try{
       final response = await _dio.get('http://10.0.2.2:5028/api/user/$email');
@@ -39,4 +38,24 @@ class UserService{
       throw Exception('Error updating user: $e');
     }
  }
+
+  static Future<void> addUnderSupervision(String supervisorId, String superviseeId) async {
+    try {
+      final response = await _dio.post(
+        'http://10.0.2.2:5028/api/user/$supervisorId/addUnderSupervision/$superviseeId',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to add supervision');
+      }
+    } catch (e) {
+      throw Exception('Error adding supervision: $e');
+    }
+  }
+ 
+ //TODO hierin api calls
 }
