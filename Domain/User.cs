@@ -15,6 +15,18 @@ public class User
     public Hospital? Hospital { get; set; }
     public Guid? SupervisorId { get; set; }
 
+    public User(Guid id, string firstName, string lastName, string email, string telephoneNr, Function function, UserLocation? location, Hospital? hospital)
+    {
+        Id = id;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        TelephoneNr = telephoneNr;
+        Function = function;
+        Location = location;
+        Hospital = hospital;
+    }
+
     public User(string firstName, string lastName, string email, string telephoneNr)
     {
         FirstName = firstName;

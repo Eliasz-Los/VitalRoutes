@@ -26,7 +26,7 @@ public class VitalRoutesDbContext : DbContext
     public VitalRoutesDbContext(DbContextOptions options) : base(options)
     {
         //TODO: door op true, werd na registreren van user, user opgeslagen maar dan kijkenn aar de user page, andere api call werd hele databank her gecreeerd
-        VitalRoutesInitializer.Initialize(this, true);
+        VitalRoutesInitializer.Initialize(this, false);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

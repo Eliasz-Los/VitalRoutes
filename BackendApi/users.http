@@ -24,3 +24,44 @@ Content-Type: application/json
     "Function": 0,
     "Password" : "123456"
 }
+
+###
+GET http://localhost:5028/api/User/gustavo.fring@hotmail.com
+Content-Type: application/json
+
+###
+GET http://localhost:5028/api/User/mike.erhmrgir@hotmail.com
+Content-Type: application/json
+
+###
+GET http://localhost:5028/api/User/walter.burgir@hotmail.com
+Content-Type: application/json
+
+###
+GET http://localhost:5028/api/User/gustavo.fring@hotmail.com
+Content-Type: application/json
+
+### Voeg een supervisie toe: Dokter Gustavo -> Patiënt Walter
+POST http://localhost:5028/api/User/019527ff-c8a3-79e7-b7db-c76ade287fc1/addUnderSupervision/019527ff-c8a3-79e7-b7db-c76ade287fc3
+Content-Type: application/json
+
+### Verwijder supervisie: Dokter Gustavo -> Patiënt Walter
+POST http://localhost:5028/api/User/019527ff-c8a3-79e7-b7db-c76ade287fc1/removeUnderSupervision/019527ff-c8a3-79e7-b7db-c76ade287fc2
+Content-Type: application/json
+
+### Voeg een supervisie toe: Verpleegster Mike -> Patiënt Walter
+POST http://localhost:5028/api/User/{mike_id}/addUnderSupervision/{walter_id}
+Content-Type: application/json
+
+### Voeg een supervisie toe: Dokter Gustavo -> Verpleegster Mike
+POST http://localhost:5028/api/User/019527fa-171a-7349-bdb6-b48456b35bbd/addUnderSupervision/{mike_id}
+Content-Type: application/json
+
+### Controleer of Gustavo's supervisies correct zijn opgeslagen
+GET http://localhost:5028/api/User/019527fa-171a-7349-bdb6-b48456b35bbd
+Content-Type: application/json
+
+### Controleer of Mike's supervisies correct zijn opgeslagen
+GET http://localhost:5028/api/User/{mike_id}
+Content-Type: application/json
+

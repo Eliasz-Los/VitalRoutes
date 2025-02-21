@@ -42,19 +42,19 @@ public class VitalRoutesInitializer
         UserLocation userLocation3 = new UserLocation(3, 3);
         UserLocation userLocation4 = new UserLocation(4, 4);
 
-        User user1 = new User("Walter", "heisenberg", "walter.burgir@hotmail.com", "0411228828", Function.Patient, userLocation1, hospital1)
+        User user1 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc3"),"Walter", "heisenberg", "walter.burgir@hotmail.com", "0411228828", Function.Patient, userLocation1, hospital1)
         {
             UnderSupervisions = new List<User>()
         };
-        User user2 = new User("Jesse", "Pinkman", "jesse.pinkman@hotmail.com", "0411228828", Function.Patient, userLocation2, hospital1)
+        User user2 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc4"),"Jesse", "Pinkman", "jesse.pinkman@hotmail.com", "0411228828", Function.Patient, userLocation2, hospital1)
         {
             UnderSupervisions = new List<User>()
         };
-        User user3 = new User("Gustavo", "Fring", "gustavo.fring@hotmail.com", "0412345678", Function.Doctor, userLocation3, hospital1)
+        User user3 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc1"),"Gustavo", "Fring", "gustavo.fring@hotmail.com", "0412345678", Function.Doctor, userLocation3, hospital1)
         {
             UnderSupervisions = new List<User>()
         };
-        User user4 = new User("Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com", "0495687812", Function.Nurse, userLocation4, hospital1)
+        User user4 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc2"),"Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com", "0495687812", Function.Nurse, userLocation4, hospital1)
         {
             UnderSupervisions = new List<User>()
         };

@@ -20,10 +20,18 @@ public class UserRepository
         await _context.SaveChangesAsync();
     }
     
-    public async Task<User> ReadUserByEmail(string email)
+ /*   public async Task<User> ReadUserByEmail(string email)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }*/
+    
+    public async Task<User> ReadUserByEmail(string email)
+    {
+        return await _context.Users
+            .Include(u => u.UnderSupervisions)
+            .FirstOrDefaultAsync(u => u.Email == email);
     }
+
     
     public async Task<User> UpdateUser(User user)
     {
@@ -32,12 +40,20 @@ public class UserRepository
         return user;
     }
     
-    public async Task<User> ReadUserById(Guid id)
+ /*   public async Task<User> ReadUserById(Guid id)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-    }
+    }*/
     
-    public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
+    public async Task<User> ReadUserById(Guid id)
+    {
+        return await _context.Users
+            .Include(u => u.UnderSupervisions) 
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    
+    /*public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
         var supervisor = await _context.Users.Include(u => u.UnderSupervisions)
             .FirstOrDefaultAsync(u => u.Id == supervisorId);
@@ -63,7 +79,35 @@ public class UserRepository
         supervisee.SupervisorId = supervisorId;
 
         await _context.SaveChangesAsync();
+    }*/
+    
+    public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
+    {
+        var supervisor = await _context.Users
+            .Include(u => u.UnderSupervisions) 
+            .FirstOrDefaultAsync(u => u.Id == supervisorId);
+    
+        var supervisee = await _context.Users.FirstOrDefaultAsync(u => u.Id == superviseeId);
+
+        if (supervisor == null)
+        {
+            throw new Exception($"Supervisor met ID {supervisorId} niet gevonden.");
+        }
+        if (supervisee == null)
+        {
+            throw new Exception($"Supervisee met ID {superviseeId} niet gevonden.");
+        }
+
+        // Voorkom duplicaten in supervisie
+        if (!supervisor.UnderSupervisions.Contains(supervisee))
+        {
+            supervisor.UnderSupervisions.Add(supervisee);
+            supervisee.SupervisorId = supervisorId;
+        }
+
+        await _context.SaveChangesAsync();
     }
+
     
     public async Task RemoveUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
