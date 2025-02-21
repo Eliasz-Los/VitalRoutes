@@ -14,6 +14,7 @@ public class VitalRoutesDbContext : DbContext
     public DbSet<Hospital> Hospitals { get; set; }
     public DbSet<Floorplan> Floorplans { get; set; }
     public DbSet<Point> Points { get; set; }
+    public DbSet<Room> Rooms { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -38,6 +39,7 @@ public class VitalRoutesDbContext : DbContext
         modelBuilder.Entity<UserLocation>().ToTable("UserLocations").HasIndex(userLoc => userLoc.Id).IsUnique();
         modelBuilder.Entity<Floorplan>().ToTable("Floorplans").HasIndex(floor => floor.Id).IsUnique();
         modelBuilder.Entity<Point>().ToTable("Points").HasIndex(point => point.Id).IsUnique();
+        modelBuilder.Entity<Room>().ToTable("Rooms").HasIndex(room => room.Id).IsUnique();
         
         //TODO in beide richtingen navigeerbaar maken
         /*modelBuilder.Entity<Notification>()
@@ -72,8 +74,15 @@ public class VitalRoutesDbContext : DbContext
             .HasOne(fp => fp.Hospital)
             .WithMany(h => h.Floorplans);
 
+        modelBuilder.Entity<Room>()
+            .HasOne(r => r.AssignedPatient)
+            .WithOne()
+            .HasForeignKey<Room>("AssignedPatientFK");
+
+        modelBuilder.Entity<Room>()
+            .HasOne(r => r.Point)
+            .WithOne()
+            .HasForeignKey<Room>("PointFK"); 
 
     }
-    
-  
 }

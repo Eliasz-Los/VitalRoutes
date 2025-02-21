@@ -17,10 +17,12 @@ public class VitalRoutesInitializer
     private static void Seed(VitalRoutesDbContext context)
     {
         Hospital hospital1 = new Hospital("UZ Groenplaats");
+        
+        Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1.png");
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
-            new ("kelder", -1, "1/200", "floor_minus1.png"),
+            floorplanGPMinus1,
             new ("gelijkvloers", 0, "1/200","floor0.png"),
             new ("eerste verdiep", 1, "1/200","floor1.png"),
             new ("tweede verdiep", 2, "1/200","floor2.png"),
@@ -42,10 +44,23 @@ public class VitalRoutesInitializer
         User user3 = new User("Gustavo", "Fring", "gustavo.fring@hotmail.com","0412345678" ,Function.Doctor, userLocation3, hospital1);
         User user4 = new User("Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com","0495687812" ,Function.Nurse, userLocation4, hospital1);
         
+        List<Room> roomsFloorMinus1Groenplaats = new List<Room>
+        {
+            new (new Point(100.01, 168.01, floorplanGPMinus1), user1, -102),
+            new (new Point(147.01, 168.01, floorplanGPMinus1), user2, -101),
+            new (new Point(194.01, 168.01, floorplanGPMinus1), null, -100),
+            new (new Point(246.01, 168.01, floorplanGPMinus1), null, -114),
+            new (new Point(298.01, 168.01, floorplanGPMinus1), null, -113),
+            new (new Point(305.01, 128.01, floorplanGPMinus1), null, -111),
+            new (new Point(258.01, 123.01, floorplanGPMinus1), null, -109),
+            new (new Point(120.01, 115.01, floorplanGPMinus1), null, -106)
+        };
+        
         context.Hospitals.Add(hospital1);
         context.UserLocations.AddRange(userLocation1, userLocation2, userLocation3, userLocation4);
         context.Users.AddRange(user1, user2, user3, user4);
         context.Floorplans.AddRange(gpFloorplans);
+        context.Rooms.AddRange(roomsFloorMinus1Groenplaats);
         context.SaveChanges();
         context.ChangeTracker.Clear();
     }
