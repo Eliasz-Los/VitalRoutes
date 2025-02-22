@@ -12,7 +12,6 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
   List<TextEditingController> nurseControllers = [TextEditingController()];
   List<TextEditingController> patientControllers = [TextEditingController()];
 
-
   Future<void> _createSupervision() async {
     try {
       final doctorEmail = doctorController.text.trim();
@@ -69,50 +68,61 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.amber, width: 4),
-              ),
-              child: Text(
-                'Doctor’s Supervision Panel',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.teal.shade700, width: 4),
+                ),
+                child: Text(
+                  'Doctor’s Supervision Panel',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            _buildSectionTitle('Doctor'),
-            _buildDoctorInputField(doctorController, 'Doctor email (required)'),
-            SizedBox(height: 15),
-            _buildSectionTitle('Nurse(s)'),
-            _buildDynamicFields(nurseControllers, 'Nurse email (optional)', _addNurseField, _removeNurseField),
-            SizedBox(height: 15),
-            _buildSectionTitle('Patient(s)'),
-            _buildDynamicFields(patientControllers, 'Patient email (optional)', _addPatientField, _removePatientField),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _createSupervision,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 15),
+              SizedBox(height: 40),
+
+              _buildSectionTitle('Doctor'),
+              _buildDoctorInputField(doctorController, 'Doctor email (required)'),
+
+              SizedBox(height: 30),
+
+              _buildSectionTitle('Nurse(s)'),
+              _buildDynamicFields(nurseControllers, 'Nurse email (optional)', _addNurseField, _removeNurseField),
+
+              SizedBox(height: 30),
+
+              _buildSectionTitle('Patient(s)'),
+              _buildDynamicFields(patientControllers, 'Patient email (optional)', _addPatientField, _removePatientField),
+
+              SizedBox(height: 40),
+
+              ElevatedButton(
+                onPressed: _createSupervision,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: Text('Create Assignment', style: TextStyle(fontSize: 18)),
               ),
-              child: Text('Create Assignment', style: TextStyle(fontSize: 18)),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildSectionTitle(String title) {
     return Padding(
@@ -201,7 +211,6 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
       ),
     );
   }
-
 
   Widget _buildInputField(TextEditingController controller, String placeholder) {
     return Padding(
