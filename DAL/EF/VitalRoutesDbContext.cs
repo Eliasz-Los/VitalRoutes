@@ -31,11 +31,6 @@ public class VitalRoutesDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.UnderSupervisions)
-            .WithOne()
-            .HasForeignKey(u => u.SupervisorId); 
-        
         modelBuilder.Entity<Hospital>().ToTable("Hospitals").HasIndex(hosp => hosp.Id).IsUnique();
         modelBuilder.Entity<Notification>().ToTable("Notifications").HasIndex(not => not.Id).IsUnique();
         modelBuilder.Entity<Emergency>().ToTable("Emergencies").HasIndex(em => em.Id).IsUnique();
@@ -49,6 +44,11 @@ public class VitalRoutesDbContext : DbContext
             .HasOne(notification => notification.Emergency)
             .WithOne(emergency => emergency.Notification)
             .HasForeignKey("EmergencyId");*/
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UnderSupervisions)
+            .WithOne()
+            .HasForeignKey(u => u.SupervisorId); 
+
         modelBuilder.Entity<Emergency>()
             .HasOne(emergency => emergency.Notification)
             .WithOne(notification => notification.Emergency)

@@ -12,16 +12,17 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
   List<TextEditingController> nurseControllers = [TextEditingController()];
   List<TextEditingController> patientControllers = [TextEditingController()];
 
+
   Future<void> _createSupervision() async {
     try {
       final doctorEmail = doctorController.text.trim();
       if (doctorEmail.isEmpty) {
-        throw Exception('Vul minstens een dokter in.');
+        throw Exception('Please enter at least one doctor.');
       }
 
       final doctor = await UserService.getUserByEmail(doctorEmail);
-      if (doctor == null || doctor.function != FunctionType.Doctor) {
-        throw Exception('De eerste gebruiker moet een geldige dokter zijn.');
+      if (doctor.function != FunctionType.Doctor) {
+        throw Exception('The first user must be a valid doctor.');
       }
 
       bool hasValidEntries = false;
@@ -29,8 +30,8 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
         final email = controller.text.trim();
         if (email.isNotEmpty) {
           final nurse = await UserService.getUserByEmail(email);
-          if (nurse == null || nurse.function != FunctionType.Nurse) {
-            throw Exception('Verpleegster niet gevonden of ongeldig: $email');
+          if (nurse.function != FunctionType.Nurse) {
+            throw Exception('Nurse not found or invalid: $email');
           }
           await UserService.addUnderSupervision(doctor.id.toString(), nurse.id.toString());
           hasValidEntries = true;
@@ -41,8 +42,8 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
         final email = controller.text.trim();
         if (email.isNotEmpty) {
           final patient = await UserService.getUserByEmail(email);
-          if (patient == null || patient.function != FunctionType.Patient) {
-            throw Exception('Patiënt niet gevonden of ongeldig: $email');
+          if (patient.function != FunctionType.Patient) {
+            throw Exception('Patient not found or invalid: $email');
           }
           await UserService.addUnderSupervision(doctor.id.toString(), patient.id.toString());
           hasValidEntries = true;
@@ -50,15 +51,15 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
       }
 
       if (!hasValidEntries) {
-        throw Exception('Vul minstens één patiënt of verpleegster in.');
+        throw Exception('Please enter at least one patient or nurse.');
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Koppeling succesvol aangemaakt!')),
+        SnackBar(content: Text('Assignment successfully created!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fout bij koppeling: $e')),
+        SnackBar(content: Text('Error during assignment: $e')),
       );
     }
   }
@@ -66,30 +67,59 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Systeembeheer - Koppelingen'),
-        backgroundColor: Colors.blue,
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildInputField(doctorController, 'E-mail dokter (verplicht)'),
-            _buildDynamicFields(nurseControllers, 'E-mail verpleegster (optioneel)', _addNurseField, _removeNurseField),
-            _buildDynamicFields(patientControllers, 'E-mail patiënt (optioneel)', _addPatientField, _removePatientField),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.amber, width: 4),
+              ),
+              child: Text(
+                'Doctor’s Supervision Panel',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            _buildSectionTitle('Doctor'),
+            _buildDoctorInputField(doctorController, 'Doctor email (required)'),
+            SizedBox(height: 15),
+            _buildSectionTitle('Nurse(s)'),
+            _buildDynamicFields(nurseControllers, 'Nurse email (optional)', _addNurseField, _removeNurseField),
+            SizedBox(height: 15),
+            _buildSectionTitle('Patient(s)'),
+            _buildDynamicFields(patientControllers, 'Patient email (optional)', _addPatientField, _removePatientField),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _createSupervision,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightBlue, // Lichtblauwe knop
-                foregroundColor: Colors.white, // Witte tekst
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 15),
               ),
-              child: Text('Maak Koppeling', style: TextStyle(fontSize: 18)),
+              child: Text('Create Assignment', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 5),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -100,18 +130,24 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
         for (int i = 0; i < controllers.length; i++)
           Row(
             children: [
-              Expanded(child: _buildInputField(controllers[i], placeholder)),
+              Expanded(
+                child: _buildInputField(controllers[i], placeholder),
+              ),
+              SizedBox(width: 8),
+              IconButton(
+                icon: Icon(Icons.add_circle, color: Colors.blue),
+                onPressed: addField,
+              ),
               if (controllers.length > 1)
-                IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => removeField(i),
+                Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => removeField(i),
+                  ),
                 ),
             ],
           ),
-        IconButton(
-          icon: Icon(Icons.add_circle, color: Colors.blue),
-          onPressed: addField,
-        ),
       ],
     );
   }
@@ -145,6 +181,27 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
       });
     }
   }
+
+  Widget _buildDoctorInputField(TextEditingController controller, String placeholder) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: placeholder,
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          SizedBox(width: 57),
+        ],
+      ),
+    );
+  }
+
 
   Widget _buildInputField(TextEditingController controller, String placeholder) {
     return Padding(

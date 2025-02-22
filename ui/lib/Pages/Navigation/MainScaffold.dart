@@ -68,7 +68,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               Text(user.email ?? 'User', style: TextStyle(color: Colors.white, fontSize: 12)),
           ],
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.indigo,
         actions: [
           if (user != null) PopupMenuButton<String>(
             onSelected: (value) {

@@ -33,13 +33,6 @@ public class UserController : Controller
         var updatedUser = await _userManager.UpdateUser(userDto);
         return Ok(updatedUser);
     }
-    /*
-    [HttpPost("{supervisorId}/addUnderSupervision/{superviseeId}")]
-    public async Task<IActionResult> AddUnderSupervision(Guid supervisorId, Guid superviseeId)
-    {
-        await _userManager.AddUnderSupervision(supervisorId, superviseeId);
-        return Ok(new { message = "Supervision added successfully" });
-    }*/
     
     [HttpPost("{supervisorId}/addUnderSupervision/{superviseeId}")]
     public async Task<IActionResult> AddUnderSupervision(string supervisorId, string superviseeId)
