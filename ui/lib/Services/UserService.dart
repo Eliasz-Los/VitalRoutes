@@ -56,6 +56,20 @@ class UserService{
       throw Exception('Error adding supervision: $e');
     }
   }
+
+  static Future<User> getUserById(String id) async {
+    try {
+      final response = await _dio.get('http://10.0.2.2:5028/api/user/$id');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load user data');
+      }
+      if (response.data == null) {
+        throw Exception('User not found');
+      }
+      return User.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Error getting user by id $id: \n$e');
+    }
+  }
  
- //TODO hierin api calls
 }
