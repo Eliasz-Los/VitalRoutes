@@ -1,0 +1,39 @@
+﻿// See https://aka.ms/new-console-template for more information
+
+using System.Diagnostics;
+using System.Threading.Channels;
+using Domain;
+
+using PathfindingConsole;
+
+
+string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minusEDITED.png";
+var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, (834.0,1267.0),(1507.0,1148.0));
+if (walkablePoints == null || walkablePoints.Count == 0)
+{
+    Console.WriteLine("No walkable points found.");
+    return;
+}
+
+var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" ) 
+{
+    Points = walkablePoints
+};
+
+
+Console.WriteLine($"Start point: ({start.XWidth}, {start.YHeight})");
+Console.WriteLine($"End point: ({end.XWidth}, {end.YHeight})");
+Stopwatch stopwatch = new Stopwatch();
+stopwatch.Start();
+
+var path = AStarPathfinding.FindPath( start, end, walkablePoints);
+
+
+// Draw the path on the floorplan image
+FloorplanVisualizer.DrawFloorplanWithPath(floorplan, path, start, end, imagePath);
+stopwatch.Stop();
+TimeSpan ts = stopwatch.Elapsed;
+string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+    ts.Hours, ts.Minutes, ts.Seconds,
+    ts.Milliseconds / 10);
+Console.WriteLine("RunTime " + elapsedTime);

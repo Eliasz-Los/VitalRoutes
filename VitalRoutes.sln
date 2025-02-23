@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendApi", "BackendApi\BackendApi.csproj", "{710D0ABA-F20B-46E6-BD63-D76E63E35B79}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathfindingConsole", "PathfindingConsole\PathfindingConsole.csproj", "{417D508A-ADB4-41B6-BE53-FAD15B5757C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{710D0ABA-F20B-46E6-BD63-D76E63E35B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{710D0ABA-F20B-46E6-BD63-D76E63E35B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{710D0ABA-F20B-46E6-BD63-D76E63E35B79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{417D508A-ADB4-41B6-BE53-FAD15B5757C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{417D508A-ADB4-41B6-BE53-FAD15B5757C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{417D508A-ADB4-41B6-BE53-FAD15B5757C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{417D508A-ADB4-41B6-BE53-FAD15B5757C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
