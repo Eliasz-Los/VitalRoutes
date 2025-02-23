@@ -1,4 +1,6 @@
-﻿using Domain.Enums;
+﻿using System;
+using System.Collections.Generic;
+using Domain.Enums;
 
 namespace Domain;
 public class User

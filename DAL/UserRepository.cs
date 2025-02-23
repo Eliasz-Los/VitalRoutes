@@ -21,10 +21,10 @@ public class UserRepository
     }
     
     public async Task<User> ReadUserByEmail(string email)
-    { 
+    {
         var user = await _context.Users
             .Include(u => u.UnderSupervisions)
-            .FirstOrDefaultAsync(u => u.Email == email);
+            .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
 
         if (user == null)
         {
@@ -40,7 +40,6 @@ public class UserRepository
         await _context.SaveChangesAsync();
         return user;
     }
-    
     
     public async Task<User> ReadUserById(Guid id)
     {

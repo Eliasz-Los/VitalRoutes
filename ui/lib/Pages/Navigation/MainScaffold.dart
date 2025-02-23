@@ -1,8 +1,11 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../Admin/SystemAdminPage.dart';
+import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'custom_drawer.dart';
 import '../../Services/AuthService.dart';
@@ -18,13 +21,21 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-
-  static final List<Widget> _pages = [
-    HomePage(),
-    SignInScreen(),
-    UserProfileScreen(email: "example@email.com"),
-    SystemAdminPage(),
-  ];
+  User? user;  
+  late List<Widget> _pages;
+  
+  @override
+  void initState() {
+    super.initState();
+    user = Provider.of<UserProvider>(context, listen: false).user;
+    _pages = [
+      HomePage(),
+      SignInScreen(),
+      if (user != null) UserProfileScreen(firebaseUser: user!,),
+      SystemAdminPage(),
+      FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1),
+    ];
+  }
 
   void _onItemTapped(int index) {
     bool hasScaffold = index == 2;
@@ -43,6 +54,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   Future<void> _signOut(BuildContext context) async {
     try {
       await AuthService.signOut();
+      Provider.of<UserProvider>(context, listen: false).setUser(null);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen()),
@@ -56,8 +68,6 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -65,7 +75,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           children: [
             Text('VitalRoutes', style: TextStyle(color: Colors.white)),
             if (user != null)
-              Text(user.email ?? 'User', style: TextStyle(color: Colors.white, fontSize: 12)),
+              Text(user!.email ?? 'User', style: TextStyle(color: Colors.white, fontSize: 12)),
           ],
         ),
         backgroundColor: Colors.indigo,
@@ -76,7 +86,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => UserProfileScreen(email: user.email!),
+                    builder: (context) => UserProfileScreen(firebaseUser: user!,),
                   ),
                 );
               } else if (value == 'logout') {
@@ -96,7 +106,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           ),
         ],
       ),
-      drawer: CustomDrawer(onItemSelected: _onItemTapped),
+      drawer: CustomDrawer(onItemSelected: _onItemTapped, firebaseUser: user,),
       body: widget.body,
     );
   }

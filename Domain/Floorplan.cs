@@ -1,18 +1,26 @@
-﻿namespace Domain;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain;
 
 public class Floorplan
 {
     public Guid Id {get; set;}
     public string Name {get; set;}
+    
+    public int FloorNumber { get; set; }
+    
     public string Image {get; set;}
     public string Scale {get; set;}
+    
     public IEnumerable<Point> Nodes {get; set;}
     public Hospital Hospital {get; set;}
     
-    public Floorplan(string name, string image, string scale)
+    public Floorplan(string name, int floorNumber, string scale, string image)
     {
         Name = name;
-        Image = image;
+        FloorNumber = floorNumber;
         Scale = scale;
+        Image = image;
     }
 }
