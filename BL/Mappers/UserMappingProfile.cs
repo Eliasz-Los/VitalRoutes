@@ -8,7 +8,8 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
-        CreateMap<User, UserDto>();
+        CreateMap<User, UserDto>()
+            .ForMember(dest => dest.UnderSupervisions, opt => opt.MapFrom(src => src.UnderSupervisions.Select(u => u.Id).ToList()));
         CreateMap<UserDto, User>();
         
         CreateMap<RegisterUserDto, User>();

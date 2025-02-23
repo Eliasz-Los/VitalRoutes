@@ -45,7 +45,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
+            decoration: BoxDecoration(color: Colors.indigo),
             child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
           _buildDrawerItem(Icons.home, 'Home', context, 0, false),
