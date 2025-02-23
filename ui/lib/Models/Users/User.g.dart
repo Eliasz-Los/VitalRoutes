@@ -13,8 +13,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'] as String?,
       password: json['password'] as String?,
       telephoneNr: json['telephoneNr'] as String?,
-      function: _functionTypeFromJson((json['function'] as num?)?.toInt()),
-    );
+      function: _functionTypeFromJson(json['function'] as int?),
+      underSupervisions: _idsFromJson(json['underSupervisions'] as List<dynamic>?),
+);
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
@@ -22,6 +23,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'lastName': instance.lastName,
       'email': instance.email,
       'password': instance.password,
-      'telephoneNr': instance.telephoneNr,
       'function': _functionTypeToJson(instance.function),
-    };
+      'underSupervisions': _idsToJson(instance.underSupervisions),
+};

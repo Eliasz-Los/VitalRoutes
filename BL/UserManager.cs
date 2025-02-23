@@ -30,6 +30,12 @@ public class UserManager
         await _userRepository.CreateUser(newUser);
     }
     
+    public async Task<UserDto> GetUserById(Guid id)
+    {
+        var user = await _userRepository.ReadUserById(id);
+        return _mapper.Map<UserDto>(user);
+    }
+    
     public async Task<UserDto> GetUserByEmail(string email)
     {
         var user = await _userRepository.ReadUserByEmail(email);
