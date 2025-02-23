@@ -5,40 +5,88 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      
+    final double imageWidth = MediaQuery.of(context).size.width * 0.8;
+
+    return Scaffold(
       body: Container(
-        color: Colors.white,
-        child: Center(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white,
+              Colors.white,
+            ],
+          ),
+        ),
+        child: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Home',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
-              ),
-              SizedBox(height: 30),
-              Image.asset(
-                'assets/route.png',
-                width: MediaQuery.of(context).size.width * 0.75,
-                height: MediaQuery.of(context).size.width * 0.5,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+              Padding(
+                padding: const EdgeInsets.only(top: 60.0),
+                child: Text(
+                  'VitalRoutes',
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                    letterSpacing: 1.2,
+                    fontFamily: 'Arial',
                   ),
                 ),
-                onPressed: () {},
+              ),
+              // Creative tagline
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Text(
-                  'Navigate',
+                  'Connecting Care, Step by Step',
                   style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 26,
+                    fontSize: 20,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey.shade700,
+                    fontFamily: 'Times New Roman',
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/route.png',
+                        width: imageWidth,
+                        height: MediaQuery.of(context).size.width * 0.6,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(height: 40),
+                      SizedBox(
+                        width: imageWidth,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue.shade700,
+                            padding: EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 8,
+                            shadowColor: Colors.blue.shade200,
+                          ),
+                          onPressed: () {
+                          },
+                          child: Text(
+                            'Navigate',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                              letterSpacing: 0.5,
+                              fontFamily: 'Arial',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -48,5 +96,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
 }

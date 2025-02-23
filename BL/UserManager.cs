@@ -60,4 +60,14 @@ public class UserManager
             throw new Exception($"Firebase error: {e.Message}");
         }
     }
+    
+    public async Task AddUnderSupervision(Guid supervisorId, Guid superviseeId)
+    {
+        await _userRepository.AddUnderSupervision(supervisorId, superviseeId);
+    }
+
+    public async Task RemoveUnderSupervision(Guid supervisorId, Guid superviseeId)
+    {
+        await _userRepository.RemoveUnderSupervision(supervisorId, superviseeId);
+    }
 }

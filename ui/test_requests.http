@@ -1,0 +1,7 @@
+﻿### Test GET request om een gebruiker op te halen via e-mail
+GET http://10.0.2.2:5028/api/user/jesse.pinkman@hotmail.com
+Accept: application/json
+
+### Test GET request met localhost
+GET http://localhost:5028/api/user/jesse.pinkman@hotmail.com
+Accept: application/json

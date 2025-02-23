@@ -44,6 +44,11 @@ public class VitalRoutesDbContext : DbContext
             .HasOne(notification => notification.Emergency)
             .WithOne(emergency => emergency.Notification)
             .HasForeignKey("EmergencyId");*/
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.UnderSupervisions)
+            .WithOne()
+            .HasForeignKey(u => u.SupervisorId); 
+
         modelBuilder.Entity<Emergency>()
             .HasOne(emergency => emergency.Notification)
             .WithOne(notification => notification.Emergency)
