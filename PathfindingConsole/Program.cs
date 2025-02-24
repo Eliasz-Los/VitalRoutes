@@ -8,7 +8,9 @@ using PathfindingConsole;
 
 
 string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minusEDITED.png";
-var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, (834.0,1267.0),(1507.0,1148.0));
+//(1507.0,1148.0),room -100 (2096.0,1466.0), room -111 (3427.0,1031.0), room -110 (3116.0,370.0), room -109 (2978.0,840.0)
+// BL128: 3983.0 1058.0
+var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, (834.0,1267.0),(3116.0,370.0));
 if (walkablePoints == null || walkablePoints.Count == 0)
 {
     Console.WriteLine("No walkable points found.");

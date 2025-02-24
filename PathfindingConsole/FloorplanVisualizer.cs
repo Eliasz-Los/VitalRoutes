@@ -19,11 +19,11 @@ public class FloorplanVisualizer
         {
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                Pen pathPen = new Pen(Color.Blue, 2);
+                Pen pathPen = new Pen(Color.Blue, 6); //2 width
                 Brush pointBrush = new SolidBrush(Color.Purple);
-                // Brush walkableBrush = new SolidBrush(Color.Green);
+                 /*Brush walkableBrush = new SolidBrush(Color.Green);
 
-                /*// 1. Draw the walkable points
+                // 1. Draw the walkable points
                 foreach (var point in floorplan.Points)
                 {
                     g.FillRectangle(walkableBrush, (float)point.XWidth, (float)point.YHeight, 1, 1);

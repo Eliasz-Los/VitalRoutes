@@ -25,7 +25,7 @@ public class AStarPathfinding
         openSet.Enqueue(startNode, startNode.FCost);
         
         int iterationCount = 0;
-        const int maxIterations = 200000;
+        const int maxIterations = 7000000;//1 mil maar kan tot 6.988.086 gaan omdat da allemaal walkable points zijn
 
         Console.WriteLine("Start pathfinding...");
         while (openSet.Count > 0)
@@ -61,11 +61,11 @@ public class AStarPathfinding
                     openSet.Enqueue(neighbor, neighbor.FCost);
                 }
             }
-
-            if (closedSet.Count % 500 == 0)
+            //TODO depending on the amount of nodes, it slows the program from the begin ahllway to room -111, a save of a 1 second
+            /*if (closedSet.Count % 500 == 0)
             {
                 Console.WriteLine($"Processed {closedSet.Count} nodes. open list size: {openSet.Count}");
-            }
+            }*/
         }
 
         Console.WriteLine("No path found.");
