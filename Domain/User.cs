@@ -16,6 +16,7 @@ public class User
     public IEnumerable<Emergency> Emergencies { get; set; }
     public Hospital? Hospital { get; set; }
     public Guid? SupervisorId { get; set; }
+    public User() {}
 
     public User(Guid id, string firstName, string lastName, string email, string telephoneNr, Function function, UserLocation? location, Hospital? hospital)
     {
@@ -27,6 +28,7 @@ public class User
         Function = function;
         Location = location;
         Hospital = hospital;
+        UnderSupervisions = new List<User>();
     }
 
     public User(string firstName, string lastName, string email, string telephoneNr)
@@ -35,6 +37,7 @@ public class User
         LastName = lastName;
         Email = email;
         TelephoneNr = telephoneNr;
+        UnderSupervisions = new List<User>();
     }
 
     public User(string firstName, string lastName, string email, string telephoneNr, Function function)
@@ -44,6 +47,7 @@ public class User
         Email = email;
         TelephoneNr = telephoneNr;
         Function = function;
+        UnderSupervisions = new List<User>();
     }
 
     public User(string firstName, string lastName, string email, string telephoneNr, Function function, UserLocation location, Hospital hospital)
@@ -55,5 +59,6 @@ public class User
         Function = function;
         Location = location;
         Hospital = hospital;
+        UnderSupervisions = new List<User>();
     }
 }

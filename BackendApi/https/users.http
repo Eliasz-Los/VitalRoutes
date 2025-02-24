@@ -38,6 +38,10 @@ GET http://localhost:5028/api/User/walter.burgir@hotmail.com
 Content-Type: application/json
 
 ###
+GET http://localhost:5028/api/User/id/019527ff-c8a3-79e7-b7db-c76ade287fc2
+Content-Type: application/json
+
+###
 GET http://localhost:5028/api/User/gustavo.fring@hotmail.com
 Content-Type: application/json
 
