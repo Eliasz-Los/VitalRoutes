@@ -12,6 +12,9 @@ class User {
   final String? telephoneNr;
   @JsonKey(fromJson: _functionTypeFromJson, toJson: _functionTypeToJson)
   final FunctionType? function;
+  @JsonKey(fromJson: _idsFromJson, toJson: _idsToJson)
+  final List<String>? underSupervisions;
+
 
   User({
     required this.id,
@@ -21,6 +24,7 @@ class User {
     required this.password,
     required this.telephoneNr,
     required this.function,
+    required this.underSupervisions
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -35,3 +39,13 @@ FunctionType? _functionTypeFromJson(int? value) {
 int? _functionTypeToJson(FunctionType? function) {
   return function?.index;
 }
+
+List<String>? _idsFromJson(List<dynamic>? json) {
+if (json == null) return [];
+return json.map((e) => e as String).toList();
+}
+
+List<dynamic>? _idsToJson(List<String>? ids) {
+return ids;
+}
+
