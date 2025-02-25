@@ -1,13 +1,16 @@
 ﻿using System.Collections.Concurrent;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Point = Domain.Point;
 
-namespace PathfindingConsole;
+namespace Domain.AStarAlgorithm;
 
 public class FloorplanAnalyzer
 {
-    public static (Point start, Point end, HashSet<Point>) GetWalkablePoints(string imagePath, (double x, double y) startCoords, (double x, double y) endCoords)
+    /*
+     * Blijft synchronous zodat de analyze vna de image nog nie meer complex wordt voor het systeem.
+     * Het bevat al multithreading en concurrentie list.
+     */
+    public static (Point start, Point end, HashSet<Point>) GetWalkablePoints(string imagePath, Point startCoords, Point endCoords)
     {
         // ConcurrentBag is thread-safe
         var walkablePoints = new ConcurrentBag<Point>();
@@ -29,8 +32,8 @@ public class FloorplanAnalyzer
                             walkablePoints.Add(point);
                         }
 
-                        if (Math.Abs(x - startCoords.x) < 1e-10 && Math.Abs(y - startCoords.y) < 1e-10) startPoint = point;
-                        if (Math.Abs(x - endCoords.x) < 1e-10 && Math.Abs(y - endCoords.y) < 1e-10) endPoint = point;
+                        if (Math.Abs(x - startCoords.XWidth) < 1e-10 && Math.Abs(y - startCoords.YHeight) < 1e-10) startPoint = point;
+                        if (Math.Abs(x - endCoords.XWidth) < 1e-10 && Math.Abs(y - endCoords.YHeight) < 1e-10) endPoint = point;
                     }
                 }
                 if (x % 100 == 0)

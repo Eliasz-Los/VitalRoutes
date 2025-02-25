@@ -1,10 +1,12 @@
-﻿using Domain;
-using Point = Domain.Point;
-
-namespace PathfindingConsole;
+﻿namespace Domain.AStarAlgorithm;
 
 public class AStarPathfinding
 {
+    /* 
+     *  A* pathfinding algorithm blijft synchronous maar omdat het in aparte Task.Run() wordt uitgevoerd,
+     *  zal het geen bottlenecks veroorzaken.
+     *  Zo blijft de main thread vrij voor andere taken.
+     */
     public static List<Point> FindPath( Point start, Point end, HashSet<Point> walkablePoints)
     {
         if (!walkablePoints.Contains(start) || !walkablePoints.Contains(end))
@@ -61,11 +63,6 @@ public class AStarPathfinding
                     openSet.Enqueue(neighbor, neighbor.FCost);
                 }
             }
-            //TODO depending on the amount of nodes, it slows the program from the begin ahllway to room -111, a save of a 1 second
-            /*if (closedSet.Count % 500 == 0)
-            {
-                Console.WriteLine($"Processed {closedSet.Count} nodes. open list size: {openSet.Count}");
-            }*/
         }
 
         Console.WriteLine("No path found.");
@@ -101,7 +98,7 @@ public class AStarPathfinding
         var path = new List<Point>();
         var currentNode = endNode;
 
-        while (currentNode != null && currentNode != startNode)
+        while (currentNode != null && !currentNode.Equals(startNode)) //currentNode != startNode
         {
             path.Add(currentNode.Point);
             currentNode = currentNode.Parent;
