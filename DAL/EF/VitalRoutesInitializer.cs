@@ -20,7 +20,7 @@ public class VitalRoutesInitializer
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
-            new ("kelder", -1, "1/200", "floor_minus1.png"),
+            new ("kelder", -1, "1/200", "floor_minus1C.png"), //TODO: effe naar C gezet voor cleaneed
             new ("gelijkvloers", 0, "1/200","floor0.png"),
             new ("eerste verdiep", 1, "1/200","floor1.png"),
             new ("tweede verdiep", 2, "1/200","floor2.png"),

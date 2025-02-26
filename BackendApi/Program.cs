@@ -63,7 +63,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 //TODO voeg meerder mappers toe met , typeof(AndereMappingProfile)
-builder.Services.AddAutoMapper(typeof(UserMappingProfile));
+builder.Services.AddAutoMapper(typeof(UserMappingProfile), typeof(PointMappingProfile));
 
 var app = builder.Build();
 
