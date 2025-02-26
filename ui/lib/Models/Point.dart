@@ -10,4 +10,11 @@
       y: json['y'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'xWidth': x,
+      'yHeight': y,
+    };
+  }
 }

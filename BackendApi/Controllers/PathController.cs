@@ -21,7 +21,6 @@ public class PathController : ControllerBase
         _mapper = mapper;
     }
 
-    //TODO: DTO opmaken, benaming verbeteren met params, en testen 
     [HttpGet("route")]
     public async Task<IActionResult> GetPath(PathRequestDto pathRequestDto)
     {
