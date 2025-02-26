@@ -13,26 +13,13 @@ public class RoomRepository
         _context = context;
     }
 
-    public IEnumerable<Room> GetRooms()
+    public IEnumerable<Room> ReadRoomsWithPointAndAssignedPatientByHospitalAndFloorNumber(string hospital, int floorNumber)
     {
-        return _context.Rooms.Include(r => r.AssignedPatient).Include(r => r.Point).ToList();
-    }
-
-    public IEnumerable<Room> GetRoomsUnderSupervision(Guid doctorId)
-    {
-        var doctor = _context.Users
-            .Include(u => u.UnderSupervisions)
-            .FirstOrDefault(u => u.Id == doctorId);
-
-        if (doctor == null)
-        {
-            return [];
-        }
-
-        var supervisedPatientIds = doctor.UnderSupervisions.Select(p => p.Id).ToList();
-
         return _context.Rooms
-            .Where(room => room.AssignedPatient != null && supervisedPatientIds.Contains(room.AssignedPatient.Id))
+            .Include(r => r.AssignedPatient)
+            .Include(r => r.Point)
+            .Where(r => r.Point.Floorplan.Hospital.Name.Equals(hospital))
+            .Where(r => r.Point.Floorplan.FloorNumber == floorNumber)
             .ToList();
     }
 }

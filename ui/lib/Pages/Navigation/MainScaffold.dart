@@ -33,7 +33,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       SignInScreen(),
       if (user != null) UserProfileScreen(firebaseUser: user!,),
       SystemAdminPage(),
-      FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1),
+      FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,),
     ];
   }
 

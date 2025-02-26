@@ -12,9 +12,9 @@ public class RoomManager
         _roomRepository = roomRepository;
     }
 
-    public IEnumerable<RoomDto> GetRooms()
+    public IEnumerable<RoomDto> GetRoomsWithPointAndAssignedPatientByHospitalAndFloorNumber(string hospital, int floorNumber)
     {
-        var rooms = _roomRepository.GetRooms();
+        var rooms = _roomRepository.ReadRoomsWithPointAndAssignedPatientByHospitalAndFloorNumber(hospital,floorNumber);
 
         var result = new List<RoomDto>();
 

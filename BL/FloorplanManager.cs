@@ -101,7 +101,9 @@ namespace BL
                 Hospital = new HospitalDto
                 {
                     Id = floorPlan.Hospital?.Id ?? Guid.Empty,
-                    Name = floorPlan.Hospital?.Name ?? string.Empty
+                    Name = floorPlan.Hospital?.Name ?? string.Empty,
+                    MaxFloorNumber = floorPlan.Hospital?.GetMaxFloor() ?? 0,
+                    MinFloorNumber = floorPlan.Hospital?.GetMinFloor() ?? 0,
                 },
                 ImageData = imageData
             };

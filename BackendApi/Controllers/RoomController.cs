@@ -14,10 +14,10 @@ public class RoomController : Controller
         _roomManager = roomManager;
     }
 
-    [HttpGet("getRooms")]
-    public IActionResult GetRooms()
+    [HttpGet("getRooms/{hospital}/{floorNumber}")]
+    public IActionResult GetRooms(string hospital, int floorNumber)
     {
-        var rooms = _roomManager.GetRooms();
+        var rooms = _roomManager.GetRoomsWithPointAndAssignedPatientByHospitalAndFloorNumber(hospital,floorNumber);
         return Ok(rooms);
     }
 }

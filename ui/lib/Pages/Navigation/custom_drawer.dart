@@ -153,7 +153,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       case 4:
         return OverviewPage();
       case 5:
-        return FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1);
+        return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,);
       default:
         return HomePage();
     }

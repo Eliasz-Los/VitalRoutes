@@ -14,4 +14,14 @@ public class Hospital
     {
         Name = name;
     }
+
+    public int GetMinFloor()
+    {
+        return Floorplans.Min(fp => fp.FloorNumber);
+    }
+
+    public int GetMaxFloor()
+    {
+        return Floorplans.Max(fp => fp.FloorNumber);
+    }
 }
