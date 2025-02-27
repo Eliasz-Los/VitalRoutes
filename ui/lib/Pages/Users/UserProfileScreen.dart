@@ -12,7 +12,6 @@ import '../Navigation/MainScaffold.dart';
 import '../home_page.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  //final String email;
   final User firebaseUser;
 
   const UserProfileScreen({super.key, required this.firebaseUser});
@@ -37,11 +36,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     super.initState();
     _userData = UserService.getUserByEmail(widget.firebaseUser.email.toString());
     _userData.then((user) {
-      _firstNameController.text = user.firstName!;
-      _lastNameController.text = user.lastName!;
-      _emailController.text = user.email!;
-      _telephoneNrController.text = user.telephoneNr!;
-      _functionController.text = user.function?.name as String;
+      setState(() {
+        _firstNameController.text = user.firstName ?? '';
+        _lastNameController.text = user.lastName ?? '';
+        _emailController.text = user.email ?? '';
+        _telephoneNrController.text = user.telephoneNr ?? '';
+        _functionController.text = user.function?.name ?? 'Unknown';
+      });
     });
   }
 
@@ -50,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       final user = await _userData;
       final updateUser = UpdateUser(
         id: user.id!,
-        Uid: widget.firebaseUser.uid, //firebase instance given trough provider
+        Uid: widget.firebaseUser.uid,
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         email: _emailController.text,
@@ -58,21 +59,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         password: _passwordController.text,
       );
       await UserService.updateUser(updateUser);
-      await AuthService.signInWithEmailAndPassword(UserCredentials(email: _emailController.text, password: _passwordController.text));
+      await AuthService.signInWithEmailAndPassword(
+        UserCredentials(email: _emailController.text, password: _passwordController.text),
+      );
       firebase_auth.User? reAuthenticatedUser = FirebaseAuth.instance.currentUser;
       Provider.of<UserProvider>(context, listen: false).setUser(reAuthenticatedUser);
-      
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Changes accepted'),
-        backgroundColor: Colors.green,
-      ));
-      
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Changes accepted'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
       setState(() {
         _userData = UserService.getUserByEmail(_emailController.text);
       });
 
       Future.delayed(Duration(seconds: 2), () {
-        Navigator.pushAndRemoveUntil(context,
+        Navigator.pushAndRemoveUntil(
+          context,
           MaterialPageRoute(builder: (context) => MainScaffold(body: HomePage())),
               (Route<dynamic> route) => false,
         );
@@ -94,51 +100,79 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             return Center(child: Text('No user data found'));
           } else {
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    Image.asset(
+                      'assets/logo.png',
+                      height: 27,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'My Profile',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 80),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'My Profile',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 40),
                     TextFormField(
                       controller: _firstNameController,
-                      decoration: InputDecoration(labelText: 'First Name'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your first name';
-                        }
-                        return null;
-                      },
+                      decoration: InputDecoration(
+                        labelText: 'First Name',
+                        labelStyle: TextStyle(color: Colors.blue[900]),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your first name' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _lastNameController,
-                      decoration: InputDecoration(labelText: 'Last Name'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your last name';
-                        }
-                        return null;
-                      },
+                      decoration: InputDecoration(
+                        labelText: 'Last Name',
+                        labelStyle: TextStyle(color: Colors.blue[900]),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your last name' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(labelText: 'Email'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: TextStyle(color: Colors.blue[900]),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your email' : null,
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: InputDecoration(labelText: 'Password'),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: TextStyle(color: Colors.blue[900]),
+                        border: OutlineInputBorder(),
+                      ),
                       obscureText: !_showPassword,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your password' : null,
                     ),
                     Row(
                       children: [
@@ -153,9 +187,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         Text('Show password'),
                       ],
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _telephoneNrController,
-                      decoration: InputDecoration(labelText: 'Telephone Number'),
+                      decoration: InputDecoration(
+                        labelText: 'Telephone Number',
+                        labelStyle: TextStyle(color: Colors.blue[900]),
+                        border: OutlineInputBorder(),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your telephone number';
@@ -167,16 +206,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         return null;
                       },
                     ),
+                    SizedBox(height: 10),
                     TextFormField(
                       controller: _functionController,
-                      decoration: InputDecoration(labelText: 'Function'),
+                      decoration: InputDecoration(
+                        labelText: 'Function',
+                        labelStyle: TextStyle(color: Colors.blue[900]),
+                        border: OutlineInputBorder(),
+                      ),
                       enabled: false,
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _updateUser,
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
-                      child: Text('Update', style: TextStyle(color: Colors.white))
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlue,
+                        minimumSize: Size(double.infinity, 50),
+                      ),
+                      child: Text('Update', style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),

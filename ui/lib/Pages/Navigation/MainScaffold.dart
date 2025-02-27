@@ -73,7 +73,12 @@ class _MainScaffoldState extends State<MainScaffold> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('VitalRoutes', style: TextStyle(color: Colors.white)),
+            Text('VitalRoutes', style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              color: Colors.white,
+            ),),
             if (user != null)
               Text(user!.email ?? 'User', style: TextStyle(color: Colors.white, fontSize: 12)),
           ],

@@ -23,33 +23,21 @@ class _OverviewPageState extends State<OverviewPage> {
 
   Future<void> _fetchSupervisions() async {
     try {
-      print('Fetching current user...');
       final firebase_auth.User? user = firebase_auth.FirebaseAuth.instance.currentUser;
       if (user != null) {
-        print('Current user email: ${user.email}');
         final domain.User doctor = await UserService.getUserByEmail(user.email!);
-        print('Doctor fetched: ${doctor.email}');
-        print('Doctor underSupervisions: ${doctor.underSupervisions}');
-
         if (doctor.underSupervisions != null && doctor.underSupervisions!.isNotEmpty) {
           for (String id in doctor.underSupervisions!) {
-            print('Fetching supervisee with ID: $id');
             final domain.User supervisee = await UserService.getUserById(id);
-            print('Supervisee fetched: ${supervisee.email}');
             if (supervisee.function == FunctionType.Nurse) {
               nurses.add(supervisee);
-              print('Added to nurses: ${supervisee.email}');
             } else if (supervisee.function == FunctionType.Patient) {
               patients.add(supervisee);
-              print('Added to patients: ${supervisee.email}');
             }
           }
-        } else {
-          print('No supervisees found.');
         }
       }
     } catch (e) {
-      print('Error fetching supervisions: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching supervisions: $e')),
       );
@@ -57,6 +45,27 @@ class _OverviewPageState extends State<OverviewPage> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> _deleteUser(domain.User user) async {
+    try {
+      final firebase_auth.User? currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        final domain.User doctor = await UserService.getUserByEmail(currentUser.email!);
+        await UserService.removeUnderSupervision(doctor.id!, user.id!);
+        setState(() {
+          nurses.remove(user);
+          patients.remove(user);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User deleted successfully')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting user: $e')),
+      );
     }
   }
 
@@ -110,16 +119,24 @@ class _OverviewPageState extends State<OverviewPage> {
             '${user.firstName} ${user.lastName}',
             style: TextStyle(fontSize: 18),
           ),
-          Icon(
-            FontAwesomeIcons.mapMarkerAlt,
-            color: Colors.blue,
-            size: 18,
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.black),
+                onPressed: () => _deleteUser(user),
+              ),
+              SizedBox(width: 10),
+              Icon(
+                FontAwesomeIcons.mapMarkerAlt,
+                color: Colors.blue,
+                size: 18,
+              ),
+            ],
           ),
         ],
       ),
     );
   }
-
 
   Widget _buildSectionTitle(String title) {
     return Text(
