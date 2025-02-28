@@ -1,6 +1,7 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ui/Pages/Floorplan/FloorWithRoutingScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../Admin/SystemAdminPage.dart';
 import '../../Pages/Users/SignInScreen.dart';
@@ -53,6 +54,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
           _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 4, false),
+          _buildDrawerItem(Icons.route, 'Floorplan with Routing', context, 5, false), //TODO: extra floor for testing
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
@@ -118,6 +120,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return SystemAdminPage();
       case 4:
         return FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1);
+      case 5:
+        return FloorWithRoutingScreen(hospitalName: "UZ Groenplaats", floorNumber: -1, floorName: "floor_minus1C"); //TODO: extra floor for testing
       default:
         return HomePage();
     }

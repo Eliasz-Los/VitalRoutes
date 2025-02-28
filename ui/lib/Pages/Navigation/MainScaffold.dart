@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:ui/Pages/Floorplan/FloorWithRoutingScreen.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
@@ -34,6 +35,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       if (user != null) UserProfileScreen(firebaseUser: user!,),
       SystemAdminPage(),
       FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1),
+      FloorWithRoutingScreen(hospitalName: "UZ Groenplaats", floorNumber: -1, floorName: "floor_minus1C"), //TODO: extra voor test
     ];
   }
 

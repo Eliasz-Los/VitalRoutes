@@ -22,6 +22,7 @@ class PathService {
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data;
+      print("PATH POINTS:  $data");
       return data.map((point) => Point.fromJson(point)).toList();
     } else {
       throw Exception('Failed to load path');

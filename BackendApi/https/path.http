@@ -1,5 +1,5 @@
 ### GETTER FOR ROUTE ON -1 celler, een lijst van punten word teruggegeven omdat we tekenen in fronted
-GET http://localhost:5028/api/Path/route
+GET http://localhost:5028/api/path/route
 Content-Type: application/json
 
 {
@@ -12,5 +12,5 @@ Content-Type: application/json
     "YWidth": 1466.0
   },
   "HospitalName": "UZ Groenplaats",
-  "FloorName": "floor_minus1C"
+  "FloorName": "floor_minus1C.png"
 }

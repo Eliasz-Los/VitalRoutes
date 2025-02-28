@@ -25,7 +25,7 @@ public class PathController : ControllerBase
     public async Task<IActionResult> GetPath(PathRequestDto pathRequestDto)
     {
         var hospital = pathRequestDto.HospitalName.Replace(" ", "_");
-        var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Floorplans", hospital, pathRequestDto.FloorName);
+        var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Floorplans", hospital, pathRequestDto.FloorName );
         
         var start = _mapper.Map<Point>(pathRequestDto.Start);
         var end = _mapper.Map<Point>(pathRequestDto.End);
