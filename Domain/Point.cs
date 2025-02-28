@@ -14,4 +14,11 @@ public class Point
         XWidth = xWidth;
         YHeight = yHeight;
     }
+
+    public Point(double xWidth, double yHeight, Floorplan floorplan)
+    {
+        XWidth = xWidth;
+        YHeight = yHeight;
+        Floorplan = floorplan;
+    }
 }

@@ -61,4 +61,11 @@ public class UserController : Controller
         await _userManager.RemoveUnderSupervision(supervisorId, superviseeId);
         return Ok(new { message = "Supervision removed successfully" });
     }
+    
+    [HttpGet("getUsers/{function}")]
+    public async Task<IActionResult> GetUsersByFunction(string function)
+    {
+        var users = await _userManager.GetUsersByFunction(function);
+        return Ok(users);
+    }
 }
