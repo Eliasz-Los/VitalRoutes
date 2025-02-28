@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../Services/HospitalService.dart';
 import '../../Services/UserService.dart';
 import 'FloorplanImage.dart';
 import 'RoomLocations.dart';
@@ -17,10 +18,16 @@ class FloorplanPage extends StatefulWidget {
 
 class FloorplanPageState extends State<FloorplanPage> {
   late int _currentFloorNumber;
+  late int _maxFloorNumber;
+  late int _minFloorNumber;
 
   @override
   void initState() {
     super.initState();
+    HospitalService.getHospital(widget.hospitalName).then((hospital) {
+      _maxFloorNumber = hospital.maxFloorNumber;
+      _minFloorNumber = hospital.minFloorNumber;
+    });
     _currentFloorNumber = widget.initialFloorNumber;
   }
 
@@ -33,15 +40,19 @@ class FloorplanPageState extends State<FloorplanPage> {
   }
 
   void _incrementFloor() {
-    setState(() {
-      _currentFloorNumber++;
-    });
+    if(_currentFloorNumber < _maxFloorNumber) {
+      setState(() {
+        _currentFloorNumber++;
+      });
+    }
   }
 
   void _decrementFloor() {
-    setState(() {
-      _currentFloorNumber--;
-    });
+    if(_currentFloorNumber > _minFloorNumber) {
+      setState(() {
+        _currentFloorNumber--;
+      });
+    }
   }
 
   @override
