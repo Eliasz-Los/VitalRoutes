@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices.JavaScript;
+using AutoMapper;
 using BL.Dto_s;
 using DAL;
 using Domain;
+using Domain.Enums;
 using FirebaseAdmin.Auth;
 
 namespace BL;
@@ -28,6 +30,12 @@ public class UserManager
             user.TelephoneNr, 
             user.Function);
         await _userRepository.CreateUser(newUser);
+    }
+    
+    public async Task<UserDto> GetUserById(Guid id)
+    {
+        var user = await _userRepository.ReadUserById(id);
+        return _mapper.Map<UserDto>(user);
     }
     
     public async Task<UserDto> GetUserByEmail(string email)
@@ -69,5 +77,15 @@ public class UserManager
     public async Task RemoveUnderSupervision(Guid supervisorId, Guid superviseeId)
     {
         await _userRepository.RemoveUnderSupervision(supervisorId, superviseeId);
+    }
+    
+    public async Task<List<UserDto>> GetUsersByFunction(string function)
+    {
+        if (Enum.TryParse<Function>(function, out var parsedFunction))
+        {
+            var users = await _userRepository.ReadUsersByFunction(parsedFunction);
+            return _mapper.Map<List<UserDto>>(users);
+        }
+        throw new ArgumentException($"Functie bestaat niet: {function}");
     }
 }

@@ -4,21 +4,6 @@ import 'package:ui/Models/Users/User.dart';
 
 class UserService{
   static final Dio _dio = Dio();
-  
-  static Future<User> getUserByEmail(String email) async{
-    try{
-      final response = await _dio.get('http://10.0.2.2:5028/api/user/$email');
-      if(response.statusCode != 200){
-        throw Exception('Failed to load user data');
-      }
-      if(response.data == null){
-        throw Exception('User not found');
-      }
-      return User.fromJson(response.data);
-    }catch(e){
-      throw Exception('Error getting user by email $email: \n$e');
-    }
-  }
 
  static Future<void> updateUser(UpdateUser updateUser) async{
     try{
@@ -57,9 +42,24 @@ class UserService{
     }
   }
 
+  static Future<User> getUserByEmail(String email) async {
+    try {
+      final response = await _dio.get('http://10.0.2.2:5028/api/user/$email');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load user data');
+      }
+      if (response.data == null) {
+        throw Exception('User not found');
+      }
+      return User.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Error getting user by email $email: \n$e');
+    }
+  }
+
   static Future<User> getUserById(String id) async {
     try {
-      final response = await _dio.get('http://10.0.2.2:5028/api/user/$id');
+      final response = await _dio.get('http://10.0.2.2:5028/api/user/id/$id');
       if (response.statusCode != 200) {
         throw Exception('Failed to load user data');
       }
@@ -71,5 +71,21 @@ class UserService{
       throw Exception('Error getting user by id $id: \n$e');
     }
   }
- 
+  
+  static Future<List<User>> getUsersByFunction(String function) async {
+    try {
+      final response = await _dio.get('http://10.0.2.2:5028/api/user/getUsers/$function');
+      if (response.statusCode != 200) {
+        throw Exception('Failed to load user data');
+      }
+      if (response.data == null) {
+        throw Exception('Users not found');
+      }
+      List<dynamic> body = response.data;
+      return body.map((dynamic item) => User.fromJson(item)).toList();
+    } catch (e) {
+      throw Exception('Error getting users by function $function: \n$e');
+    }
+  }
+
 }

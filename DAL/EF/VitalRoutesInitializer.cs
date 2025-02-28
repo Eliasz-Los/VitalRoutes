@@ -17,9 +17,12 @@ public class VitalRoutesInitializer
     private static void Seed(VitalRoutesDbContext context)
     {
         Hospital hospital1 = new Hospital("UZ Groenplaats");
+        
+        Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1.png");
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
+            floorplanGPMinus1,
             new ("kelder", -1, "1/200", "floor_minus1C.png"), //TODO: effe naar C gezet voor cleaneed
             new ("gelijkvloers", 0, "1/200","floor0.png"),
             new ("eerste verdiep", 1, "1/200","floor1.png"),

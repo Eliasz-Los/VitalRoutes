@@ -15,7 +15,17 @@ public class UserController : Controller
         _userManager = userManager;
     }
 
- 
+    [HttpGet("id/{id}")]
+    public async Task<IActionResult> GetUserById(Guid id)
+    {
+        var user = await _userManager.GetUserById(id);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+        return Ok(user);
+    }
+
     [HttpGet("{email}")]
     public async Task<IActionResult> GetUserByEmail(string email)
     {
@@ -26,14 +36,14 @@ public class UserController : Controller
         }
         return Ok(user);
     }
-    
+
     [HttpPut("update")]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto userDto)
     {
         var updatedUser = await _userManager.UpdateUser(userDto);
         return Ok(updatedUser);
     }
-    
+
     [HttpPost("{supervisorId}/addUnderSupervision/{superviseeId}")]
     public async Task<IActionResult> AddUnderSupervision(string supervisorId, string superviseeId)
     {
@@ -50,5 +60,12 @@ public class UserController : Controller
     {
         await _userManager.RemoveUnderSupervision(supervisorId, superviseeId);
         return Ok(new { message = "Supervision removed successfully" });
+    }
+    
+    [HttpGet("getUsers/{function}")]
+    public async Task<IActionResult> GetUsersByFunction(string function)
+    {
+        var users = await _userManager.GetUsersByFunction(function);
+        return Ok(users);
     }
 }

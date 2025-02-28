@@ -58,11 +58,16 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserManager>();
 builder.Services.AddScoped<FloorplanRepository>();
 builder.Services.AddScoped<FloorplanManager>();
+builder.Services.AddScoped<RoomRepository>();
+builder.Services.AddScoped<RoomManager>();
+builder.Services.AddScoped<HospitalRepository>();
+builder.Services.AddScoped<HospitalManager>();
 builder.Services.AddScoped<PathManager>();
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 //TODO voeg meerder mappers toe met , typeof(AndereMappingProfile)
+builder.Services.AddAutoMapper(typeof(HospitalMappingProfile));
 builder.Services.AddAutoMapper(typeof(UserMappingProfile), typeof(PointMappingProfile));
 
 var app = builder.Build();

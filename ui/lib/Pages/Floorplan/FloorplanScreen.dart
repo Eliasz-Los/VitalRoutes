@@ -1,59 +1,104 @@
 ﻿import 'package:flutter/material.dart';
-import 'dart:convert';
-import '../../models/floorplan.dart';
-import '../../services/floorplanservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../Services/HospitalService.dart';
+import '../../Services/UserService.dart';
+import 'FloorplanImage.dart';
+import 'RoomLocations.dart';
+import '../../Models/Users/User.dart' as custom_user;
 
 class FloorplanPage extends StatefulWidget {
   final String hospitalName;
-  final int floorNumber;
+  final int initialFloorNumber;
 
-  const FloorplanPage({super.key, required this.hospitalName, required this.floorNumber});
+  const FloorplanPage({super.key, required this.hospitalName, required this.initialFloorNumber});
 
   @override
   FloorplanPageState createState() => FloorplanPageState();
 }
 
 class FloorplanPageState extends State<FloorplanPage> {
-  late Future<Floorplan> futureFloorplan;
-  final FloorplanService floorplanService = FloorplanService();
+  late int _currentFloorNumber;
+  late int _maxFloorNumber;
+  late int _minFloorNumber;
 
   @override
   void initState() {
     super.initState();
-    futureFloorplan = floorplanService.getFloorplan(widget.hospitalName, widget.floorNumber);
+    HospitalService.getHospital(widget.hospitalName).then((hospital) {
+      _maxFloorNumber = hospital.maxFloorNumber;
+      _minFloorNumber = hospital.minFloorNumber;
+    });
+    _currentFloorNumber = widget.initialFloorNumber;
+  }
+
+  Future<custom_user.User?> _getCurrentUser() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    if (firebaseUser != null) {
+      return await UserService.getUserByEmail(firebaseUser.email!);
+    }
+    return null;
+  }
+
+  void _incrementFloor() {
+    if(_currentFloorNumber < _maxFloorNumber) {
+      setState(() {
+        _currentFloorNumber++;
+      });
+    }
+  }
+
+  void _decrementFloor() {
+    if(_currentFloorNumber > _minFloorNumber) {
+      setState(() {
+        _currentFloorNumber--;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Grondplan van ${widget.hospitalName} - Verdieping ${widget.floorNumber}'),
+        title: Text('Floorplan of ${widget.hospitalName} - Floor $_currentFloorNumber'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_upward),
+            onPressed: _incrementFloor,
+          ),
+          IconButton(
+            icon: Icon(Icons.arrow_downward),
+            onPressed: _decrementFloor,
+          ),
+        ],
       ),
-      body: FutureBuilder<Floorplan>(
-        future: futureFloorplan,
+      body: FutureBuilder<custom_user.User?>(
+        future: _getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return Center(child: Text('No floorplan found'));
           } else {
-            final floorplan = snapshot.data!;
-            final decodedImageData = base64Decode(floorplan.imageData);
+            final user = snapshot.data;
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(floorplan.name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Text('Verdieping: ${floorplan.floorNumber}'),
-                  Text('Schaal: ${floorplan.scale}'),
-                  InteractiveViewer(
-                    boundaryMargin: EdgeInsets.all(20),
-                    minScale: 0.1,
-                    maxScale: 4,
-                    child: Image.memory(
-                      decodedImageData,
-                      fit: BoxFit.contain,
+                  GestureDetector(
+                    onTapDown: (TapDownDetails details) {
+                      final RenderBox box = context.findRenderObject() as RenderBox;
+                      final Offset localOffset = box.globalToLocal(details.globalPosition);
+                      print('Coordinates: (${localOffset.dx}, ${localOffset.dy})');
+                    },
+                    child: InteractiveViewer(
+                      boundaryMargin: EdgeInsets.all(20),
+                      minScale: 0.1,
+                      maxScale: 4,
+                      child: Stack(
+                        children: [
+                          FloorplanImage(hospitalName: widget.hospitalName, floorNumber: _currentFloorNumber),
+                          RoomLocations(user: user, floorNumber: _currentFloorNumber),
+                        ],
+                      ),
                     ),
                   ),
                 ],

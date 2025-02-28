@@ -1,0 +1,2 @@
+﻿### Get all rooms
+GET http://localhost:5028/api/Room/getRooms

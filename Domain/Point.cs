@@ -15,6 +15,13 @@ public class Point
         YHeight = yHeight;
     }
 
+    public Point(double xWidth, double yHeight, Floorplan floorplan)
+    {
+        XWidth = xWidth;
+        YHeight = yHeight;
+        Floorplan = floorplan;
+    }
+
     public bool Equals(Point? other)
     {
         if (other is null) return false;
