@@ -6,10 +6,12 @@ namespace BL;
 public class RoomManager
 {
     private readonly RoomRepository _roomRepository;
+    private readonly UserRepository _userRepository;
 
-    public RoomManager(RoomRepository roomRepository)
+    public RoomManager(RoomRepository roomRepository, UserRepository userRepository)
     {
         _roomRepository = roomRepository;
+        _userRepository = userRepository;
     }
 
     public IEnumerable<RoomDto> GetRoomsWithPointAndAssignedPatientByHospitalAndFloorNumber(string hospital, int floorNumber)
@@ -44,5 +46,22 @@ public class RoomManager
         }
 
         return result;
+    }
+
+    public async Task ChangeAssignedPatientInRoom(Guid roomId, Guid? patientId)
+    {
+        var room =  await _roomRepository.ReadRoomWithAssignedPatient(roomId);
+
+        if (patientId.HasValue)
+        {
+            var patient = await _userRepository.ReadUserById(patientId.Value);
+            room.AssignedPatient = patient;
+        }
+        else
+        {
+            room.AssignedPatient = null;
+        }
+
+        await _roomRepository.UpdateRoom(room);
     }
 }

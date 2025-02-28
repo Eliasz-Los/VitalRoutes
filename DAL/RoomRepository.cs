@@ -22,4 +22,24 @@ public class RoomRepository
             .Where(r => r.Point.Floorplan.FloorNumber == floorNumber)
             .ToList();
     }
+
+    public async Task UpdateRoom(Room room)
+    {
+        _context.Rooms.Update(room);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Room> ReadRoomWithAssignedPatient(Guid id)
+    {
+        var room = await _context.Rooms
+            .Include(r => r.AssignedPatient)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (room == null)
+        {
+            throw new Exception($"Geen kamer gevonden met ID: {id}");
+        }
+
+        return room;
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using DAL.EF;
 using Domain;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL;
@@ -93,5 +94,11 @@ public class UserRepository
             ((List<User>)supervisor.UnderSupervisions).Remove(supervisee);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<List<User>> ReadUsersByFunction(Function function)
+    {
+        var users = await _context.Users.Where(u => u.Function == function).ToListAsync();
+        return users;
     }
 }

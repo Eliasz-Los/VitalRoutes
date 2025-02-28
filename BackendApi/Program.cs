@@ -60,11 +60,14 @@ builder.Services.AddScoped<FloorplanRepository>();
 builder.Services.AddScoped<FloorplanManager>();
 builder.Services.AddScoped<RoomRepository>();
 builder.Services.AddScoped<RoomManager>();
+builder.Services.AddScoped<HospitalRepository>();
+builder.Services.AddScoped<HospitalManager>();
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 //TODO voeg meerder mappers toe met , typeof(AndereMappingProfile)
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
+builder.Services.AddAutoMapper(typeof(HospitalMappingProfile));
 
 var app = builder.Build();
 

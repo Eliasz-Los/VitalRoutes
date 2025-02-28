@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
+import '../Admin/RoomAssignmentsPage.dart';
 import '../Admin/SystemAdminPage.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
@@ -34,6 +35,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       if (user != null) UserProfileScreen(firebaseUser: user!,),
       SystemAdminPage(),
       FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,),
+      if (user != null) RoomAssignmentsPage() //voorlopig nog geen admin function check
     ];
   }
 

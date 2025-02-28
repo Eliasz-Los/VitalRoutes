@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
+import '../Admin/RoomAssignmentsPage.dart';
 import '../Admin/SystemAdminPage.dart';
 import '../Admin/OverviewPage.dart';
 import '../../Models/Enums/FunctionType.dart';
@@ -77,6 +78,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.list, 'Overview', context, 4, false),
           _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
+          _buildDrawerItem(Icons.assignment, 'Room Assignment',context,6,false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
@@ -154,6 +156,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return OverviewPage();
       case 5:
         return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,);
+      case 6:
+        return RoomAssignmentsPage();
       default:
         return HomePage();
     }
