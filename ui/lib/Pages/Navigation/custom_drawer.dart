@@ -1,10 +1,9 @@
-﻿// lib/Pages/Navigation/custom_drawer.dart
-
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
+import '../Admin/RoomAssignmentsPage.dart';
 import '../Admin/NurseOverviewPage.dart';
 import '../Admin/NursePanel.dart';
 import '../Admin/SystemAdminPage.dart';
@@ -83,6 +82,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Nurse Overview', context, 7, false),
           if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse Panel', context, 8, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
+          _buildDrawerItem(Icons.assignment, 'Room Assignment',context,6,false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
@@ -178,7 +178,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
       case 4:
         return OverviewPage();
       case 5:
-        return FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1);
+        return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,);
+      case 6:
+        return RoomAssignmentsPage();
       case 7:
         return NurseOverviewPage();
       case 8:
