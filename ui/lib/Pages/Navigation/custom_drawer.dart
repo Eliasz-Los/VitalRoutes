@@ -1,8 +1,12 @@
-﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+﻿// lib/Pages/Navigation/custom_drawer.dart
+
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
+import '../Admin/NurseOverviewPage.dart';
+import '../Admin/NursePanel.dart';
 import '../Admin/SystemAdminPage.dart';
 import '../Admin/OverviewPage.dart';
 import '../../Models/Enums/FunctionType.dart';
@@ -75,7 +79,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
           if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
           if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.list, 'Overview', context, 4, false),
-          _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Nurse Overview', context, 7, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse Panel', context, 8, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
           Divider(),
           if (widget.firebaseUser != null)
@@ -127,7 +133,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
           );
-
+        } else if (index == 7) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(
+                body: NurseOverviewPage(),
+                hasScaffold: true,
+              ),
+            ),
+          );
+        } else if (index == 8) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(
+                body: NursePanel(),
+                hasScaffold: true,
+              ),
+            ),
+          );
         } else {
           Navigator.push(
             context,
@@ -154,6 +179,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return OverviewPage();
       case 5:
         return FloorplanPage(hospitalName: "UZ Groenplaats", floorNumber: -1);
+      case 7:
+        return NurseOverviewPage();
+      case 8:
+        return NursePanel();
       default:
         return HomePage();
     }

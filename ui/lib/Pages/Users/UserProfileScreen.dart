@@ -106,18 +106,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/logo.png',
-                      height: 27,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'My Profile',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/logo.png',
+                          height: 27,
+                        ),
+                        SizedBox(width: 10), // Add some space between the logo and the text
+                        Text(
+                          'My VitalRoutes',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 80),
                     Row(
