@@ -53,33 +53,53 @@ class _NursePanelState extends State<NursePanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Nurse's Supervision Panel",
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.green[700],
-      ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildSectionTitle('Nurse Email'),
-            _buildInputField(nurseController, 'Enter nurse email'),
-            SizedBox(height: 20),
-            _buildSectionTitle('Patients'),
-            _buildDynamicFields(patientControllers, 'Enter patient email', _addPatientField, _removePatientField),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _createSupervision,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[700],
-                minimumSize: Size(double.infinity, 50),
+        padding: EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue, width: 4),
+                ),
+                child: Text(
+                  'Nurse’s Supervision Panel',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              child: Text('Create Supervision', style: TextStyle(color: Colors.white)),
-            ),
-          ],
+              SizedBox(height: 40),
+
+              _buildSectionTitle('Nurse Email'),
+              _buildInputField(nurseController, 'Nurse email (required)'),
+
+              SizedBox(height: 30),
+
+              _buildSectionTitle('Patient(s)'),
+              _buildDynamicFields(patientControllers, 'Patient email (optional)', _addPatientField, _removePatientField),
+
+              SizedBox(height: 40),
+
+              ElevatedButton(
+                onPressed: _createSupervision,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: Text('Create Supervision', style: TextStyle(fontSize: 18)),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -87,14 +107,10 @@ class _NursePanelState extends State<NursePanel> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.only(bottom: 5),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -105,17 +121,24 @@ class _NursePanelState extends State<NursePanel> {
         for (int i = 0; i < controllers.length; i++)
           Row(
             children: [
-              Expanded(child: _buildInputField(controllers[i], placeholder)),
-              IconButton(
-                icon: Icon(Icons.remove_circle, color: Colors.red),
-                onPressed: () => removeField(i),
+              Expanded(
+                child: _buildInputField(controllers[i], placeholder),
               ),
+              SizedBox(width: 8),
+              IconButton(
+                icon: Icon(Icons.add_circle, color: Colors.blue.shade700),
+                onPressed: addField,
+              ),
+              if (controllers.length > 1)
+                Padding(
+                  padding: EdgeInsets.only(left: 8),
+                  child: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.black),
+                    onPressed: () => removeField(i),
+                  ),
+                ),
             ],
           ),
-        TextButton(
-          onPressed: addField,
-          child: Text('Add another patient'),
-        ),
       ],
     );
   }
@@ -129,6 +152,7 @@ class _NursePanelState extends State<NursePanel> {
   void _removePatientField(int index) {
     if (patientControllers.length > 1) {
       setState(() {
+        patientControllers[index].dispose();
         patientControllers.removeAt(index);
       });
     }
@@ -136,12 +160,11 @@ class _NursePanelState extends State<NursePanel> {
 
   Widget _buildInputField(TextEditingController controller, String placeholder) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: EdgeInsets.symmetric(vertical: 5.0),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          labelText: placeholder,
-          labelStyle: TextStyle(color: Colors.blue[900]),
+          hintText: placeholder,
           border: OutlineInputBorder(),
         ),
       ),

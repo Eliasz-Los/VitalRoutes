@@ -13,6 +13,7 @@ public class User
     public Function Function { get; set; }
     public UserLocation? Location { get; set; }
     public ICollection<User> UnderSupervisions { get; set; } = new List<User>();
+    //public ICollection<User> Supervisors { get; set; } = new List<User>();
     public IEnumerable<Emergency> Emergencies { get; set; }
     public Hospital? Hospital { get; set; }
     public Guid? SupervisorId { get; set; }

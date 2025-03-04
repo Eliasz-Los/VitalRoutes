@@ -78,7 +78,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.teal.shade700, width: 4),
+                  border: Border.all(color: Colors.blue, width: 4),
                 ),
                 child: Text(
                   'Doctor’s Supervision Panel',
@@ -152,7 +152,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
                 Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
+                    icon: Icon(Icons.delete, color: Colors.black),
                     onPressed: () => removeField(i),
                   ),
                 ),

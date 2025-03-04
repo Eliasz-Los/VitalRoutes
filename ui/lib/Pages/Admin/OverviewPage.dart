@@ -13,12 +13,22 @@ class OverviewPage extends StatefulWidget {
 class _OverviewPageState extends State<OverviewPage> {
   List<domain.User> nurses = [];
   List<domain.User> patients = [];
+  List<domain.User> filteredNurses = [];
+  List<domain.User> filteredPatients = [];
   bool isLoading = true;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _fetchSupervisions();
+    searchController.addListener(_filterUsers);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchSupervisions() async {
@@ -44,8 +54,24 @@ class _OverviewPageState extends State<OverviewPage> {
     } finally {
       setState(() {
         isLoading = false;
+        filteredNurses = nurses;
+        filteredPatients = patients;
       });
     }
+  }
+
+  void _filterUsers() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      filteredNurses = nurses.where((nurse) {
+        final fullName = '${nurse.firstName} ${nurse.lastName}'.toLowerCase();
+        return fullName.contains(query);
+      }).toList();
+      filteredPatients = patients.where((patient) {
+        final fullName = '${patient.firstName} ${patient.lastName}'.toLowerCase();
+        return fullName.contains(query);
+      }).toList();
+    });
   }
 
   Future<void> _deleteUser(domain.User user) async {
@@ -55,11 +81,16 @@ class _OverviewPageState extends State<OverviewPage> {
         final domain.User doctor = await UserService.getUserByEmail(currentUser.email!);
         await UserService.removeUnderSupervision(doctor.id!, user.id!);
         setState(() {
-          nurses.remove(user);
-          patients.remove(user);
+          if (user.function == FunctionType.Nurse) {
+            nurses.remove(user);
+            filteredNurses.remove(user);
+          } else if (user.function == FunctionType.Patient) {
+            patients.remove(user);
+            filteredPatients.remove(user);
+          }
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User deleted successfully')),
+          SnackBar(content: Text('User removed successfully')),
         );
       }
     } catch (e) {
@@ -72,68 +103,190 @@ class _OverviewPageState extends State<OverviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            'Overview Supervisions',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo[900],
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ),
-        elevation: 0,
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      backgroundColor: Colors.grey[100],
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildSectionTitle('Nurses'),
+            SizedBox(height: 20),
+            _buildTitle(),
             SizedBox(height: 10),
-            ...nurses.map((nurse) => _buildUserTile(nurse)),
-
+            _buildSearchBar(),
             SizedBox(height: 30),
-
-            _buildSectionTitle('Patients'),
-            SizedBox(height: 10),
-            ...patients.map((patient) => _buildUserTile(patient)),
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSectionTitle('Nurses'),
+                      SizedBox(height: 10),
+                      filteredNurses.isEmpty
+                          ? Text('No nurses found', style: TextStyle(color: Colors.grey))
+                          : Column(
+                        children: filteredNurses.map((nurse) => _buildUserCard(nurse)).toList(),
+                      ),
+                      SizedBox(height: 30),
+                      _buildSectionTitle('Patients'),
+                      SizedBox(height: 10),
+                      filteredPatients.isEmpty
+                          ? Text('No patients found', style: TextStyle(color: Colors.grey))
+                          : Column(
+                        children: filteredPatients.map((patient) => _buildUserCard(patient)).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildUserTile(domain.User user) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${user.firstName} ${user.lastName}',
-            style: TextStyle(fontSize: 18),
-          ),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.delete, color: Colors.black),
-                onPressed: () => _deleteUser(user),
-              ),
-              SizedBox(width: 10),
-              Icon(
-                FontAwesomeIcons.mapMarkerAlt,
-                color: Colors.blue,
-                size: 18,
-              ),
-            ],
-          ),
-        ],
+  Widget _buildTitle() {
+    return Container(
+      width: MediaQuery.of(context).size.width - 32,
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        'Overview Supervisions',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: TextField(
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: 'Search by name...',
+          hintStyle: TextStyle(color: Colors.grey[600]),
+          border: InputBorder.none,
+          prefixIcon: Icon(Icons.search, color: Colors.grey),
+          suffixIcon: searchController.text.isNotEmpty
+              ? IconButton(
+            icon: Icon(Icons.clear, color: Colors.grey),
+            onPressed: () {
+              searchController.clear();
+              _filterUsers();
+            },
+          )
+              : null,
+        ),
+        style: TextStyle(color: Colors.black),
+      ),
+    );
+  }
+
+  Widget _buildUserCard(domain.User user) {
+    return Card(
+      elevation: 3,
+      margin: EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.blue[200],
+                  child: Text(
+                    user.firstName != null && user.firstName!.isNotEmpty ? user.firstName![0] : '?',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${user.firstName} ${user.lastName}',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.green,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          'Active',
+                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.delete, size: 24, color: Colors.red),
+                  onPressed: () async {
+                    bool? confirm = await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Confirm Removal'),
+                        content: Text('Are you sure you want to remove ${user.firstName} ${user.lastName}?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: Text('Remove'),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirm == true) {
+                      _deleteUser(user);
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: Icon(FontAwesomeIcons.mapMarkerAlt, size: 24, color: Colors.blue),
+                  onPressed: () {
+                    // mss map-functionaliteit toevoegen
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
