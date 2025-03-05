@@ -17,7 +17,7 @@ class FloorplanPage extends StatefulWidget {
   @override
   FloorplanPageState createState() => FloorplanPageState();
 }
-
+/*TODO: Fix zooming in, show 2 points from a to b and lets perhaps add a button for that so its easier*/
 class FloorplanPageState extends State<FloorplanPage> {
   late int _currentFloorNumber;
   late int _maxFloorNumber;
@@ -71,24 +71,10 @@ class FloorplanPageState extends State<FloorplanPage> {
   void _handleTap(TapDownDetails details){
     final RenderBox box = context.findRenderObject() as RenderBox;
     final Offset localOffset = box.globalToLocal(details.globalPosition);
-
-    // Assuming the dimensions of the floorplan image
-    final double imageWidth = 4454.0; // Replace with actual width of the floorplan image
-    final double imageHeight = 1624.0; // Replace with actual height of the floorplan image
-
-    // Get the dimensions of the widget displaying the image
-    final double widgetWidth = box.size.width;
-    final double widgetHeight = box.size.height;
-
-    // Calculate the scaling factors
-    final double scaleX = imageWidth / widgetWidth;
-    final double scaleY = imageHeight / widgetHeight;
-
-    // Apply the scaling factors to the tap coordinates
-    final double scaledX = localOffset.dx * scaleX;
-    final double scaledY = localOffset.dy * scaleY;
-
-    final Point point = Point(x: scaledX, y: scaledY);
+    
+    final double scaledX = localOffset.dx *10.77; //TODO hardcoded scaling
+    final double scaledY = localOffset.dy *7.46;
+    final Point point = Point(x: scaledX.roundToDouble(), y: scaledY.roundToDouble());
     
     if(_startPoint == null){
       setState(() {
@@ -100,8 +86,9 @@ class FloorplanPageState extends State<FloorplanPage> {
         _endPoint = point;
         print('End point set: $_endPoint');
         //1507.0,1148.0),room -100 (2096.0,1466.0)
-        //TODO hardcoded from beginning to -100 room
-        _fetchPath(Point(x: 1507.0, y: 1148.0), Point(x: 2096.0, y: 1466.0));
+        // _fetchPath(Point(x: 1507.0, y: 1148.0), Point(x: 2096.0, y: 1466.0));
+        _fetchPath(_startPoint!, _endPoint!);
+
       });
     } else {
       setState(() {
@@ -144,7 +131,7 @@ class FloorplanPageState extends State<FloorplanPage> {
                   GestureDetector(
                     onTapDown: (TapDownDetails details) {
                       onTapDown: _handleTap(details);
-                     /* final RenderBox box = context.findRenderObject() as RenderBox;
+           /*           final RenderBox box = context.findRenderObject() as RenderBox;
                       final Offset localOffset = box.globalToLocal(details.globalPosition);
                       print('Coordinates: (${localOffset.dx}, ${localOffset.dy})');*/
                     },

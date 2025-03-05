@@ -25,12 +25,6 @@ class RoomLocations extends StatelessWidget {
               height: 500.0, 
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  // TODO: scaling aanpassen
-                  double scaleX = constraints.maxWidth / 4454.0;
-                  double scaleY = (constraints.maxHeight / 1624.0) * 0.28; // TODO: bruh wtf 
-                  
-                  print("ScaleX: $scaleX, ScaleY: $scaleY"); // Debugging
-        
                   return Stack(
                     children: [
                       ...rooms.map((room) {
@@ -42,8 +36,8 @@ class RoomLocations extends StatelessWidget {
                             dotColor = Colors.green;
                           }
                         }
-                        double scaledX = room.point.x * scaleX;
-                        double scaledY = room.point.y * scaleY;
+                        double scaledX = room.point.x;
+                        double scaledY = room.point.y * 0.75; //TODO: scaling terug kapot door who knows what
                         print("Room: ${room.id}, X: $scaledX, Y: $scaledY"); // Debugging
 
                         return Positioned(
