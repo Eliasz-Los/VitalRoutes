@@ -5,7 +5,7 @@ import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../Admin/RoomAssignmentsPage.dart';
-import '../Admin/SystemAdminPage.dart';
+import '../Admin/DoctorPanel.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'custom_drawer.dart';
@@ -33,7 +33,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       HomePage(),
       SignInScreen(),
       if (user != null) UserProfileScreen(firebaseUser: user!,),
-      SystemAdminPage(),
+      DoctorPanel(),
       FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,),
       if (user != null) RoomAssignmentsPage() //voorlopig nog geen admin function check
     ];
@@ -75,7 +75,12 @@ class _MainScaffoldState extends State<MainScaffold> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('VitalRoutes', style: TextStyle(color: Colors.white)),
+            Text('VitalRoutes', style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              color: Colors.white,
+            ),),
             if (user != null)
               Text(user!.email ?? 'User', style: TextStyle(color: Colors.white, fontSize: 12)),
           ],

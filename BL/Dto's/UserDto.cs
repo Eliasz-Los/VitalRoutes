@@ -11,4 +11,5 @@ public class UserDto
     public string TelephoneNr { get; set; }
     public Function Function { get; set; }
     public List<Guid> UnderSupervisions { get; set; }
+    public List<Guid> Supervisors { get; set; }
 }

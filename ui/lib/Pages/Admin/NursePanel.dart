@@ -2,41 +2,28 @@
 import 'package:ui/Services/UserService.dart';
 import '../../Models/Enums/FunctionType.dart';
 
-class SystemAdminPage extends StatefulWidget {
+class NursePanel extends StatefulWidget {
   @override
-  _SystemAdminPageState createState() => _SystemAdminPageState();
+  _NursePanelState createState() => _NursePanelState();
 }
 
-class _SystemAdminPageState extends State<SystemAdminPage> {
-  TextEditingController doctorController = TextEditingController();
-  List<TextEditingController> nurseControllers = [TextEditingController()];
+class _NursePanelState extends State<NursePanel> {
+  TextEditingController nurseController = TextEditingController();
   List<TextEditingController> patientControllers = [TextEditingController()];
 
   Future<void> _createSupervision() async {
     try {
-      final doctorEmail = doctorController.text.trim();
-      if (doctorEmail.isEmpty) {
-        throw Exception('Please enter at least one doctor.');
+      final nurseEmail = nurseController.text.trim();
+      if (nurseEmail.isEmpty) {
+        throw Exception('Please enter a nurse email.');
       }
 
-      final doctor = await UserService.getUserByEmail(doctorEmail);
-      if (doctor.function != FunctionType.Doctor) {
-        throw Exception('The first user must be a valid doctor.');
+      final nurse = await UserService.getUserByEmail(nurseEmail);
+      if (nurse.function != FunctionType.Nurse) {
+        throw Exception('The user must be a valid nurse.');
       }
 
       bool hasValidEntries = false;
-      for (var controller in nurseControllers) {
-        final email = controller.text.trim();
-        if (email.isNotEmpty) {
-          final nurse = await UserService.getUserByEmail(email);
-          if (nurse.function != FunctionType.Nurse) {
-            throw Exception('Nurse not found or invalid: $email');
-          }
-          await UserService.addUnderSupervision(doctor.id.toString(), nurse.id.toString());
-          hasValidEntries = true;
-        }
-      }
-
       for (var controller in patientControllers) {
         final email = controller.text.trim();
         if (email.isNotEmpty) {
@@ -44,13 +31,13 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
           if (patient.function != FunctionType.Patient) {
             throw Exception('Patient not found or invalid: $email');
           }
-          await UserService.addUnderSupervision(doctor.id.toString(), patient.id.toString());
+          await UserService.addUnderSupervision(nurse.id.toString(), patient.id.toString());
           hasValidEntries = true;
         }
       }
 
       if (!hasValidEntries) {
-        throw Exception('Please enter at least one patient or nurse.');
+        throw Exception('Please enter at least one patient.');
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -58,7 +45,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error during assignment: $e')),
+        SnackBar(content: Text('Error: $e')),
       );
     }
   }
@@ -78,10 +65,10 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.teal.shade700, width: 4),
+                  border: Border.all(color: Colors.blue, width: 4),
                 ),
                 child: Text(
-                  'Doctor’s Supervision Panel',
+                  'Nurse’s Supervision Panel',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22,
@@ -92,13 +79,8 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
               ),
               SizedBox(height: 40),
 
-              _buildSectionTitle('Doctor'),
-              _buildDoctorInputField(doctorController, 'Doctor email (required)'),
-
-              SizedBox(height: 30),
-
-              _buildSectionTitle('Nurse(s)'),
-              _buildDynamicFields(nurseControllers, 'Nurse email (optional)', _addNurseField, _removeNurseField),
+              _buildSectionTitle('Nurse Email'),
+              _buildInputField(nurseController, 'Nurse email (required)'),
 
               SizedBox(height: 30),
 
@@ -114,7 +96,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
                   foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: Text('Create Assignment', style: TextStyle(fontSize: 18)),
+                child: Text('Create Supervision', style: TextStyle(fontSize: 18)),
               ),
             ],
           ),
@@ -122,7 +104,6 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
       ),
     );
   }
-
 
   Widget _buildSectionTitle(String title) {
     return Padding(
@@ -145,14 +126,14 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
               ),
               SizedBox(width: 8),
               IconButton(
-                icon: Icon(Icons.add_circle, color: Colors.blue),
+                icon: Icon(Icons.add_circle, color: Colors.blue.shade700),
                 onPressed: addField,
               ),
               if (controllers.length > 1)
                 Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
+                    icon: Icon(Icons.delete, color: Colors.black),
                     onPressed: () => removeField(i),
                   ),
                 ),
@@ -160,21 +141,6 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
           ),
       ],
     );
-  }
-
-  void _addNurseField() {
-    setState(() {
-      nurseControllers.add(TextEditingController());
-    });
-  }
-
-  void _removeNurseField(int index) {
-    if (nurseControllers.length > 1) {
-      setState(() {
-        nurseControllers[index].dispose();
-        nurseControllers.removeAt(index);
-      });
-    }
   }
 
   void _addPatientField() {
@@ -190,26 +156,6 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
         patientControllers.removeAt(index);
       });
     }
-  }
-
-  Widget _buildDoctorInputField(TextEditingController controller, String placeholder) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: placeholder,
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          SizedBox(width: 57),
-        ],
-      ),
-    );
   }
 
   Widget _buildInputField(TextEditingController controller, String placeholder) {

@@ -49,9 +49,8 @@ public class VitalRoutesDbContext : DbContext
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.UnderSupervisions)
-            .WithOne()
-            .HasForeignKey(u => u.SupervisorId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .WithMany(u => u.Supervisors)
+            .UsingEntity(j => j.ToTable("UserSupervisions"));
 
         modelBuilder.Entity<Emergency>()
             .HasOne(emergency => emergency.Notification)

@@ -5,15 +5,13 @@ import '../../Services/UserService.dart';
 import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
 
-class OverviewPage extends StatefulWidget {
+class NurseOverviewPage extends StatefulWidget {
   @override
-  _OverviewPageState createState() => _OverviewPageState();
+  _NurseOverviewPageState createState() => _NurseOverviewPageState();
 }
 
-class _OverviewPageState extends State<OverviewPage> {
-  List<domain.User> nurses = [];
+class _NurseOverviewPageState extends State<NurseOverviewPage> {
   List<domain.User> patients = [];
-  List<domain.User> filteredNurses = [];
   List<domain.User> filteredPatients = [];
   bool isLoading = true;
   TextEditingController searchController = TextEditingController();
@@ -22,7 +20,7 @@ class _OverviewPageState extends State<OverviewPage> {
   void initState() {
     super.initState();
     _fetchSupervisions();
-    searchController.addListener(_filterUsers);
+    searchController.addListener(_filterPatients);
   }
 
   @override
@@ -35,13 +33,11 @@ class _OverviewPageState extends State<OverviewPage> {
     try {
       final firebase_auth.User? user = firebase_auth.FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final domain.User doctor = await UserService.getUserByEmail(user.email!);
-        if (doctor.underSupervisions != null && doctor.underSupervisions!.isNotEmpty) {
-          for (String id in doctor.underSupervisions!) {
+        final domain.User nurse = await UserService.getUserByEmail(user.email!);
+        if (nurse.underSupervisions != null && nurse.underSupervisions!.isNotEmpty) {
+          for (String id in nurse.underSupervisions!) {
             final domain.User supervisee = await UserService.getUserById(id);
-            if (supervisee.function == FunctionType.Nurse) {
-              nurses.add(supervisee);
-            } else if (supervisee.function == FunctionType.Patient) {
+            if (supervisee.function == FunctionType.Patient) {
               patients.add(supervisee);
             }
           }
@@ -54,19 +50,14 @@ class _OverviewPageState extends State<OverviewPage> {
     } finally {
       setState(() {
         isLoading = false;
-        filteredNurses = nurses;
         filteredPatients = patients;
       });
     }
   }
 
-  void _filterUsers() {
+  void _filterPatients() {
     final query = searchController.text.toLowerCase();
     setState(() {
-      filteredNurses = nurses.where((nurse) {
-        final fullName = '${nurse.firstName} ${nurse.lastName}'.toLowerCase();
-        return fullName.contains(query);
-      }).toList();
       filteredPatients = patients.where((patient) {
         final fullName = '${patient.firstName} ${patient.lastName}'.toLowerCase();
         return fullName.contains(query);
@@ -78,24 +69,19 @@ class _OverviewPageState extends State<OverviewPage> {
     try {
       final firebase_auth.User? currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
-        final domain.User doctor = await UserService.getUserByEmail(currentUser.email!);
-        await UserService.removeUnderSupervision(doctor.id!, user.id!);
+        final domain.User nurse = await UserService.getUserByEmail(currentUser.email!);
+        await UserService.removeUnderSupervision(nurse.id!, user.id!);
         setState(() {
-          if (user.function == FunctionType.Nurse) {
-            nurses.remove(user);
-            filteredNurses.remove(user);
-          } else if (user.function == FunctionType.Patient) {
-            patients.remove(user);
-            filteredPatients.remove(user);
-          }
+          patients.remove(user);
+          _filterPatients();
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User removed successfully')),
+          SnackBar(content: Text('Patient removed successfully')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting user: $e')),
+        SnackBar(content: Text('Error deleting patient: $e')),
       );
     }
   }
@@ -116,42 +102,16 @@ class _OverviewPageState extends State<OverviewPage> {
             Expanded(
               child: isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildSectionTitle('Nurses'),
-                      SizedBox(height: 10),
-                      filteredNurses.isEmpty
-                          ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text('No nurses found', style: TextStyle(color: Colors.grey)),
-                        ),
-                      )
-                          : Column(
-                        children: filteredNurses.map((nurse) => _buildUserCard(nurse)).toList(),
-                      ),
-                      SizedBox(height: 30),
-                      _buildSectionTitle('Patients'),
-                      SizedBox(height: 10),
-                      filteredPatients.isEmpty
-                          ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text('No patients found', style: TextStyle(color: Colors.grey)),
-                        ),
-                      )
-                          : Column(
-                        children: filteredPatients.map((patient) => _buildUserCard(patient)).toList(),
-                      ),
-                    ],
-                  ),
+                  : filteredPatients.isEmpty
+                  ? Center(
+                child: Text(
+                  'Nog geen patiënten gekoppeld.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
+              )
+                  : ListView.builder(
+                itemCount: filteredPatients.length,
+                itemBuilder: (context, index) => _buildPatientCard(filteredPatients[index]),
               ),
             ),
           ],
@@ -170,7 +130,7 @@ class _OverviewPageState extends State<OverviewPage> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        'Overview Supervisions',
+        'Patients Overview',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 24,
@@ -193,7 +153,7 @@ class _OverviewPageState extends State<OverviewPage> {
       child: TextField(
         controller: searchController,
         decoration: InputDecoration(
-          hintText: 'Search by name...',
+          hintText: 'Search patients by name...',
           hintStyle: TextStyle(color: Colors.grey[600]),
           border: InputBorder.none,
           prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -202,7 +162,7 @@ class _OverviewPageState extends State<OverviewPage> {
             icon: Icon(Icons.clear, color: Colors.grey),
             onPressed: () {
               searchController.clear();
-              _filterUsers();
+              _filterPatients();
             },
           )
               : null,
@@ -212,10 +172,10 @@ class _OverviewPageState extends State<OverviewPage> {
     );
   }
 
-  Widget _buildUserCard(domain.User user) {
+  Widget _buildPatientCard(domain.User user) {
     return Card(
       elevation: 3,
-      margin: EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -292,7 +252,7 @@ class _OverviewPageState extends State<OverviewPage> {
                 IconButton(
                   icon: Icon(FontAwesomeIcons.mapMarkerAlt, size: 24, color: Colors.blue),
                   onPressed: () {
-                    // mss map-functionaliteit toevoegen
+                    // Eventueeel map-functionaliteit toevoegen
                   },
                 ),
               ],
@@ -302,22 +262,4 @@ class _OverviewPageState extends State<OverviewPage> {
       ),
     );
   }
-
-  Widget _buildSectionTitle(String title) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
 }
