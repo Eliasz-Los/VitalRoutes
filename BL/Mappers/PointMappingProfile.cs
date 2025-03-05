@@ -10,5 +10,7 @@ public class PointMappingProfile : Profile
     {
         CreateMap<Point, PointDto>();
         CreateMap<PointDto, Point>();
+        CreateMap<Point, PathPointDto>();
+        CreateMap<PathPointDto, Point>();
     }
 }

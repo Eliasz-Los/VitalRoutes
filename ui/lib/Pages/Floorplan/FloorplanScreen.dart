@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ui/Models/Point.dart';
+import 'package:ui/Services/PathService.dart';
 import '../../Services/HospitalService.dart';
 import '../../Services/UserService.dart';
 import 'FloorplanImage.dart';
@@ -20,6 +22,9 @@ class FloorplanPageState extends State<FloorplanPage> {
   late int _currentFloorNumber;
   late int _maxFloorNumber;
   late int _minFloorNumber;
+  List<Point> _path = [];
+  Point? _startPoint;
+  Point? _endPoint;
 
   @override
   void initState() {
@@ -39,6 +44,13 @@ class FloorplanPageState extends State<FloorplanPage> {
     return null;
   }
 
+  Future<void> _fetchPath(Point start, Point end) async{
+    final response = await PathService.getPath(start, end, widget.hospitalName, "floor_minus1C.png");
+    setState(() {
+      _path = response;
+    });
+  }
+  
   void _incrementFloor() {
     if(_currentFloorNumber < _maxFloorNumber) {
       setState(() {
@@ -51,6 +63,52 @@ class FloorplanPageState extends State<FloorplanPage> {
     if(_currentFloorNumber > _minFloorNumber) {
       setState(() {
         _currentFloorNumber--;
+      });
+    }
+  }
+  
+  //TODO dit is gay goe nachecken
+  void _handleTap(TapDownDetails details){
+    final RenderBox box = context.findRenderObject() as RenderBox;
+    final Offset localOffset = box.globalToLocal(details.globalPosition);
+
+    // Assuming the dimensions of the floorplan image
+    final double imageWidth = 4454.0; // Replace with actual width of the floorplan image
+    final double imageHeight = 1624.0; // Replace with actual height of the floorplan image
+
+    // Get the dimensions of the widget displaying the image
+    final double widgetWidth = box.size.width;
+    final double widgetHeight = box.size.height;
+
+    // Calculate the scaling factors
+    final double scaleX = imageWidth / widgetWidth;
+    final double scaleY = imageHeight / widgetHeight;
+
+    // Apply the scaling factors to the tap coordinates
+    final double scaledX = localOffset.dx * scaleX;
+    final double scaledY = localOffset.dy * scaleY;
+
+    final Point point = Point(x: scaledX, y: scaledY);
+    
+    if(_startPoint == null){
+      setState(() {
+        _startPoint = point;
+        print('Start point set: $_startPoint');
+      });
+    } else if(_endPoint == null){
+      setState(() {
+        _endPoint = point;
+        print('End point set: $_endPoint');
+        //1507.0,1148.0),room -100 (2096.0,1466.0)
+        //TODO hardcoded from beginning to -100 room
+        _fetchPath(Point(x: 1507.0, y: 1148.0), Point(x: 2096.0, y: 1466.0));
+      });
+    } else {
+      setState(() {
+        _startPoint = point;
+        _endPoint = null;
+        _path = [];
+        print('Start point reset: $_startPoint');
       });
     }
   }
@@ -85,9 +143,10 @@ class FloorplanPageState extends State<FloorplanPage> {
                 children: [
                   GestureDetector(
                     onTapDown: (TapDownDetails details) {
-                      final RenderBox box = context.findRenderObject() as RenderBox;
+                      onTapDown: _handleTap(details);
+                     /* final RenderBox box = context.findRenderObject() as RenderBox;
                       final Offset localOffset = box.globalToLocal(details.globalPosition);
-                      print('Coordinates: (${localOffset.dx}, ${localOffset.dy})');
+                      print('Coordinates: (${localOffset.dx}, ${localOffset.dy})');*/
                     },
                     child: InteractiveViewer(
                       boundaryMargin: EdgeInsets.all(20),
@@ -95,7 +154,7 @@ class FloorplanPageState extends State<FloorplanPage> {
                       maxScale: 4,
                       child: Stack(
                         children: [
-                          FloorplanImage(hospitalName: widget.hospitalName, floorNumber: _currentFloorNumber),
+                          FloorplanImage(hospitalName: widget.hospitalName, floorNumber: _currentFloorNumber, path: _path),
                           RoomLocations(user: user, floorNumber: _currentFloorNumber),
                         ],
                       ),

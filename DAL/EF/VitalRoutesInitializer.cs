@@ -18,12 +18,11 @@ public class VitalRoutesInitializer
     {
         Hospital hospital1 = new Hospital("UZ Groenplaats");
         
-        Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1.png");
+        Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1C.png");
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
             floorplanGPMinus1,
-            new ("kelder", -1, "1/200", "floor_minus1C.png"), //TODO: effe naar C gezet voor cleaneed
             new ("gelijkvloers", 0, "1/200","floor0.png"),
             new ("eerste verdiep", 1, "1/200","floor1.png"),
             new ("tweede verdiep", 2, "1/200","floor2.png"),
@@ -56,11 +55,33 @@ public class VitalRoutesInitializer
         {
             UnderSupervisions = new List<User>()
         };
+        
+        List<Room> roomsFloorMinus1Groenplaats = new List<Room>
+        {
+            new (new Point(1061.0,1479.0, floorplanGPMinus1), user1, -102),
+            // NEW 1061.0,1479.0 : OLD 100.01, 168.01
+            new (new Point(1592.0,1449.0, floorplanGPMinus1), user2, -101),
+            // 1592.0,1449.0 : 147.01, 168.01
+            new (new Point( 2164.0,1445.0, floorplanGPMinus1), null, -100),
+            // 2164.0,1445.0 : 194.01, 168.01
+            new (new Point(2816.0,1479.0, floorplanGPMinus1), null, -114),
+            // 2816.0,1479.0 : 246.01, 168.01
+            new (new Point(3414.0, 1479.0, floorplanGPMinus1), null, -113),
+            // 3414.0, 1479.0 : 298.01, 168.01
+            new (new Point(3469.0 ,974.0 , floorplanGPMinus1), null, -111),
+            // 3469.0 ,974.0 : 305.01, 128.01,
+            new (new Point(2942.0, 860.0 , floorplanGPMinus1), null, -109),
+            // 2942.0, 860.0 : 258.01, 123.01
+            new (new Point(1318.0 ,889.0, floorplanGPMinus1), null, -106)
+            // 1318.0 ,889.0 : 120.01, 115.01
+        };
+
 
         context.Hospitals.Add(hospital1);
         context.UserLocations.AddRange(userLocation1, userLocation2, userLocation3, userLocation4);
         context.Users.AddRange(user1, user2, user3, user4);
         context.Floorplans.AddRange(gpFloorplans);
+        context.Rooms.AddRange(roomsFloorMinus1Groenplaats);
         context.SaveChanges();
         context.ChangeTracker.Clear();
     }

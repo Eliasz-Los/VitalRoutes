@@ -22,26 +22,40 @@ class RoomLocations extends StatelessWidget {
           snapshot: snapshot,
           builder: (rooms) {
             return SizedBox(
-              height: 500,
-              child: Stack(
-                children: [
-                  ...rooms.map((room) {
-                    Color dotColor = Colors.grey;
-                    if (user != null) {
-                      if (user!.function == FunctionType.Doctor && user!.underSupervisions?.contains(room.assignedPatient?.id) == true) {
-                        dotColor = Colors.green;
-                      } else if (user!.function == FunctionType.Nurse && user!.underSupervisions?.contains(room.assignedPatient?.id) == true) {
-                        dotColor = Colors.green;
-                      }
-                    }
-                    return Positioned(
-                      left: room.point.x,
-                      top: room.point.y,
-                      child: Icon(Icons.circle, color: dotColor, size: 15),
-                    );
-                  }),
-                ],
-              ),
+              height: 500.0, 
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // TODO: scaling aanpassen
+                  double scaleX = constraints.maxWidth / 4454.0;
+                  double scaleY = (constraints.maxHeight / 1624.0) * 0.28; // TODO: bruh wtf 
+                  
+                  print("ScaleX: $scaleX, ScaleY: $scaleY"); // Debugging
+        
+                  return Stack(
+                    children: [
+                      ...rooms.map((room) {
+                        Color dotColor = Colors.grey;
+                        if (user != null) {
+                          if (user!.function == FunctionType.Doctor && user!.underSupervisions?.contains(room.assignedPatient?.id) == true) {
+                            dotColor = Colors.green;
+                          } else if (user!.function == FunctionType.Nurse && user!.underSupervisions?.contains(room.assignedPatient?.id) == true) {
+                            dotColor = Colors.green;
+                          }
+                        }
+                        double scaledX = room.point.x * scaleX;
+                        double scaledY = room.point.y * scaleY;
+                        print("Room: ${room.id}, X: $scaledX, Y: $scaledY"); // Debugging
+
+                        return Positioned(
+                          left: scaledX,
+                          top: scaledY,
+                          child: Icon(Icons.circle, color: dotColor, size: 15),
+                        );
+                      }),
+                    ],
+                  );
+                },
+              )
             );
           },
         );

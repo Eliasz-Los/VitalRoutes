@@ -5,27 +5,37 @@ class PathService {
   static final Dio _dio = Dio();
   //TODO nachecken
   static Future<List<Point>> getPath(Point start, Point end, String hospitalName, String floorName) async {
-    final response = await _dio.get(
-      'http://10.0.2.2:5028/api/path/route',
-      queryParameters: {
-        'start': start.toJson(),
-        'end': end.toJson(),
-        'hospitalName': hospitalName,
-        'floorName': floorName,
-      },
-      options: Options(
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      ),
-    );
+   
+   final requestPayload = {
+     'Start': start.toJson(),
+    'End': end.toJson(),
+    'HospitalName': hospitalName,
+    'FloorName': floorName,
+   };
+   
+   print('Request payload: $requestPayload');
+   try {
+     final response = await _dio.get(
+       'http://10.0.2.2:5028/api/path/route',
+       data: requestPayload,
+       options: Options(
+         headers: {
+           'Content-Type': 'application/json',
+         },
+       ),
+     );
 
-    if (response.statusCode == 200) {
-      List<dynamic> data = response.data;
-      print("PATH POINTS:  $data");
-      return data.map((point) => Point.fromJson(point)).toList();
-    } else {
-      throw Exception('Failed to load path');
-    }
+     if (response.statusCode == 200) {
+       List<Point> path = (response.data as List).map((point) =>
+           Point.fromJson(point)).toList();
+       return path;
+     } else {
+       throw Exception('Failed to load path');
+     }
+   } on DioException catch (e) {
+     print('DioException: ${e.message}');
+     print('Response data: ${e.response?.data}');
+     throw e;   
+   }
   }
 }
