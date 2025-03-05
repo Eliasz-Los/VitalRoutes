@@ -88,4 +88,25 @@ class UserService{
     }
   }
 
+  // lib/Services/UserService.dart
+
+  static Future<void> removeUnderSupervision(String supervisorId, String superviseeId) async {
+    try {
+      final response = await _dio.post(
+        'http://10.0.2.2:5028/api/user/$supervisorId/removeUnderSupervision/$superviseeId',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      if (response.statusCode != 200) {
+        throw Exception('Failed to remove supervision');
+      }
+    } catch (e) {
+      throw Exception('Error removing supervision: $e');
+    }
+  }
+
+
 }

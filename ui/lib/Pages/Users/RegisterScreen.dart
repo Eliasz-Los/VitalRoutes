@@ -31,26 +31,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text,
         password: _passwordController.text,
         telephoneNr: _telephoneNrController.text,
-        function: FunctionType.Patient, 
+        function: FunctionType.Patient,
       );
 
       await AuthService.registerUser(registerUser);
-      //Inloggen zodat de begin wordt token gegenereerd
       UserCredentials userCredentials = UserCredentials(
         email: _emailController.text,
         password: _passwordController.text,
       );
       await AuthService.signInWithEmailAndPassword(userCredentials);
-      
+
       User? user = await FirebaseAuth.instance.currentUser;
-    
       Provider.of<UserProvider>(context, listen: false).setUser(user);
-      
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => MainScaffold(body: HomePage())),
-              (Route<dynamic> route) => false,
-        );
-      
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainScaffold(body: HomePage())),
+            (Route<dynamic> route) => false,
+      );
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
@@ -60,38 +58,95 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(   
+    return MainScaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            SizedBox(height: 80),
+            Text(
+              'Register in',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  height: 40,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  "VitalRoutes",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
             TextField(
               controller: _firstNameController,
-              decoration: InputDecoration(labelText: 'First Name'),
+              decoration: InputDecoration(
+                labelText: 'First Name',
+                labelStyle: TextStyle(color: Colors.blue[900]),
+                border: OutlineInputBorder(),
+              ),
             ),
+            SizedBox(height: 10),
             TextField(
               controller: _lastNameController,
-              decoration: InputDecoration(labelText: 'Last Name'),
+              decoration: InputDecoration(
+                labelText: 'Last Name',
+                labelStyle: TextStyle(color: Colors.blue[900]),
+                border: OutlineInputBorder(),
+              ),
             ),
+            SizedBox(height: 10),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                labelStyle: TextStyle(color: Colors.blue[900]),
+                border: OutlineInputBorder(),
+              ),
               keyboardType: TextInputType.emailAddress,
             ),
+            SizedBox(height: 10),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                labelStyle: TextStyle(color: Colors.blue[900]),
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
             ),
+            SizedBox(height: 10),
             TextField(
               controller: _telephoneNrController,
-              decoration: InputDecoration(labelText: 'Telephone Number'),
+              decoration: InputDecoration(
+                labelText: 'Telephone Number',
+                labelStyle: TextStyle(color: Colors.blue[900]),
+                border: OutlineInputBorder(),
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _register,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.lightBlue),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightBlue,
+                minimumSize: Size(double.infinity, 50),
+              ),
               child: Text('Register', style: TextStyle(color: Colors.white)),
             ),
             if (_errorMessage != null) ...[

@@ -1,10 +1,13 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ui/Pages/Admin/HeadNursePanel.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
 import '../Admin/RoomAssignmentsPage.dart';
-import '../Admin/SystemAdminPage.dart';
+import '../Admin/NurseOverviewPage.dart';
+import '../Admin/NursePanel.dart';
+import '../Admin/DoctorPanel.dart';
 import '../Admin/OverviewPage.dart';
 import '../../Models/Enums/FunctionType.dart';
 import '../../Pages/Users/SignInScreen.dart';
@@ -75,8 +78,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
           _buildDrawerItem(Icons.home, 'Home', context, 0, false),
           if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
           if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
-          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.list, 'Overview', context, 4, false),
-          _buildDrawerItem(Icons.admin_panel_settings, 'System Admin', context, 3, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Staff & Patients', context, 4, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.dashboard, 'Doctor\'s panel', context, 3, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patients Overview', context, 7, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse\'s Panel', context, 8, false), 
+          if (domainUser != null && domainUser!.function == FunctionType.Headnurse) _buildDrawerItem(Icons.supervised_user_circle, 'Headnurse Panel', context, 9, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
           _buildDrawerItem(Icons.assignment, 'Room Assignment',context,6,false),
           Divider(),
@@ -129,7 +135,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
           );
-
+        } else if (index == 7) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(
+                body: NurseOverviewPage(),
+                hasScaffold: true,
+              ),
+            ),
+          );
+        } else if (index == 8) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(
+                body: NursePanel(),
+                hasScaffold: true,
+              ),
+            ),
+          );
         } else {
           Navigator.push(
             context,
@@ -151,13 +176,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
       case 2:
         return UserProfileScreen(firebaseUser: widget.firebaseUser!);
       case 3:
-        return SystemAdminPage();
+        return DoctorPanel();
       case 4:
         return OverviewPage();
       case 5:
         return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,);
       case 6:
         return RoomAssignmentsPage();
+      case 7:
+        return NurseOverviewPage();
+      case 8:
+        return NursePanel();
+      case 9:
+        return HeadNursePanel();
       default:
         return HomePage();
     }
