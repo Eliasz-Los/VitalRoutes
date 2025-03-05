@@ -125,7 +125,13 @@ class _OverviewPageState extends State<OverviewPage> {
                       _buildSectionTitle('Nurses'),
                       SizedBox(height: 10),
                       filteredNurses.isEmpty
-                          ? Text('No nurses found', style: TextStyle(color: Colors.grey))
+                          ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text('No nurses found', style: TextStyle(color: Colors.grey)),
+                        ),
+                      )
                           : Column(
                         children: filteredNurses.map((nurse) => _buildUserCard(nurse)).toList(),
                       ),
@@ -133,7 +139,13 @@ class _OverviewPageState extends State<OverviewPage> {
                       _buildSectionTitle('Patients'),
                       SizedBox(height: 10),
                       filteredPatients.isEmpty
-                          ? Text('No patients found', style: TextStyle(color: Colors.grey))
+                          ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Text('No patients found', style: TextStyle(color: Colors.grey)),
+                        ),
+                      )
                           : Column(
                         children: filteredPatients.map((patient) => _buildUserCard(patient)).toList(),
                       ),
@@ -292,13 +304,20 @@ class _OverviewPageState extends State<OverviewPage> {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
       ),
     );
   }
+
 }

@@ -2,12 +2,12 @@
 import 'package:ui/Services/UserService.dart';
 import '../../Models/Enums/FunctionType.dart';
 
-class SystemAdminPage extends StatefulWidget {
+class DoctorPanel extends StatefulWidget {
   @override
-  _SystemAdminPageState createState() => _SystemAdminPageState();
+  _DoctorPanelState createState() => _DoctorPanelState();
 }
 
-class _SystemAdminPageState extends State<SystemAdminPage> {
+class _DoctorPanelState extends State<DoctorPanel> {
   TextEditingController doctorController = TextEditingController();
   List<TextEditingController> nurseControllers = [TextEditingController()];
   List<TextEditingController> patientControllers = [TextEditingController()];
@@ -16,7 +16,7 @@ class _SystemAdminPageState extends State<SystemAdminPage> {
     try {
       final doctorEmail = doctorController.text.trim();
       if (doctorEmail.isEmpty) {
-        throw Exception('Please enter at least one doctor.');
+        throw Exception('Please enter a doctor.');
       }
 
       final doctor = await UserService.getUserByEmail(doctorEmail);

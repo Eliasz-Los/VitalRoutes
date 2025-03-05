@@ -4,8 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Services/UserService.dart';
 import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
-import '../Navigation/MainScaffold.dart';
-import 'NursePanel.dart';
 
 class NurseOverviewPage extends StatefulWidget {
   @override
@@ -92,28 +90,6 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainScaffold(
-                body: NursePanel(),
-                hasScaffold: true,
-              ),
-            ),
-          ).then((_) {
-            setState(() {
-              patients.clear();
-              filteredPatients.clear();
-              isLoading = true;
-            });
-            _fetchSupervisions();
-          });
-        },
-        child: Icon(Icons.add, color: Colors.white),
-      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,6 +102,13 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
             Expanded(
               child: isLoading
                   ? Center(child: CircularProgressIndicator())
+                  : filteredPatients.isEmpty
+                  ? Center(
+                child: Text(
+                  'Nog geen patiënten gekoppeld.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              )
                   : ListView.builder(
                 itemCount: filteredPatients.length,
                 itemBuilder: (context, index) => _buildPatientCard(filteredPatients[index]),
