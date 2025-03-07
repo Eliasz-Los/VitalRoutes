@@ -18,7 +18,7 @@ public class VitalRoutesInitializer
     {
         Hospital hospital1 = new Hospital("UZ Groenplaats");
         
-        Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1C.png");
+        Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1.png");
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
@@ -62,7 +62,7 @@ public class VitalRoutesInitializer
         
         List<Room> roomsFloorMinus1Groenplaats = new List<Room>
         {
-            new (new Point(1061.0,1479.0, floorplanGPMinus1), user1, -102),
+            new (new Point(1061.0,1479.0, floorplanGPMinus1), user3, -102),
             // NEW 1061.0,1479.0 : OLD 100.01, 168.01
             new (new Point(1592.0,1449.0, floorplanGPMinus1), user2, -101),
             // 1592.0,1449.0 : 147.01, 168.01

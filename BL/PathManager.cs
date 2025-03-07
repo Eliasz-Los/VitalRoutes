@@ -1,4 +1,5 @@
 ﻿using System.Threading.Channels;
+using DAL.EF;
 using Domain;
 using Domain.AStarAlgorithm;
 using Microsoft.Extensions.Logging;
@@ -8,22 +9,27 @@ namespace BL;
 public class PathManager
 {
     private readonly ILogger<PathManager> _logger;
-
-    public PathManager(ILogger<PathManager> logger)
+    private readonly FloorplanRepository _floorplanRepository;
+    public PathManager(ILogger<PathManager> logger, FloorplanRepository floorplanRepository)
     {
         _logger = logger;
+        _floorplanRepository = floorplanRepository;
     }
 
     //TODO fix dto
-    public async Task<List<Point>> FindPath(Point start, Point end, String image)
+    public async Task<List<Point>> FindPath(Point start, Point end, String folderPath, String hospitalName, int floorNumber)
     {
-        
-        var (startP, endP, walkablePoints) = await Task.Run( () => FloorplanAnalyzer.GetWalkablePoints(image, start ,end));
+        //Getting the image path
+        var floorplan = _floorplanRepository.ReadFloorplanByHospitalNameAndFloorNumber(hospitalName, floorNumber);
+        var imagePath = Path.Combine(folderPath, floorplan?.Image);
+        //Analyzing the walkable points
+        var (startP, endP, walkablePoints) = await Task.Run( () => FloorplanAnalyzer.GetWalkablePoints(imagePath, start ,end));
         if (walkablePoints.Count == 0)
         {
-            Console.WriteLine("No walkable points found.");
+            _logger.LogError("No walkable points found.");
             return new List<Point>();
         }
+        //Navigating the path
         var path = await Task.Run(() => AStarPathfinding.FindPath(startP, endP, walkablePoints));
         _logger.LogInformation($"Path found: {path} {path.Count}");
         return path;

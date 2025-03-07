@@ -25,12 +25,12 @@ public class PathController : ControllerBase
     public async Task<IActionResult> GetPath(PathRequestDto pathRequestDto)
     {
         var hospital = pathRequestDto.HospitalName.Replace(" ", "_");
-        var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Floorplans", hospital, pathRequestDto.FloorName );
+        var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "Floorplans", hospital );
         
         var start = _mapper.Map<Point>(pathRequestDto.Start);
         var end = _mapper.Map<Point>(pathRequestDto.End);
         
-        var path = await _pathManager.FindPath(start, end, folderPath);
+        var path = await _pathManager.FindPath(start, end, folderPath, pathRequestDto.HospitalName, pathRequestDto.FloorNumber);
         return Ok(path);
     }
 }

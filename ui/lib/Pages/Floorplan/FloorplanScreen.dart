@@ -17,11 +17,12 @@ class FloorplanPage extends StatefulWidget {
   @override
   FloorplanPageState createState() => FloorplanPageState();
 }
-/*TODO: Fix zooming in, show 2 points from a to b and lets perhaps add a button for that so its easier*/
+
 class FloorplanPageState extends State<FloorplanPage> {
   late int _currentFloorNumber;
   late int _maxFloorNumber;
   late int _minFloorNumber;
+  bool _isPathfindingEnabled = false;
   List<Point> _path = [];
   Point? _startPoint;
   Point? _endPoint;
@@ -43,18 +44,14 @@ class FloorplanPageState extends State<FloorplanPage> {
     }
     return null;
   }
-
-  Future<void> _fetchPath(Point start, Point end) async{
-    final response = await PathService.getPath(start, end, widget.hospitalName, "floor_minus1C.png");
-    setState(() {
-      _path = response;
-    });
-  }
   
   void _incrementFloor() {
     if(_currentFloorNumber < _maxFloorNumber) {
       setState(() {
         _currentFloorNumber++;
+        _path = [];
+        _startPoint = null;
+        _endPoint = null;
       });
     }
   }
@@ -63,41 +60,25 @@ class FloorplanPageState extends State<FloorplanPage> {
     if(_currentFloorNumber > _minFloorNumber) {
       setState(() {
         _currentFloorNumber--;
+        _path = [];
+        _startPoint = null;
+        _endPoint = null;
       });
     }
   }
   
-  //TODO dit is gay goe nachecken
-  void _handleTap(TapDownDetails details){
-    final RenderBox box = context.findRenderObject() as RenderBox;
-    final Offset localOffset = box.globalToLocal(details.globalPosition);
-    
-    final double scaledX = localOffset.dx *10.77; //TODO hardcoded scaling
-    final double scaledY = localOffset.dy *7.46;
-    final Point point = Point(x: scaledX.roundToDouble(), y: scaledY.roundToDouble());
-    
-    if(_startPoint == null){
-      setState(() {
-        _startPoint = point;
-        print('Start point set: $_startPoint');
-      });
-    } else if(_endPoint == null){
-      setState(() {
-        _endPoint = point;
-        print('End point set: $_endPoint');
-        //1507.0,1148.0),room -100 (2096.0,1466.0)
-        // _fetchPath(Point(x: 1507.0, y: 1148.0), Point(x: 2096.0, y: 1466.0));
-        _fetchPath(_startPoint!, _endPoint!);
+  void _togglePathfinding() {
+    setState(() {
+      _isPathfindingEnabled = !_isPathfindingEnabled;
+    });
+  }
 
-      });
-    } else {
-      setState(() {
-        _startPoint = point;
-        _endPoint = null;
-        _path = [];
-        print('Start point reset: $_startPoint');
-      });
-    }
+  void _updatePath(List<Point> path, Point? startPoint, Point? endPoint) {
+    setState(() {
+      _path = path;
+      _startPoint = startPoint;
+      _endPoint = endPoint;
+    });
   }
 
   @override
@@ -113,6 +94,10 @@ class FloorplanPageState extends State<FloorplanPage> {
           IconButton(
             icon: Icon(Icons.arrow_downward),
             onPressed: _decrementFloor,
+          ),
+          IconButton(
+              icon: Icon(_isPathfindingEnabled ? Icons.map : Icons.map_outlined),
+            onPressed: _togglePathfinding,
           ),
         ],
       ),
@@ -130,10 +115,9 @@ class FloorplanPageState extends State<FloorplanPage> {
                 children: [
                   GestureDetector(
                     onTapDown: (TapDownDetails details) {
-                      onTapDown: _handleTap(details);
-           /*           final RenderBox box = context.findRenderObject() as RenderBox;
+                      final RenderBox box = context.findRenderObject() as RenderBox;
                       final Offset localOffset = box.globalToLocal(details.globalPosition);
-                      print('Coordinates: (${localOffset.dx}, ${localOffset.dy})');*/
+                      print('Coordinates: (${localOffset.dx}, ${localOffset.dy})');
                     },
                     child: InteractiveViewer(
                       boundaryMargin: EdgeInsets.all(20),
@@ -141,13 +125,19 @@ class FloorplanPageState extends State<FloorplanPage> {
                       maxScale: 4,
                       child: Stack(
                         children: [
-                          FloorplanImage(hospitalName: widget.hospitalName, floorNumber: _currentFloorNumber, path: _path),
+                          FloorplanImage(hospitalName: widget.hospitalName, 
+                              floorNumber: _currentFloorNumber,
+                              isPathfindingEnabled: _isPathfindingEnabled,
+                              path: _path,
+                              startPoint: _startPoint,
+                              endPoint: _endPoint,
+                              onPathUpdated: _updatePath),
                           RoomLocations(user: user, floorNumber: _currentFloorNumber),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ),  
+              ],
               ),
             );
           }

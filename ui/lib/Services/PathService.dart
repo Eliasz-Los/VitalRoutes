@@ -3,13 +3,13 @@ import 'package:ui/Models/Point.dart';
 
 class PathService {
   static final Dio _dio = Dio();
-  static Future<List<Point>> getPath(Point start, Point end, String hospitalName, String floorName) async {
-   
+  
+  static Future<List<Point>> getPath(Point start, Point end, String hospitalName, int floorNumber) async {
    final requestPayload = {
      'Start': start.toJson(),
     'End': end.toJson(),
     'HospitalName': hospitalName,
-    'FloorName': floorName,
+    'FloorNumber': floorNumber,
    };
    
    print('Request payload: $requestPayload');
