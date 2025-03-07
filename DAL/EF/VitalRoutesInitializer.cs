@@ -38,13 +38,14 @@ public class VitalRoutesInitializer
         UserLocation userLocation2 = new UserLocation(2, 2);
         UserLocation userLocation3 = new UserLocation(3, 3);
         UserLocation userLocation4 = new UserLocation(4, 4);
+        UserLocation userLocation5 = new UserLocation(4, 3);
 
         User user1 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc1"),"Gustavo", "Fring", "gustavo.fring@hotmail.com", "0412345678", Function.Doctor, userLocation3, hospital1)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
         };
-        User user2 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc2"),"Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com", "0495687812", Function.Doctor, userLocation4, hospital1)
+        User user2 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc2"),"Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com", "0495687812", Function.Nurse, userLocation4, hospital1)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
@@ -54,7 +55,12 @@ public class VitalRoutesInitializer
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
         };
-        User user4 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc4"),"Jesse", "Pinkman", "jesse.pinkman@hotmail.com", "0411228828", Function.HeadNurse, userLocation2, hospital1)
+        User user4 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc4"),"Jesse", "Pinkman", "jesse.pinkman@hotmail.com", "0411228828", Function.Patient, userLocation2, hospital1)
+        {
+            UnderSupervisions = new List<User>(),
+            Supervisors = new List<User>()
+        };
+        User user5 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc5"),"Hans", "Carlson", "hans.carlson@hotmail.com", "0411228838", Function.HeadNurse, userLocation5, hospital1)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
@@ -74,7 +80,7 @@ public class VitalRoutesInitializer
         
         context.Hospitals.Add(hospital1);
         context.UserLocations.AddRange(userLocation1, userLocation2, userLocation3, userLocation4);
-        context.Users.AddRange(user1, user2, user3, user4);
+        context.Users.AddRange(user1, user2, user3, user4, user5);
         context.Floorplans.AddRange(gpFloorplans);
         context.Rooms.AddRange(roomsFloorMinus1Groenplaats);
         context.SaveChanges();

@@ -14,6 +14,7 @@ import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../../Services/AuthService.dart';
 import '../../Services/UserService.dart';
+import '../Alert/AlertNursePage.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'MainScaffold.dart';
@@ -83,6 +84,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patients Overview', context, 7, false),
           if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse\'s Panel', context, 8, false), 
           if (domainUser != null && domainUser!.function == FunctionType.Headnurse) _buildDrawerItem(Icons.supervised_user_circle, 'Headnurse Panel', context, 9, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.warning, 'Alert Nurse', context, 10, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
           _buildDrawerItem(Icons.assignment, 'Room Assignment',context,6,false),
           Divider(),
@@ -189,6 +191,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return NursePanel();
       case 9:
         return HeadNursePanel();
+      case 10:
+        return AlertNursePage();
       default:
         return HomePage();
     }
