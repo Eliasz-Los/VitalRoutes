@@ -42,6 +42,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     if (widget.firebaseUser != null) {
       try {
         domainUser = await UserService.getUserByEmail(widget.firebaseUser!.email!);
+        Provider.of<UserProvider>(context, listen: false).setUser(widget.firebaseUser, domainUser);
         setState(() {});
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -54,7 +55,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Future<void> _signOut(BuildContext context) async {
     try {
       await AuthService.signOut();
-      Provider.of<UserProvider>(context, listen: false).setUser(null);
+      Provider.of<UserProvider>(context, listen: false).setUser(null, null);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen()),
@@ -82,11 +83,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Staff & Patients', context, 4, false),
           if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.dashboard, 'Doctor\'s panel', context, 3, false),
           if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patients Overview', context, 7, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse\'s Panel', context, 8, false), 
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse\'s Panel', context, 8, false),
           if (domainUser != null && domainUser!.function == FunctionType.Headnurse) _buildDrawerItem(Icons.supervised_user_circle, 'Headnurse Panel', context, 9, false),
           if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.warning, 'Alert Nurse', context, 10, false),
           _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
-          _buildDrawerItem(Icons.assignment, 'Room Assignment',context,6,false),
+          _buildDrawerItem(Icons.assignment, 'Room Assignment', context, 6, false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
@@ -182,7 +183,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       case 4:
         return OverviewPage();
       case 5:
-        return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,);
+        return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0);
       case 6:
         return RoomAssignmentsPage();
       case 7:
