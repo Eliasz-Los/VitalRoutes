@@ -4,8 +4,9 @@
   String status;
   final DateTime timeStamp;
   final String patientId;
-  final String patientName;     // Toegevoegd voor weergave in de notificatie
-  final String emergencyLevel;  // Bijvoorbeeld "Low", "Medium", "High"
+  final String patientName;
+  final String emergencyLevel;
+  final int roomNumber; // Toegevoegd
 
   NotificationModel({
     required this.id,
@@ -15,6 +16,7 @@
     required this.patientId,
     required this.patientName,
     required this.emergencyLevel,
+    required this.roomNumber,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
@@ -24,8 +26,9 @@
       status: json['status'],
       timeStamp: DateTime.parse(json['timeStamp']),
       patientId: json['patientId'],
-      patientName: json['patientName'] ?? 'Onbekend', // fallback als naam niet aanwezig is
-      emergencyLevel: json['emergencyLevel'] ?? 'Low',
+      patientName: json['patientName'] ?? 'Onbekend',
+      emergencyLevel: json['emergencyLevel'] ?? 'Onbekend',
+      roomNumber: json['roomNumber'] ?? -101,
     );
   }
 }

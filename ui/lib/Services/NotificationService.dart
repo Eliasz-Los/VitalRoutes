@@ -4,23 +4,14 @@ import '../Models/NotificationModel.dart';
 class NotificationService {
   static final Dio _dio = Dio();
 
-  static Future<List<NotificationModel>> getNotificationsForNurse(String nurseId) async {
-    try {
-      final response = await _dio.get(
-          'http://10.0.2.2:5028/api/Notification/nurse/$nurseId'
-      );
+  static Future<List<NotificationModel>> getNotificationsForNurse(String supervisorId) async {
+    final response = await _dio.get('http://10.0.2.2:5028/api/notification/supervisor/$supervisorId');
 
-      if (response.statusCode == 200) {
-        print('Notificaties ontvangen: ${response.data}');
-        List<dynamic> data = response.data;
-        return data.map((item) => NotificationModel.fromJson(item)).toList();
-      } else {
-        print('Fout bij ophalen notificaties: ${response.statusCode} - ${response.data}');
-        throw Exception('Failed to load notifications');
-      }
-    } catch (e) {
-      print('HTTP Request error: $e');
-      throw Exception('Error fetching notifications: $e');
+    if (response.statusCode == 200) {
+      List<dynamic> data = response.data;
+      return data.map((item) => NotificationModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load notifications');
     }
   }
 

@@ -1,114 +1,140 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:ui/Services/NotificationService.dart';
-import '../../Models/NotificationModel.dart';
+import 'package:ui/Services/UserService.dart';
+import 'package:ui/Models/NotificationModel.dart';
+import 'package:ui/Models/Users/User.dart' as domain;
+import 'package:ui/Pages/Users/UserProvider.dart';
 
 class NurseNotificationPage extends StatefulWidget {
-  final String nurseId;
-  const NurseNotificationPage({Key? key, required this.nurseId}) : super(key: key);
+  final String userId;
+
+  NurseNotificationPage({required this.userId, Key? key}) : super(key: key);
 
   @override
   _NurseNotificationPageState createState() => _NurseNotificationPageState();
 }
 
 class _NurseNotificationPageState extends State<NurseNotificationPage> {
+  User? firebaseUser;
+  domain.User? domainUser;
   List<NotificationModel> notifications = [];
-  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchNotifications();
+    firebaseUser = Provider.of<UserProvider>(context, listen: false).user;
+    _fetchDomainUser();
   }
 
-  Future<void> fetchNotifications() async {
-    try {
-      final data = await NotificationService.getNotificationsForNurse(widget.nurseId);
-      setState(() {
-        notifications = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      debugPrint('Error fetching notifications: $e');
+  Future<void> _fetchDomainUser() async {
+    if (firebaseUser != null) {
+      try {
+        domainUser = await UserService.getUserByEmail(firebaseUser!.email!);
+        Provider.of<UserProvider>(context, listen: false).setUser(firebaseUser, domainUser);
+        _fetchNotifications();
+        _startNotificationPolling();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching domain user: $e')),
+        );
+      }
     }
   }
 
-  Future<void> updateStatus(String notificationId, String newStatus) async {
-    try {
-      await NotificationService.updateNotificationStatus(notificationId, newStatus);
-      setState(() {
-        notifications.firstWhere((n) => n.id == notificationId).status = newStatus;
-      });
-    } catch (e) {
-      debugPrint('Error updating status: $e');
-    }
+  void _startNotificationPolling() {
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      if (mounted) {
+        _fetchNotifications();
+      } else {
+        timer.cancel();
+      }
+    });
   }
 
-  Widget buildNotificationCard(NotificationModel notification) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: ListTile(
-        contentPadding: EdgeInsets.all(12),
-        title: Text(
-          notification.patientName,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Emergency Level: ${notification.emergencyLevel}',
-              style: TextStyle(fontSize: 16, color: Colors.redAccent),
-            ),
-            const SizedBox(height: 4),
-            Text('Verzoek: ${notification.message}', style: TextStyle(fontSize: 14)),
-            const SizedBox(height: 4),
-            Text('Status: ${notification.status}', style: TextStyle(fontSize: 14)),
-          ],
-        ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (value) {
-            updateStatus(notification.id, value);
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'in behandeling',
-              child: Text('In behandeling'),
-            ),
-            const PopupMenuItem(
-              value: 'behandeld',
-              child: Text('Behandeld'),
-            ),
-          ],
-        ),
-        onTap: () {
-          // Hier kun je eventueel naar een detailpagina navigeren
-        },
-      ),
-    );
+  Future<void> _fetchNotifications() async {
+    if (domainUser != null) {
+      try {
+        final data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
+        setState(() {
+          notifications = data;
+        });
+      } catch (e) {
+        debugPrint('Error fetching notifications: $e');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meldingen'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: fetchNotifications,
-          ),
-        ],
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : notifications.isEmpty
-          ? const Center(child: Text('Geen meldingen'))
-          : ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) => buildNotificationCard(notifications[index]),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Notificaties',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: notifications.isEmpty
+                  ? Center(child: Text('Geen notificaties'))
+                  : ListView.builder(
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: Colors.amber.shade600, width: 2),
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.grey[300],
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                      title: Text(
+                        notification.patientName,
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Status: ${notification.status}',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                          Text(
+                            'Kamer: ${notification.roomNumber}',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                          Text(
+                            'Boodschap: ${notification.message}',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                      trailing: Icon(Icons.navigation, color: Colors.black),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NurseNotificationPage(userId: widget.userId),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -20,7 +20,7 @@ namespace DAL
             return notification;
         }
 
-        public async Task<IEnumerable<Notification>> GetNotificationsForNurse(Guid nurseId)
+        public async Task<IEnumerable<Notification>> GetNotificationsForSupervisor(Guid nurseId)
         {
             return await _context.Notifications
                 .Include(n => n.Emergency)

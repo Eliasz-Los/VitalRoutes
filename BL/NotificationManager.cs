@@ -73,19 +73,32 @@ namespace BL
         }
 
 
-        public async Task<IEnumerable<NotificationDto>> GetNotificationsForNurse(Guid nurseId)
+        public async Task<IEnumerable<NotificationDto>> GetNotificationsForSupervisor(Guid nurseId)
         {
-            var notifications = await _notificationRepository.GetNotificationsForNurse(nurseId);
-    
-            return notifications.Select(n => new NotificationDto
+            var notifications = await _notificationRepository.GetNotificationsForSupervisor(nurseId);
+
+            var result = new List<NotificationDto>();
+
+            foreach (var notification in notifications)
             {
-                Id = n.Id,
-                Message = n.Message,
-                Status = n.Status,
-                TimeStamp = n.TimeStamp,
-                PatientId = n.Emergency?.User?.Id ?? Guid.Empty
-            });
+                var patient = await _userRepository.ReadUserById(notification.Emergency.User.Id);
+                var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(patient.Id);
+
+                result.Add(new NotificationDto
+                {
+                    Id = notification.Id,
+                    Message = notification.Message,
+                    Status = notification.Status,
+                    TimeStamp = notification.TimeStamp,
+                    PatientId = patient.Id,
+                    PatientName = $"{patient.FirstName} {patient.LastName}",
+                    RoomNumber = room?.RoomNumber ?? -101
+                });
+            }
+
+            return result;
         }
+
 
 
         public async Task<NotificationDto> UpdateNotificationStatus(Guid notificationId, string newStatus)

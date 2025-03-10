@@ -23,17 +23,17 @@ namespace BackendApi.Controllers
             return Ok(created);
         }
         
-        [HttpGet("nurse/{nurseId}")]
-        public async Task<IActionResult> GetNotificationsForNurse(Guid nurseId)
+        [HttpGet("supervisor/{supervisorId}")]
+        public async Task<IActionResult> GetNotificationsForForSupervisor(Guid supervisorId)
         {
-            if (nurseId == Guid.Empty)
+            if (supervisorId == Guid.Empty)
             {
                 return BadRequest("NurseId is ongeldig!");
             }
 
             try
             {
-                var notifications = await _notificationManager.GetNotificationsForNurse(nurseId);
+                var notifications = await _notificationManager.GetNotificationsForSupervisor(supervisorId);
                 return Ok(notifications);
             }
             catch (Exception ex)
