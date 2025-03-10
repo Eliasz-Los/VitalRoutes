@@ -5,7 +5,7 @@ using Domain;
 using Domain.AStarAlgorithm;
 using PathfindingConsole;
 
-string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minus1C.png";
+string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minus1.png";
 
 //string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minus1C.png";
 /*
@@ -15,8 +15,15 @@ string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\Ba
  * (1507.0,1148.0),room -100 (2096.0,1466.0), room -111 (3427.0,1031.0), room -110 (3116.0,370.0), room -109 (2978.0,840.0)
  *  BL128: 3983.0 1058.0
  */
-Point startCoord = new Point(799.99, 1275.94);
-Point endCoord = new Point(3113.0, 1230.40);
+
+
+
+Stopwatch stopwatch = new Stopwatch();
+stopwatch.Start();
+
+Point startCoord = new Point(807.0, 1289.0);
+Point endCoord = new Point(3858.0, 262.0);
+
 var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, startCoord,endCoord);
 if (walkablePoints == null || walkablePoints.Count == 0)
 {
@@ -24,25 +31,23 @@ if (walkablePoints == null || walkablePoints.Count == 0)
     return;
 }
 
-var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1C.png" ) 
+var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" ) 
 {
     Points = walkablePoints
 };
 
-
 Console.WriteLine($"Start point: ({start.XWidth}, {start.YHeight})");
 Console.WriteLine($"End point: ({end.XWidth}, {end.YHeight})");
-Stopwatch stopwatch = new Stopwatch();
-stopwatch.Start();
 
-var path = AStarPathfinding.FindPath( start, end, walkablePoints);
+//var path = AStarPathfinding.FindPath( start, end, walkablePoints);
+var pathBidirectional = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
 
 
-// Draw the path on the floorplan image
-FloorplanVisualizer.DrawFloorplanWithPath(floorplan, path, start, end, imagePath);
 stopwatch.Stop();
 TimeSpan ts = stopwatch.Elapsed;
 string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
     ts.Hours, ts.Minutes, ts.Seconds,
     ts.Milliseconds / 10);
 Console.WriteLine("RunTime " + elapsedTime);
+// Draw the path on the floorplan image
+FloorplanVisualizer.DrawFloorplanWithPath(floorplan, pathBidirectional, start, end, imagePath);

@@ -38,7 +38,7 @@ class PathPainter extends CustomPainter {
 
     canvas.drawPath(pathToDraw, paint);
     
-    // Draw start and end points
+    //TODO draw start and end points
     final pointPaint = Paint()
       ..color = Colors.purple
       ..style = PaintingStyle.fill;

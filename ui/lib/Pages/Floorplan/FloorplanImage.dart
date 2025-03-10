@@ -10,6 +10,7 @@ import '../../models/floorplan.dart';
 import '../../services/floorplanservice.dart';
 import '../StateHandler/StateHandler.dart';
 
+//TODO: make it so that the image doesnt always need to reload
 class FloorplanImage extends StatefulWidget {
   final String hospitalName;
   final int floorNumber;
@@ -32,17 +33,15 @@ class FloorplanImage extends StatefulWidget {
   @override
   _FloorplanImageState createState() => _FloorplanImageState();
 }
+
 class _FloorplanImageState extends State<FloorplanImage> {
-  List<Point> _path = [];
-  Point? _startPoint;
-  Point? _endPoint;
 
   Future<void> _fetchPath(Point start, Point end) async{
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fetching path...'), backgroundColor: Colors.green, duration: Duration(seconds: 5),)
+    );
     final response = await PathService.getPath(start, end, widget.hospitalName, widget.floorNumber );
    widget.onPathUpdated(response,widget.startPoint, widget.endPoint);
-   /* setState(() {
-      _path = response;
-    });*/
   }
 
   void _handleTap(TapDownDetails details){
@@ -85,7 +84,7 @@ class _FloorplanImageState extends State<FloorplanImage> {
       });
     }*/
   }
-  
+
   Future<ui.Image> _loadImage(Uint8List imageData) async {
     final Completer<ui.Image> completer = Completer();
     ui.decodeImageFromList(imageData, (ui.Image img) {

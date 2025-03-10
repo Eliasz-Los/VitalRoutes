@@ -27,10 +27,8 @@ public class FloorplanAnalyzer
                     if (!IsBlackWall(pixel))
                     {
                         var point = new Point(x, y);
-                        lock (walkablePoints)
-                        {
-                            walkablePoints.Add(point);
-                        }
+                        walkablePoints.Add(point);
+                       
 
                         if (Math.Abs(x - startCoords.XWidth) < 1e-10 && Math.Abs(y - startCoords.YHeight) < 1e-10) startPoint = point;
                         if (Math.Abs(x - endCoords.XWidth) < 1e-10 && Math.Abs(y - endCoords.YHeight) < 1e-10) endPoint = point;
@@ -50,7 +48,7 @@ public class FloorplanAnalyzer
         }
         Console.WriteLine($"Total walkable points: {walkablePoints.Count}");
 
-        return (startPoint, endPoint, walkablePoints.ToHashSet());
+        return (startPoint, endPoint, new HashSet<Point>(walkablePoints) ); //walkablePoints.ToHashSet()
     }
 
     public static bool IsBlackWall(Rgba32 pixel)

@@ -1,4 +1,6 @@
-﻿namespace Domain.AStarAlgorithm;
+﻿using System.Collections.Concurrent;
+
+namespace Domain.AStarAlgorithm;
 
 public class AStarPathfinding
 {
@@ -7,7 +9,7 @@ public class AStarPathfinding
      *  zal het geen bottlenecks veroorzaken.
      *  Zo blijft de main thread vrij voor andere taken.
      */
-    public static List<Point> FindPath( Point start, Point end, HashSet<Point> walkablePoints)
+ public static List<Point> FindPath( Point start, Point end, HashSet<Point> walkablePoints)
     {
         if (!walkablePoints.Contains(start) || !walkablePoints.Contains(end))
         {
@@ -90,7 +92,12 @@ public class AStarPathfinding
 
     private static double GetDistance(Point a, Point b)
     {
-        return Math.Sqrt(Math.Pow(a.XWidth - b.XWidth, 2) + Math.Pow(a.YHeight - b.YHeight, 2));
+        //Van BL119 naar BL129 Kelder
+        //Manhattan distance 15.54 sec POLSKA GUROM
+        return Math.Abs(a.XWidth - b.XWidth) + Math.Abs(a.YHeight - b.YHeight);
+        
+        // Euclidean distance 27.2sec
+        //return Math.Sqrt(Math.Pow(a.XWidth - b.XWidth, 2) + Math.Pow(a.YHeight - b.YHeight, 2));
     }
 
     private static List<Point> RetracePath(Node startNode, Node endNode)

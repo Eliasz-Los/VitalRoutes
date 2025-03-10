@@ -16,7 +16,6 @@ public class PathManager
         _floorplanRepository = floorplanRepository;
     }
 
-    //TODO fix dto
     public async Task<List<Point>> FindPath(Point start, Point end, String folderPath, String hospitalName, int floorNumber)
     {
         //Getting the image path
