@@ -46,3 +46,5 @@ app.*.map.json
 
 # Flutter SDK
 ui/.idea/libraries/Dart_SDK.xml
+/.env.development
+/.env.production

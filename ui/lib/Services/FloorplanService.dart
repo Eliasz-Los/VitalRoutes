@@ -1,12 +1,14 @@
 ﻿import 'package:dio/dio.dart';
+import '../Config.dart';
 import '../models/floorplan.dart';
 
 class FloorplanService {
+  final String baseUrl = Config.apiUrl;
   final Dio _dio = Dio();
 
   Future<List<Floorplan>> getFloorplans(String hospitalName) async {
     try {
-      final response = await _dio.get('http://10.0.2.2:5028/api/Floorplan/getFloorPlans/$hospitalName');
+      final response = await _dio.get('$baseUrl/api/Floorplan/getFloorPlans/$hospitalName');
 
       if (response.statusCode == 200) {
         List<dynamic> body = response.data;
@@ -21,7 +23,7 @@ class FloorplanService {
 
   Future<Floorplan> getFloorplan(String hospitalName, int floorNumber) async {
     try {
-      final response = await _dio.get('http://10.0.2.2:5028/api/Floorplan/getFloorplan/$hospitalName/$floorNumber');
+      final response = await _dio.get('$baseUrl/api/Floorplan/getFloorplan/$hospitalName/$floorNumber');
 
       if (response.statusCode == 200) {
         return Floorplan.fromJson(response.data);

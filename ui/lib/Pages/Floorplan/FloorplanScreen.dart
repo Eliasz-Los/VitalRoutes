@@ -1,6 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../Services/BluetoothService.dart';
 import '../../Services/HospitalService.dart';
+import '../../Services/PermissionService.dart';
 import '../../Services/UserService.dart';
 import 'FloorplanImage.dart';
 import 'RoomLocations.dart';
@@ -20,6 +22,8 @@ class FloorplanPageState extends State<FloorplanPage> {
   late int _currentFloorNumber;
   late int _maxFloorNumber;
   late int _minFloorNumber;
+  final PermissionService _permissionService = PermissionService();
+  final BluetoothService _bluetoothService = BluetoothService();
 
   @override
   void initState() {
@@ -29,6 +33,7 @@ class FloorplanPageState extends State<FloorplanPage> {
       _minFloorNumber = hospital.minFloorNumber;
     });
     _currentFloorNumber = widget.initialFloorNumber;
+    _checkAndRequestPermissions();
   }
 
   Future<custom_user.User?> _getCurrentUser() async {
@@ -39,6 +44,12 @@ class FloorplanPageState extends State<FloorplanPage> {
     return null;
   }
 
+  void _checkAndRequestPermissions() async {
+    if (await _permissionService.requestPermissions()) {
+      _bluetoothService.startScan(context);
+    }
+  }
+  
   void _incrementFloor() {
     if(_currentFloorNumber < _maxFloorNumber) {
       setState(() {
