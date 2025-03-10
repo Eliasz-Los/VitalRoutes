@@ -46,6 +46,7 @@ public class UserRepository
     public async Task<User> ReadUserById(Guid id)
     {
         var user = await _context.Users
+            .Include(u => u.Room)
             .Include(u => u.UnderSupervisions)
             .Include(u => u.Supervisors)
             .FirstOrDefaultAsync(u => u.Id == id);

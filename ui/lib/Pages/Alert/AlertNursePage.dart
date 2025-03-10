@@ -3,6 +3,8 @@ import 'package:ui/Services/NotificationService.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 
+import '../../Services/RoomService.dart';
+
 class AlertNursePage extends StatefulWidget {
   @override
   _AlertNursePageState createState() => _AlertNursePageState();
@@ -156,31 +158,36 @@ class _AlertNursePageState extends State<AlertNursePage> {
 
             if (patient == null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Geen ingelogde patiënt gevonden.'))
+                const SnackBar(content: Text('Geen ingelogde patiënt gevonden.')),
               );
               return;
             }
 
-            final notificationData = {
-              'message': message,
-              'status': _selectedUrgency,
-              'timeStamp': DateTime.now().toIso8601String(),
-              'patientId': patient.id,
-            };
-
             try {
+              final roomService = RoomService();
+              final patientRoom = await roomService.getRoomByUserId(patient.id.toString());
+
+              final notificationData = {
+                'message': message,
+                'status': _selectedUrgency,
+                'timeStamp': DateTime.now().toIso8601String(),
+                'patientId': patient.id,
+                'roomNumber': patientRoom.roomNumber,
+              };
+
               await NotificationService.createNotification(notificationData);
+
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Verzoek succesvol verzonden!'))
+                const SnackBar(content: Text('Verzoek succesvol verzonden!')),
               );
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Fout bij verzenden: $e'))
+                SnackBar(content: Text('Fout bij verzenden: $e')),
               );
             }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Selecteer een urgentie en een verzoek.'))
+              const SnackBar(content: Text('Selecteer een urgentie en een verzoek.')),
             );
           }
         },
@@ -188,8 +195,12 @@ class _AlertNursePageState extends State<AlertNursePage> {
           backgroundColor: Colors.green,
           minimumSize: const Size(double.infinity, 50),
         ),
-        child: const Text('Versturen', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        child: const Text(
+          'Versturen',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
+
 }

@@ -64,4 +64,37 @@ public class RoomManager
 
         await _roomRepository.UpdateRoom(room);
     }
+    
+    public async Task<RoomDto?> GetRoomsWithPointAndAssignedPatientByUserId(Guid userId)
+    {
+        var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(userId);
+
+        if (room == null)
+        {
+            Console.WriteLine($"Geen kamer gevonden voor gebruiker met ID: {userId}");
+            return null;
+        }
+
+        return new RoomDto
+        {
+            Id = room.Id,
+            Point = new PointDto
+            {
+                Id = room.Point.Id,
+                XWidth = room.Point.XWidth,
+                YHeight = room.Point.YHeight
+            },
+            AssignedPatient = room.AssignedPatient != null ? new UserDto
+            {
+                Id = room.AssignedPatient.Id,
+                FirstName = room.AssignedPatient.FirstName,
+                LastName = room.AssignedPatient.LastName,
+                Email = room.AssignedPatient.Email,
+                TelephoneNr = room.AssignedPatient.TelephoneNr,
+                Function = room.AssignedPatient.Function
+            } : null,
+            RoomNumber = room.RoomNumber
+        };
+    }
+
 }

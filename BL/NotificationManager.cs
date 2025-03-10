@@ -9,54 +9,58 @@ namespace BL
     {
         private readonly NotificationRepository _notificationRepository;
         private readonly UserRepository _userRepository;
+        private readonly RoomRepository _roomRepository;
 
-        public NotificationManager(NotificationRepository notificationRepository, UserRepository userRepository)
+        public NotificationManager(NotificationRepository notificationRepository, UserRepository userRepository, RoomRepository roomRepository)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
+            _roomRepository = roomRepository;
         }
         
-        public async Task<NotificationDto> CreateNotification(NotificationDto dto)
+        public async Task<NotificationDto> CreateNotification(NotificationDto dto) 
         {
             if (dto == null)
+            {
                 throw new ArgumentNullException(nameof(dto), "NotificationDto mag niet null zijn");
+            }
 
-            // Controleer of de patiënt bestaat
             var patient = await _userRepository.ReadUserById(dto.PatientId);
+
             if (patient == null)
             {
-                throw new Exception($"Patiënt met ID {dto.PatientId} niet gevonden.");
+                var errorMessage = $" [FOUT] Patiënt met ID {dto.PatientId} niet gevonden.";
+                throw new Exception(errorMessage);
             }
-
-            // Controleer of er al een Emergency is voor deze patiënt
-            var emergency = await _notificationRepository.GetEmergencyByPatientId(dto.PatientId);
-
-            // Als er geen bestaande Emergency is, maak een nieuwe aan
-            if (emergency == null)
+            
+            EmergencyLevel emergencyLevel = dto.Status switch
             {
-                // Zet het juiste emergency level
-                EmergencyLevel emergencyLevel = EmergencyLevel.Low;
-                if (dto.Status == "Dringend") emergencyLevel = EmergencyLevel.Medium;
-                if (dto.Status == "Nood") emergencyLevel = EmergencyLevel.High;
-
-                emergency = new Emergency(-101, emergencyLevel)
-                {
-                    User = patient
-                };
-
-                // Sla de Emergency op in de database
-                emergency = await _notificationRepository.CreateEmergency(emergency);
-            }
-
-            // Maak de notificatie en koppel deze aan de Emergency
+                "Dringend" => EmergencyLevel.Medium,
+                "Nood" => EmergencyLevel.High,
+                _ => EmergencyLevel.Low
+            };
+            
+            var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(patient.Id);
+            int chamberNr = room?.RoomNumber ?? -101;
+            
             var notification = new Notification(dto.Message)
             {
                 Status = "te behandelen",
-                TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2),
-                Emergency = emergency  // Emergency is correct gekoppeld
+                TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2)
             };
 
-            await _notificationRepository.CreateNotification(notification);
+            notification = await _notificationRepository.CreateNotification(notification);
+
+            var emergency = new Emergency(chamberNr, emergencyLevel)
+            {
+                User = patient,
+                Notification = notification
+            };
+
+            emergency = await _notificationRepository.CreateEmergency(emergency);
+
+            notification.Emergency = emergency;
+            await _notificationRepository.UpdateNotification(notification);
 
             return new NotificationDto
             {
@@ -65,10 +69,10 @@ namespace BL
                 Status = notification.Status,
                 TimeStamp = notification.TimeStamp,
                 PatientId = emergency.User.Id
-            };
+            }; 
         }
 
-        
+
         public async Task<IEnumerable<NotificationDto>> GetNotificationsForNurse(Guid nurseId)
         {
             var notifications = await _notificationRepository.GetNotificationsForNurse(nurseId);
@@ -79,7 +83,7 @@ namespace BL
                 Message = n.Message,
                 Status = n.Status,
                 TimeStamp = n.TimeStamp,
-                PatientId = n.Emergency?.User?.Id ?? Guid.Empty // Voorkom NullReferenceException
+                PatientId = n.Emergency?.User?.Id ?? Guid.Empty
             });
         }
 
@@ -94,7 +98,7 @@ namespace BL
                 Message = updated.Message,
                 Status = updated.Status,
                 TimeStamp = updated.TimeStamp,
-                PatientId = updated.Emergency?.User?.Id ?? Guid.Empty // Voorkom null-crash
+                PatientId = updated.Emergency?.User?.Id ?? Guid.Empty
             };
         }
 

@@ -22,13 +22,21 @@ public class RoomRepository
             .Where(r => r.Point.Floorplan.FloorNumber == floorNumber)
             .ToList();
     }
+    
+    public async Task<Room?> ReadRoomWithPointAndAssignedPatientByUserId(Guid userId)
+    {
+        return await _context.Rooms
+            .Include(r => r.AssignedPatient)
+            .Include(r => r.Point)
+            .FirstOrDefaultAsync(r => r.AssignedPatient != null && r.AssignedPatient.Id == userId);
+    }
 
     public async Task UpdateRoom(Room room)
     {
         _context.Rooms.Update(room);
         await _context.SaveChangesAsync();
     }
-
+    
     public async Task<Room> ReadRoomWithAssignedPatient(Guid id)
     {
         var room = await _context.Rooms
@@ -42,4 +50,19 @@ public class RoomRepository
 
         return room;
     }
+
+    public async Task<Room?> ReadRoomById(Guid? patientRoomId)
+    {
+        if (patientRoomId == null)
+        {
+            return null; 
+        }
+
+        var room = await _context.Rooms
+            .Include(r => r.Point)
+            .FirstOrDefaultAsync(r => r.Id == patientRoomId);
+
+        return room;
+    }
+
 }

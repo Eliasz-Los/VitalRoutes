@@ -40,27 +40,27 @@ public class VitalRoutesInitializer
         UserLocation userLocation4 = new UserLocation(4, 4);
         UserLocation userLocation5 = new UserLocation(4, 3);
 
-        User user1 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc1"),"Gustavo", "Fring", "gustavo.fring@hotmail.com", "0412345678", Function.Doctor, userLocation3, hospital1)
+        User user1 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc1"),"Gustavo", "Fring", "gustavo.fring@hotmail.com", "0412345678", Function.Doctor, userLocation3, hospital1, null)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
         };
-        User user2 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc2"),"Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com", "0495687812", Function.Nurse, userLocation4, hospital1)
+        User user2 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc2"),"Mike", "Ehrmentraut", "mike.erhmrgir@hotmail.com", "0495687812", Function.Nurse, userLocation4, hospital1, null)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
         };
-        User user3 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc3"),"Walter", "heisenberg", "walter.burgir@hotmail.com", "0411228828", Function.Patient, userLocation1, hospital1)
+        User user3 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc3"),"Walter", "heisenberg", "walter.burgir@hotmail.com", "0411228828", Function.Patient, userLocation1, hospital1, null)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
         };
-        User user4 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc4"),"Jesse", "Pinkman", "jesse.pinkman@hotmail.com", "0411228828", Function.Patient, userLocation2, hospital1)
+        User user4 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc4"),"Jesse", "Pinkman", "jesse.pinkman@hotmail.com", "0411228828", Function.Patient, userLocation2, hospital1, null)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
         };
-        User user5 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc5"),"Hans", "Carlson", "hans.carlson@hotmail.com", "0411228838", Function.HeadNurse, userLocation5, hospital1)
+        User user5 = new User(Guid.Parse("019527ff-c8a3-79e7-b7db-c76ade287fc5"),"Hans", "Carlson", "hans.carlson@hotmail.com", "0411228838", Function.HeadNurse, userLocation5, hospital1, null)
         {
             UnderSupervisions = new List<User>(),
             Supervisors = new List<User>()
@@ -68,8 +68,8 @@ public class VitalRoutesInitializer
         
         List<Room> roomsFloorMinus1Groenplaats = new List<Room>
         {
-            new (new Point(100.01, 168.01, floorplanGPMinus1), user1, -102),
-            new (new Point(147.01, 168.01, floorplanGPMinus1), user2, -101),
+            new (new Point(100.01, 168.01, floorplanGPMinus1), user3, -102),
+            new (new Point(147.01, 168.01, floorplanGPMinus1), user4, -101),
             new (new Point(194.01, 168.01, floorplanGPMinus1), null, -100),
             new (new Point(246.01, 168.01, floorplanGPMinus1), null, -114),
             new (new Point(298.01, 168.01, floorplanGPMinus1), null, -113),
