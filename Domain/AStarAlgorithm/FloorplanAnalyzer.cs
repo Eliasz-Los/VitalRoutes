@@ -34,10 +34,10 @@ public class FloorplanAnalyzer
                         if (Math.Abs(x - endCoords.XWidth) < 1e-10 && Math.Abs(y - endCoords.YHeight) < 1e-10) endPoint = point;
                     }
                 }
-                if (x % 100 == 0)
+                /*if (x % 100 == 0)
                 {
                     Console.WriteLine($"Processed {x} columns. Out of {image.Width}."); // Progress indicator
-                }
+                }*/
             });
             
         }

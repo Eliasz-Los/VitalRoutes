@@ -29,7 +29,8 @@ public class PathManager
             return new List<Point>();
         }
         //Navigating the path
-        var path = await Task.Run(() => AStarPathfinding.FindPath(startP, endP, walkablePoints));
+       // var path = await Task.Run(() => AStarPathfinding.FindPath(startP, endP, walkablePoints));
+        var path = await Task.Run(() => AStarBidirectional.FindPathBidirectional(startP, endP, walkablePoints));
         _logger.LogInformation($"Path found: {path} {path.Count}");
         return path;
     }

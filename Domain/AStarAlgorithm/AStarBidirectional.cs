@@ -5,6 +5,7 @@ namespace Domain.AStarAlgorithm;
 public class AStarBidirectional
 {
 
+    //TODO: heeft wel problemen met muren
 public static List<Point> FindPathBidirectional(Point start, Point end, HashSet<Point> walkablePoints)
 {
     if (!walkablePoints.Contains(start) || !walkablePoints.Contains(end))

@@ -35,13 +35,16 @@ class FloorplanImage extends StatefulWidget {
 }
 
 class _FloorplanImageState extends State<FloorplanImage> {
-
+  
   Future<void> _fetchPath(Point start, Point end) async{
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fetching path...'), backgroundColor: Colors.green, duration: Duration(seconds: 5),)
+        SnackBar(content: Text('Fetching path...'), backgroundColor: Colors.green, duration: Duration(seconds: 3),)
     );
+    
     final response = await PathService.getPath(start, end, widget.hospitalName, widget.floorNumber );
-   widget.onPathUpdated(response,widget.startPoint, widget.endPoint);
+    widget.onPathUpdated(response,widget.startPoint, widget.endPoint);
+   
+   
   }
 
   void _handleTap(TapDownDetails details){
@@ -62,27 +65,6 @@ class _FloorplanImageState extends State<FloorplanImage> {
     } else {
       widget.onPathUpdated([], null, null);
     }
-    
- /*   if(_startPoint == null){
-      setState(() {
-        _startPoint = point;
-        print('Start point set: $_startPoint');
-      });
-    } else if(_endPoint == null){
-      setState(() {
-        _endPoint = point;
-        print('End point set: $_endPoint');
-        _fetchPath(_startPoint!, _endPoint!);
-
-      });
-    } else {
-      setState(() {
-        _startPoint = point;
-        _endPoint = null;
-        _path = [];
-        print('Start point reset: $_startPoint');
-      });
-    }*/
   }
 
   Future<ui.Image> _loadImage(Uint8List imageData) async {
