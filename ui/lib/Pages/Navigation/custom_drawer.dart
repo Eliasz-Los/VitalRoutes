@@ -81,7 +81,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           _buildDrawerItem(Icons.home, 'Home', context, 0, false),
           if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
           if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
-          if (domainUser != null) _buildDrawerItem(Icons.notifications, 'Notifications', context, 11, false),
+          if (domainUser != null && domainUser!.function != FunctionType.SystemAdmin) _buildDrawerItem(Icons.notifications, 'Notifications', context, 11, false),
           if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Staff & Patients', context, 4, false),
           if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Doctor\'s panel', context, 3, false),
           if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patients Overview', context, 7, false),

@@ -16,7 +16,7 @@ Content-Type: application/json
 "behandeld"
 
 ### Get Notifications for Nurse or doctor
-GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc1
+GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc4
 Accept: application/json
 Content-Type: application/json
 

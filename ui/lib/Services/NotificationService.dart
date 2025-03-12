@@ -4,8 +4,8 @@ import '../Models/NotificationModel.dart';
 class NotificationService {
   static final Dio _dio = Dio();
 
-  static Future<List<NotificationModel>> getNotificationsForNurse(String supervisorId) async {
-    final response = await _dio.get('http://10.0.2.2:5028/api/notification/supervisor/$supervisorId');
+  static Future<List<NotificationModel>> getNotificationsForNurse(String nurseId) async {
+    final response = await _dio.get('http://10.0.2.2:5028/api/notification/nurse/$nurseId');
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data;
