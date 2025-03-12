@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ui/Models/Point.dart';
+import 'package:ui/Services/PathService.dart';
 import 'package:ui/Pages/Floorplan/UserPosition.dart';
 import '../../Services/BluetoothService.dart';
 import '../../Services/HospitalService.dart';
@@ -25,6 +27,10 @@ class FloorplanPageState extends State<FloorplanPage> {
   late int _minFloorNumber;
   final PermissionService _permissionService = PermissionService();
   final BluetoothService _bluetoothService = BluetoothService();
+  bool _isPathfindingEnabled = false;
+  List<Point> _path = [];
+  Point? _startPoint;
+  Point? _endPoint;
 
   @override
   void initState() {
@@ -51,10 +57,14 @@ class FloorplanPageState extends State<FloorplanPage> {
     }
   }
   
+  
   void _incrementFloor() {
     if(_currentFloorNumber < _maxFloorNumber) {
       setState(() {
         _currentFloorNumber++;
+        _path = [];
+        _startPoint = null;
+        _endPoint = null;
       });
     }
   }
@@ -63,8 +73,25 @@ class FloorplanPageState extends State<FloorplanPage> {
     if(_currentFloorNumber > _minFloorNumber) {
       setState(() {
         _currentFloorNumber--;
+        _path = [];
+        _startPoint = null;
+        _endPoint = null;
       });
     }
+  }
+  
+  void _togglePathfinding() {
+    setState(() {
+      _isPathfindingEnabled = !_isPathfindingEnabled;
+    });
+  }
+
+  void _updatePath(List<Point> path, startPoint, endPoint) {
+    setState(() {
+      _path = path;
+      _startPoint = startPoint;
+      _endPoint = endPoint;
+    });
   }
 
   @override
@@ -80,6 +107,10 @@ class FloorplanPageState extends State<FloorplanPage> {
           IconButton(
             icon: Icon(Icons.arrow_downward),
             onPressed: _decrementFloor,
+          ),
+          IconButton(
+              icon: Icon(_isPathfindingEnabled ? Icons.map : Icons.map_outlined),
+            onPressed: _togglePathfinding,
           ),
         ],
       ),
@@ -107,14 +138,20 @@ class FloorplanPageState extends State<FloorplanPage> {
                       maxScale: 4,
                       child: Stack(
                         children: [
-                          FloorplanImage(hospitalName: widget.hospitalName, floorNumber: _currentFloorNumber),
+                          FloorplanImage(hospitalName: widget.hospitalName, 
+                              floorNumber: _currentFloorNumber,
+                              isPathfindingEnabled: _isPathfindingEnabled,
+                              path: _path,
+                              startPoint: _startPoint,
+                              endPoint: _endPoint,
+                              onPathUpdated: _updatePath),
                           RoomLocations(user: user, floorNumber: _currentFloorNumber),
                           UserPosition()
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ),  
+              ],
               ),
             );
           }

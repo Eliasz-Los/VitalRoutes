@@ -1,6 +1,7 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ui/Pages/Floorplan/FloorplanScreen.dart';
 import '../../Services/UserService.dart';
 import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
@@ -290,9 +291,12 @@ class _OverviewPageState extends State<OverviewPage> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.mapMarkerAlt, size: 24, color: Colors.blue),
+                  icon: Icon(FontAwesomeIcons.locationDot, size: 24, color: Colors.blue),
                   onPressed: () {
-                    // mss map-functionaliteit toevoegen
+                    //TODO doorsturen naar FloorplanScreen
+                  /*  Navigator.push(context, 
+                        MaterialPageRoute(builder: (context) => FloorplanPage(hospitalName: "UZ Groenplaats",
+                            initialFloorNumber: -1, start)));*/
                   },
                 ),
               ],

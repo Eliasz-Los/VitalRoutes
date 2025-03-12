@@ -21,4 +21,20 @@ public class Point
         YHeight = yHeight;
         Floorplan = floorplan;
     }
+
+    public bool Equals(Point? other)
+    {
+        if (other is null) return false;
+        const double tolerance = 1e-10;
+            return Math.Abs(XWidth - other.XWidth) < tolerance
+                   && Math.Abs(YHeight - other.YHeight) < tolerance;
+       
+    }
+
+    public override bool Equals(object? obj) => obj is Point other && Equals(other);
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(XWidth, YHeight);
+    }
 }
