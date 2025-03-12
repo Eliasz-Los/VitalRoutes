@@ -30,5 +30,21 @@ class RoomService {
       throw Exception('Failed to assign patient');
     }
   }
-  
+
+   Future<Room> getRoomByUserId(String userId) async {
+    try {
+      final response = await _dio.get(
+        'http://10.0.2.2:5028/api/Room/getRoomByUser/$userId',
+      );
+      if (response.statusCode == 200) {
+        return Room.fromJson(response.data);
+      } else {
+        throw Exception('Failed to get room for user with id $userId');
+      }
+    } catch (e) {
+      throw Exception('Error fetching room by userId $userId: $e');
+    }
+  }
+
+
 }

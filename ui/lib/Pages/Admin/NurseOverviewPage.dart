@@ -1,9 +1,12 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ui/Models/Room.dart';
+import 'package:ui/Services/RoomService.dart';
 import '../../Services/UserService.dart';
 import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
+import '../Floorplan/FloorplanScreen.dart';
 
 class NurseOverviewPage extends StatefulWidget {
   @override
@@ -15,6 +18,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
   List<domain.User> filteredPatients = [];
   bool isLoading = true;
   TextEditingController searchController = TextEditingController();
+  final RoomService roomService = RoomService();
 
   @override
   void initState() {
@@ -250,10 +254,30 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.mapMarkerAlt, size: 24, color: Colors.blue),
+                  //TODO: doorverwijzen naar de floorplan en naar patient zijn kamer
+                  icon: Icon(FontAwesomeIcons.locationDot, size: 24, color: Colors.blue),
                   onPressed: () {
-                    // Eventueeel map-functionaliteit toevoegen
-                  },
+                    Room userRoom = roomService.getRoomByUserId(user.id!) as Room;
+                    int floorNumber = 1;  // Default
+                    if (userRoom.roomNumber < 0) {
+                      // For negative numbers, take first digit after minus
+                      String numStr = userRoom.roomNumber.abs().toString();
+                      floorNumber = int.parse(numStr[0]);
+                    } else {
+                      // For positive numbers, take first digit
+                      String numStr = userRoom.roomNumber.toString();
+                      floorNumber = int.parse(numStr[0]);
+                    }
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FloorplanPage(
+                                hospitalName: "UZ Groenplaats",
+                                initialFloorNumber: floorNumber,
+                              )
+                          )
+                      );
+                    },
                 ),
               ],
             ),
