@@ -1,5 +1,6 @@
 ﻿using DAL.EF;
 using Domain;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL
@@ -20,13 +21,33 @@ namespace DAL
             return notification;
         }
 
-        public async Task<IEnumerable<Notification>> GetNotificationsForSupervisor(Guid nurseId)
+        public async Task<IEnumerable<Notification>> GetNotificationsForNurse(Guid nurseId)
         {
             return await _context.Notifications
                 .Include(n => n.Emergency)
                 .ThenInclude(e => e.User)
                 .ThenInclude(u => u.Supervisors)
-                .Where(n => n.Emergency.User.Supervisors.Any(s => s.Id == nurseId))
+                .Where(n =>
+                    n.Emergency.User.Function == Function.Patient 
+                    && n.Emergency.User.Supervisors.Any(s => 
+                            s.Id == nurseId 
+                            && (s.Function == Function.Nurse || s.Function == Function.HeadNurse))
+                    )
+                .OrderByDescending(n => n.TimeStamp)
+                .ToListAsync();
+        }
+        
+        public async Task<IEnumerable<Notification>> GetNotificationsForDoctor(Guid doctorId)
+        {
+            return await _context.Notifications
+                .Include(n => n.Emergency)
+                .ThenInclude(e => e.User)
+                .ThenInclude(u => u.Supervisors)
+                .Where(n =>
+                    (n.Emergency.User.Function == Function.Nurse 
+                     || n.Emergency.User.Function == Function.HeadNurse)
+                    && n.Emergency.User.Supervisors.Any(s => s.Id == doctorId)
+                )
                 .OrderByDescending(n => n.TimeStamp)
                 .ToListAsync();
         }

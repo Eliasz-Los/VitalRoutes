@@ -47,6 +47,7 @@ public class UserRepository
     {
         var user = await _context.Users
             .Include(u => u.Room)
+            .ThenInclude(r => r.Point)
             .Include(u => u.UnderSupervisions)
             .Include(u => u.Supervisors)
             .FirstOrDefaultAsync(u => u.Id == id);

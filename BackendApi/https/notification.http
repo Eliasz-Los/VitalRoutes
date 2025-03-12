@@ -2,15 +2,12 @@
 Content-Type: application/json
 
 {
-  "message": "Ik heb pijn, graag hulp",
+  "message": "Dringend - toilet",
   "status": "te behandelen",
-  "timeStamp": "2024-03-08T12:00:00Z",
+  "PatientName": "Walter heisenberg",
+  "timeStamp": "2024-03-11T12:00:00Z",
   "patientId": "019527ff-c8a3-79e7-b7db-c76ade287fc3"
 }
-
-
-### Get Notifications for Nurse
-GET http://localhost:5028/api/Notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc2
 
 ### Update status of notification
 PUT http://localhost:5028/api/Notification/019577cd-753c-74c9-be19-e1c8346d49b8/status
@@ -18,8 +15,8 @@ Content-Type: application/json
 
 "behandeld"
 
-### Get Notifications for Nurse
-GET http://localhost:5028/api/notification/supervisor/019527ff-c8a3-79e7-b7db-c76ade287fc1
+### Get Notifications for Nurse or doctor
+GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc1
 Accept: application/json
 Content-Type: application/json
 

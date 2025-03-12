@@ -68,20 +68,21 @@ namespace BL
                 Message = notification.Message,
                 Status = notification.Status,
                 TimeStamp = notification.TimeStamp,
-                PatientId = emergency.User.Id
+                PatientId = emergency.User.Id,
+                RoomNumber = chamberNr
             }; 
         }
-
-
-        public async Task<IEnumerable<NotificationDto>> GetNotificationsForSupervisor(Guid nurseId)
+        
+        public async Task<IEnumerable<NotificationDto>> GetNotificationsForNurse(Guid nurseId)
         {
-            var notifications = await _notificationRepository.GetNotificationsForSupervisor(nurseId);
-
+            var notifications = await _notificationRepository.GetNotificationsForNurse(nurseId);
             var result = new List<NotificationDto>();
 
             foreach (var notification in notifications)
             {
-                var patient = await _userRepository.ReadUserById(notification.Emergency.User.Id);
+                var patient = notification.Emergency?.User;
+                if (patient == null) continue;
+
                 var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(patient.Id);
 
                 result.Add(new NotificationDto
@@ -99,12 +100,42 @@ namespace BL
             return result;
         }
 
+        public async Task<IEnumerable<NotificationDto>> GetNotificationsForDoctor(Guid doctorId)
+        {
+            var notifications = await _notificationRepository.GetNotificationsForDoctor(doctorId);
+            var result = new List<NotificationDto>();
+
+            foreach (var notification in notifications)
+            {
+                var nurseOrHeadNurse = notification.Emergency?.User;
+                if (nurseOrHeadNurse == null) continue;
+
+                // Als je extra informatie nodig hebt, kan je die hier ophalen
+                var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(nurseOrHeadNurse.Id);
+
+                result.Add(new NotificationDto
+                {
+                    Id = notification.Id,
+                    Message = notification.Message,
+                    Status = notification.Status,
+                    TimeStamp = notification.TimeStamp,
+                    // In dit geval is "PatientId" eigenlijk de ID van de Nurse/HeadNurse
+                    // omdat die hier de 'afzender' is. Eventueel kun je hiervoor
+                    // een aparte property maken in de DTO.
+                    PatientId = nurseOrHeadNurse.Id,
+                    PatientName = $"{nurseOrHeadNurse.FirstName} {nurseOrHeadNurse.LastName}",
+                    RoomNumber = room?.RoomNumber ?? -101
+                });
+            }
+
+            return result;
+        }
 
 
         public async Task<NotificationDto> UpdateNotificationStatus(Guid notificationId, string newStatus)
         {
             var updated = await _notificationRepository.UpdateNotificationStatus(notificationId, newStatus);
-    
+
             return new NotificationDto
             {
                 Id = updated.Id,

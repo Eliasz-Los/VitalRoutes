@@ -149,9 +149,7 @@ class _AlertNursePageState extends State<AlertNursePage> {
           if (_selectedUrgency != null &&
               (_selectedRequest != null || _customRequestController.text.isNotEmpty)) {
 
-            String message = _selectedUrgency! +
-                ' - ' +
-                (_customRequestController.text.isNotEmpty ? _customRequestController.text : _selectedRequest!);
+            String message = _selectedUrgency! + ' - ' + (_customRequestController.text.isNotEmpty ? _customRequestController.text : _selectedRequest!);
 
             final userProvider = Provider.of<UserProvider>(context, listen: false);
             final patient = userProvider.domainUser;
@@ -173,8 +171,10 @@ class _AlertNursePageState extends State<AlertNursePage> {
                 'timeStamp': DateTime.now().toIso8601String(),
                 'patientId': patient.id,
                 'roomNumber': patientRoom.roomNumber,
+                'patientName': (patient.firstName ?? '') + ' ' + (patient.lastName ?? ''),
               };
 
+              print('Sending notification data: $notificationData');
               await NotificationService.createNotification(notificationData);
 
               ScaffoldMessenger.of(context).showSnackBar(

@@ -8,6 +8,8 @@ import 'package:ui/Models/NotificationModel.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
 import 'package:ui/Pages/Users/UserProvider.dart';
 
+import '../Navigation/MainScaffold.dart';
+
 class NurseNotificationPage extends StatefulWidget {
   final String userId;
 
@@ -124,7 +126,10 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => NurseNotificationPage(userId: widget.userId),
+                            builder: (context) => MainScaffold(
+                              body: NurseNotificationPage(userId: widget.userId),
+                              hasScaffold: true,
+                            ),
                           ),
                         );
                       },
