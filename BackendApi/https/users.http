@@ -58,4 +58,3 @@ Content-Type: application/json
 POST http://localhost:5028/api/User/019527ff-c8a3-79e7-b7db-c76ade287fc1/removeUnderSupervision/019527ff-c8a3-79e7-b7db-c76ade287fc4
 Content-Type: application/json
 
-

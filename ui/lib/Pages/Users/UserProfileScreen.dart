@@ -99,7 +99,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           } else if (!snapshot.hasData) {
             return Center(child: Text('No user data found'));
           } else {
-            return Padding(
+            return SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,

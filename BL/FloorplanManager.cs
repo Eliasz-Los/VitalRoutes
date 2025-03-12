@@ -51,7 +51,7 @@ namespace BL
                     Name = floorPlan.Name,
                     FloorNumber = floorPlan.FloorNumber,
                     Scale = floorPlan.Scale,
-                    Nodes = floorPlan.Nodes?.Select(node => new PointDto
+                    Nodes = floorPlan.Points?.Select(node => new PointDto
                     {
                         Id = node.Id,
                         XWidth = node.XWidth,
@@ -92,7 +92,7 @@ namespace BL
                 Name = floorPlan.Name,
                 FloorNumber = floorPlan.FloorNumber,
                 Scale = floorPlan.Scale,
-                Nodes = floorPlan.Nodes?.Select(node => new PointDto
+                Nodes = floorPlan.Points?.Select(node => new PointDto
                 {
                     Id = node.Id,
                     XWidth = node.XWidth,

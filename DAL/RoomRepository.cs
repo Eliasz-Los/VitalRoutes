@@ -31,6 +31,15 @@ public class RoomRepository
             .FirstOrDefaultAsync(r => r.AssignedPatient != null && r.AssignedPatient.Id == userId);
     }
 
+    public async Task<Room?> ReadRoomWithPointAndAssignedPatientByUserId(Guid userId)
+    {
+        return await _context.Rooms
+            .Include(r => r.AssignedPatient)
+            .Include(r => r.Point)
+            .FirstOrDefaultAsync(r => r.AssignedPatient != null && r.AssignedPatient.Id == userId);
+    }
+
+    
     public async Task UpdateRoom(Room room)
     {
         _context.Rooms.Update(room);

@@ -96,5 +96,4 @@ public class RoomManager
             RoomNumber = room.RoomNumber
         };
     }
-
 }
