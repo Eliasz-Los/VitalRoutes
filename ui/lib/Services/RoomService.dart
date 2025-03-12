@@ -31,7 +31,7 @@ class RoomService {
     }
   }
 
-   Future<Room> getRoomByUserId(String userId) async {
+  Future<Room> getRoomByUserId(String userId) async {
     try {
       final response = await _dio.get(
         'http://10.0.2.2:5028/api/Room/getRoomByUser/$userId',
@@ -45,6 +45,5 @@ class RoomService {
       throw Exception('Error fetching room by userId $userId: $e');
     }
   }
-
-
+  
 }

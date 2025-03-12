@@ -1,0 +1,4 @@
+﻿### Get Notifications for Nurse
+GET http://localhost:5028/api/notification/supervisor/019527ff-c8a3-79e7-b7db-c76ade287fc1
+Accept: application/json
+Content-Type: application/json
