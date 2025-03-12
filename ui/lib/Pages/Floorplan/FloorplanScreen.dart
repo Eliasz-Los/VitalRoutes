@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ui/Pages/Floorplan/UserPosition.dart';
 import '../../Services/BluetoothService.dart';
 import '../../Services/HospitalService.dart';
 import '../../Services/PermissionService.dart';
@@ -108,6 +109,7 @@ class FloorplanPageState extends State<FloorplanPage> {
                         children: [
                           FloorplanImage(hospitalName: widget.hospitalName, floorNumber: _currentFloorNumber),
                           RoomLocations(user: user, floorNumber: _currentFloorNumber),
+                          UserPosition()
                         ],
                       ),
                     ),

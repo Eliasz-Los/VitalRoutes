@@ -2,7 +2,7 @@
 
 class PermissionService {
   Future<bool> requestPermissions() async {
-    if (await _arePermissionsGranted()) {
+    if (await arePermissionsGranted()) {
       print("✅ All permissions are already granted.");
       return true;
     }
@@ -27,7 +27,7 @@ class PermissionService {
     return allGranted;
   }
 
-  Future<bool> _arePermissionsGranted() async {
+  Future<bool> arePermissionsGranted() async {
     return await Permission.bluetoothScan.isGranted &&
         await Permission.bluetoothConnect.isGranted &&
         await Permission.locationWhenInUse.isGranted;

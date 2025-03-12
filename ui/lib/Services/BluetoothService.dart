@@ -1,15 +1,22 @@
 ﻿import 'dart:async';
-
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:ui/Services/PermissionService.dart';
+import 'package:ui/Services/PositioningService.dart';
 
 class BluetoothService {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
+  final PositioningService _positioningService = PositioningService();
   StreamSubscription? _scanSubscription;
+  final Set<DiscoveredDevice> _scannedBeacons = {};
+  final Map<String, Offset> _beaconPositions = {
+    'Pepes in action': Offset(100.01, 168.01),
+    'Pepes in action2': Offset(305.01, 128.01),
+    'Pepes in action3': Offset(120.01, 115.01),
+  };
 
   Future<void> startScan(BuildContext context) async {
-    if (!await _checkPermissions()) {
+    if (!await PermissionService().arePermissionsGranted()) {
       _showPermissionDialog(context);
       return;
     }
@@ -21,7 +28,9 @@ class BluetoothService {
     }
     print('Scanning for devices...');
     _scanSubscription = _ble.scanForDevices(withServices: []).listen((device) {
-      if (device.name == "Pepes in action") {
+      if (_beaconPositions.containsKey(device.name)) {
+        _scannedBeacons.removeWhere((beacon) => beacon.name == device.name);
+        _scannedBeacons.add(device);
         print('Device found: ${device.id}, RSSI: ${device.rssi}');
       }
     });
@@ -32,12 +41,9 @@ class BluetoothService {
     _scanSubscription = null;
   }
 
-  Future<bool> _checkPermissions() async {
-    return await Permission.bluetoothScan.isGranted &&
-        await Permission.bluetoothConnect.isGranted &&
-        await Permission.locationWhenInUse.isGranted;
+  Map<String, double> getEstimatedPosition() {
+    return _positioningService.estimatePosition(_scannedBeacons.toList(), _beaconPositions);
   }
-
 
   void _showBluetoothDialog(BuildContext context) {
     showDialog(
