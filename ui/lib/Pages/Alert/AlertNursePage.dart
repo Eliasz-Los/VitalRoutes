@@ -18,6 +18,7 @@ class _AlertNursePageState extends State<AlertNursePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -25,17 +26,17 @@ class _AlertNursePageState extends State<AlertNursePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTitle(),
-            const SizedBox(height: 40),
+            const SizedBox(height: 25),
             _buildSectionTitle('Urgentie'),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             _buildUrgencyButtons(),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             _buildSectionTitle('Verzoek'),
             const SizedBox(height: 5),
             _buildRequestOptions(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             _buildCustomRequestField(),
-            const SizedBox(height: 40),
+            const SizedBox(height: 20),
             _buildSendButton(),
           ],
         ),
