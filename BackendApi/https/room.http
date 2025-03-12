@@ -1,2 +1,6 @@
 ﻿### Get all rooms
 GET http://localhost:5028/api/Room/getRooms
+
+### Get room by patientId
+GET http://localhost:5028/api/Room/getRoomByUser/019527ff-c8a3-79e7-b7db-c76ade287fc3
+Content-Type: application/json

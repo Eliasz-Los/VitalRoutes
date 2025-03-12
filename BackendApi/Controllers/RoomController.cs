@@ -35,4 +35,18 @@ public class RoomController : Controller
             return BadRequest(ex.Message);
         }
     }
+    
+    [HttpGet("getRoomByUser/{userId}")]
+    public async Task<IActionResult> GetRoomByUser(Guid userId)
+    {
+        var room = await _roomManager.GetRoomsWithPointAndAssignedPatientByUserId(userId);
+
+        if (room == null)
+        {
+            return NotFound($"⚠Geen kamer gevonden voor gebruiker met ID: {userId}");
+        }
+
+        return Ok(room);
+    }
+
 }

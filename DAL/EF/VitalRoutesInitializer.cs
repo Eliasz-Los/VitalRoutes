@@ -62,16 +62,25 @@ public class VitalRoutesInitializer
         
         List<Room> roomsFloorMinus1Groenplaats = new List<Room>
         {
-            new (new Point(100.01, 168.01, floorplanGPMinus1), user1, -102),
-            new (new Point(147.01, 168.01, floorplanGPMinus1), user2, -101),
-            new (new Point(194.01, 168.01, floorplanGPMinus1), null, -100),
-            new (new Point(246.01, 168.01, floorplanGPMinus1), null, -114),
-            new (new Point(298.01, 168.01, floorplanGPMinus1), null, -113),
-            new (new Point(305.01, 128.01, floorplanGPMinus1), null, -111),
-            new (new Point(258.01, 123.01, floorplanGPMinus1), null, -109),
-            new (new Point(120.01, 115.01, floorplanGPMinus1), null, -106)
+            new (new Point(1061.0,1479.0, floorplanGPMinus1), user3, -102),
+            // NEW 1061.0,1479.0 : OLD 100.01, 168.01
+            new (new Point(1592.0,1449.0, floorplanGPMinus1), user2, -101),
+            // 1592.0,1449.0 : 147.01, 168.01
+            new (new Point( 2164.0,1445.0, floorplanGPMinus1), null, -100),
+            // 2164.0,1445.0 : 194.01, 168.01
+            new (new Point(2816.0,1479.0, floorplanGPMinus1), null, -114),
+            // 2816.0,1479.0 : 246.01, 168.01
+            new (new Point(3414.0, 1479.0, floorplanGPMinus1), null, -113),
+            // 3414.0, 1479.0 : 298.01, 168.01
+            new (new Point(3469.0 ,974.0 , floorplanGPMinus1), null, -111),
+            // 3469.0 ,974.0 : 305.01, 128.01,
+            new (new Point(2942.0, 860.0 , floorplanGPMinus1), null, -109),
+            // 2942.0, 860.0 : 258.01, 123.01
+            new (new Point(1318.0 ,889.0, floorplanGPMinus1), null, -106)
+            // 1318.0 ,889.0 : 120.01, 115.01
         };
-        
+
+
         context.Hospitals.Add(hospital1);
         context.UserLocations.AddRange(userLocation1, userLocation2, userLocation3, userLocation4);
         context.Users.AddRange(user1, user2, user3, user4);
