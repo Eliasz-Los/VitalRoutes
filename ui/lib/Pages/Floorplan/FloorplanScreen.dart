@@ -73,7 +73,7 @@ class FloorplanPageState extends State<FloorplanPage> {
     });
   }
 
-  void _updatePath(List<Point> path, Point? startPoint, Point? endPoint) {
+  void _updatePath(List<Point> path, startPoint, endPoint) {
     setState(() {
       _path = path;
       _startPoint = startPoint;

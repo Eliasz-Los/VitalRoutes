@@ -75,14 +75,13 @@ public class AStarPathfinding
     {
         var directions = new List<(double, double)>
         {
-            (-1, 0), (1, 0), (0, -1), (0, 1),
-            (-1, -1), (1, -1), (-1, 1), (1, 1)
+            (-1, 0), (1, 0), (0, -1), (0, 1), // alleen cardinale richtingen performance boost 4 sec
+            // (-1, -1), (1, -1), (-1, 1), (1, 1) // diagonale richtingen
         };
 
         foreach (var (dx, dy) in directions)
         {
             var neighborPoint = new Point(point.XWidth + dx, point.YHeight + dy);
-            // Console.WriteLine($"Checking neighbor at ({neighborPoint.XWidth}, {neighborPoint.YHeight})");
            if(nodeDictionary.TryGetValue(neighborPoint, out var neighbor))
             {
                 yield return neighbor;

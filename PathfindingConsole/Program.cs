@@ -39,8 +39,8 @@ var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" )
 Console.WriteLine($"Start point: ({start.XWidth}, {start.YHeight})");
 Console.WriteLine($"End point: ({end.XWidth}, {end.YHeight})");
 
-//var path = AStarPathfinding.FindPath( start, end, walkablePoints);
-var pathBidirectional = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
+var path = AStarPathfinding.FindPath( start, end, walkablePoints);
+//var path = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
 
 
 stopwatch.Stop();
@@ -50,4 +50,4 @@ string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
     ts.Milliseconds / 10);
 Console.WriteLine("RunTime " + elapsedTime);
 // Draw the path on the floorplan image
-FloorplanVisualizer.DrawFloorplanWithPath(floorplan, pathBidirectional, start, end, imagePath);
+FloorplanVisualizer.DrawFloorplanWithPath(floorplan, path, start, end, imagePath);

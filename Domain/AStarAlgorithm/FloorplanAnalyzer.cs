@@ -28,16 +28,11 @@ public class FloorplanAnalyzer
                     {
                         var point = new Point(x, y);
                         walkablePoints.Add(point);
-                       
-
                         if (Math.Abs(x - startCoords.XWidth) < 1e-10 && Math.Abs(y - startCoords.YHeight) < 1e-10) startPoint = point;
                         if (Math.Abs(x - endCoords.XWidth) < 1e-10 && Math.Abs(y - endCoords.YHeight) < 1e-10) endPoint = point;
                     }
                 }
-                /*if (x % 100 == 0)
-                {
-                    Console.WriteLine($"Processed {x} columns. Out of {image.Width}."); // Progress indicator
-                }*/
+             
             });
             
         }

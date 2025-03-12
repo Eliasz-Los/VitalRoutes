@@ -35,16 +35,15 @@ class FloorplanImage extends StatefulWidget {
 }
 
 class _FloorplanImageState extends State<FloorplanImage> {
+
+  
   
   Future<void> _fetchPath(Point start, Point end) async{
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fetching path...'), backgroundColor: Colors.green, duration: Duration(seconds: 3),)
+        SnackBar(content: Text('Fetching path...'), backgroundColor: Colors.green, duration: Duration(seconds: 5),)
     );
-    
     final response = await PathService.getPath(start, end, widget.hospitalName, widget.floorNumber );
-    widget.onPathUpdated(response,widget.startPoint, widget.endPoint);
-   
-   
+    widget.onPathUpdated(response, start, end);
   }
 
   void _handleTap(TapDownDetails details){
@@ -58,7 +57,9 @@ class _FloorplanImageState extends State<FloorplanImage> {
     final Point point = Point(x: scaledX.roundToDouble(), y: scaledY.roundToDouble());
 
     if (widget.startPoint == null) {
+      
       widget.onPathUpdated(widget.path, point, widget.endPoint);
+      
     } else if (widget.endPoint == null) {
       widget.onPathUpdated(widget.path, widget.startPoint, point);
       _fetchPath(widget.startPoint!, point);
