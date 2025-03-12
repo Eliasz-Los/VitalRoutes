@@ -21,8 +21,8 @@ class PathPainter extends CustomPainter {
       ..strokeWidth = 3.0
       ..style = PaintingStyle.stroke;
 
-    final double scaleX = size.width / image.width;
-    final double scaleY = (image.height / 1624.0) *0.09 ; //IDK EVEN FK KNOW
+    final double scaleX = (size.width / image.width);
+    final double scaleY = (image.height / 1624.0) *0.092 ; //IDK EVEN FK KNOW 0.09
     // print('PATHPAINTER scale: x ${scaleX}, y ${scaleY}');
     final pathToDraw = Path();
     pathToDraw.moveTo(path[0].x * scaleX, path[0].y * scaleY);
