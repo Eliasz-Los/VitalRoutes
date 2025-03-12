@@ -10,10 +10,10 @@ Content-Type: application/json
 }
 
 ### Update status of notification
-PUT http://localhost:5028/api/Notification/019577cd-753c-74c9-be19-e1c8346d49b8/status
+PUT http://localhost:5028/api/Notification/01958c99-aaf2-73b4-a228-08985762c4ee/status
 Content-Type: application/json
 
-"behandeld"
+"Te behandelen"
 
 ### Get Notifications for Nurse or doctor
 GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc4

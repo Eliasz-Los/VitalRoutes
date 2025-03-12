@@ -51,10 +51,14 @@ namespace DAL
                 .OrderByDescending(n => n.TimeStamp)
                 .ToListAsync();
         }
-
+        
         public async Task<Notification> UpdateNotificationStatus(Guid notificationId, string newStatus)
         {
-            var notification = await _context.Notifications.FindAsync(notificationId);
+            var notification = await _context.Notifications
+                .Include(n => n.Emergency)
+                .ThenInclude(e => e.User)
+                .FirstOrDefaultAsync(n => n.Id == notificationId);
+    
             if (notification == null)
             {
                 throw new Exception("Notificatie niet gevonden");
@@ -64,6 +68,7 @@ namespace DAL
             await _context.SaveChangesAsync();
             return notification;
         }
+
 
         public async Task<Emergency?> GetEmergencyByPatientId(Guid patientId)
         {

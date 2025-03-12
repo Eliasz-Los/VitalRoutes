@@ -32,17 +32,17 @@ namespace BL
                 var errorMessage = $" [FOUT] Patiënt met ID {dto.PatientId} niet gevonden.";
                 throw new Exception(errorMessage);
             }
-            
+
             EmergencyLevel emergencyLevel = dto.Status switch
             {
                 "Dringend" => EmergencyLevel.Medium,
                 "Nood" => EmergencyLevel.High,
                 _ => EmergencyLevel.Low
             };
-            
+
             var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(patient.Id);
             int chamberNr = room?.RoomNumber ?? -101;
-            
+
             var notification = new Notification(dto.Message)
             {
                 Status = "te behandelen",
@@ -141,8 +141,10 @@ namespace BL
                 Id = updated.Id,
                 Message = updated.Message,
                 Status = updated.Status,
+                PatientName = updated.Emergency?.User.FirstName + " " + updated.Emergency?.User.LastName,
+                RoomNumber = updated.Emergency?.ChamberNr ?? -120,
                 TimeStamp = updated.TimeStamp,
-                PatientId = updated.Emergency?.User?.Id ?? Guid.Empty
+                PatientId = updated.Emergency?.User.Id ?? Guid.Empty
             };
         }
 

@@ -7,7 +7,6 @@ import 'package:ui/Services/UserService.dart';
 import 'package:ui/Models/NotificationModel.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
 import 'package:ui/Pages/Users/UserProvider.dart';
-
 import '../Navigation/MainScaffold.dart';
 
 class NurseNotificationPage extends StatefulWidget {
@@ -23,6 +22,9 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   User? firebaseUser;
   domain.User? domainUser;
   List<NotificationModel> notifications = [];
+
+  // Houd de (nieuwe) status per notificatie bij in deze map:
+  Map<String, String> selectedStatuses = {};
 
   @override
   void initState() {
@@ -47,6 +49,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   }
 
   void _startNotificationPolling() {
+    // Elke 5 seconden notificaties verversen
     Timer.periodic(Duration(seconds: 5), (timer) {
       if (mounted) {
         _fetchNotifications();
@@ -62,6 +65,9 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
         final data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
         setState(() {
           notifications = data;
+          for (var notif in notifications) {
+            selectedStatuses.putIfAbsent(notif.id, () => notif.status);
+          }
         });
       } catch (e) {
         debugPrint('Error fetching notifications: $e');
@@ -75,7 +81,6 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               'Notificaties',
@@ -89,50 +94,134 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
                   final notification = notifications[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.amber.shade600, width: 2),
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey[300],
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      title: Text(
-                        notification.patientName,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Status: ${notification.status}',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                  final currSelectedStatus =
+                      selectedStatuses[notification.id] ?? notification.status;
+
+                  return InkWell(
+                    onTap: () {
+                      // Voorbeeld: navigate naar MainScaffold
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainScaffold(
+                            body: NurseNotificationPage(userId: widget.userId),
+                            hasScaffold: true,
                           ),
-                          Text(
-                            'Kamer: ${notification.roomNumber}',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                          Text(
-                            'Boodschap: ${notification.message}',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ],
+                        ),
+                      );
+                    },
+                    child: Card(
+                      // Geen borderSide, dus geen gele streep meer
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.amber, width: 2),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      trailing: Icon(Icons.navigation, color: Colors.black),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MainScaffold(
-                              body: NurseNotificationPage(userId: widget.userId),
-                              hasScaffold: true,
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Rij met avatar en patiëntnaam
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.grey[300],
+                                  child: Icon(Icons.person, color: Colors.white),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    '${notification.patientName}',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        );
-                      },
+                            SizedBox(height: 8),
+                            Text(
+                              'Kamer: ${notification.roomNumber}',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            Text(
+                              'Boodschap: ${notification.message}',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            SizedBox(height: 8),
+                            // Status onderaan
+                            Text(
+                              'Status:',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            // Dropdown voor status
+                            DropdownButton<String>(
+                              value: currSelectedStatus,
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              items: <String>['Te behandelen', 'In behandeling', 'Behandeld']
+                                  .map((String value) => DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              ))
+                                  .toList(),
+                              onChanged: (String? newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    selectedStatuses[notification.id] = newValue;
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(height: 8),
+                            // Knoppen op de onderste regel, rechts uitgelijnd
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      await NotificationService.updateNotificationStatus(
+                                        notification.id,
+                                        currSelectedStatus,
+                                      );
+                                      _fetchNotifications();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Update gelukt',
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Error bij updaten status: $e')
+                                        ),
+                                      );
+                                    }
+                                  },
+
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.deepPurpleAccent.shade700,
+                                  ),
+                                  child: Text(
+                                    'Update',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                const Icon(Icons.navigation, color: Colors.blueAccent, size: 56),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 },
