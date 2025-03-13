@@ -11,8 +11,15 @@ import '../../Models/Users/User.dart' as custom_user;
 class FloorplanPage extends StatefulWidget {
   final String hospitalName;
   final int initialFloorNumber;
+  final Point? initialStartPoint;
+  final Point? initialEndPoint;
+  final bool? isPathfindingEnabledFromParams;
 
-  const FloorplanPage({super.key, required this.hospitalName, required this.initialFloorNumber});
+  const FloorplanPage({super.key, required this.hospitalName,
+    required this.initialFloorNumber,
+  this.initialStartPoint,
+  this.initialEndPoint, 
+  this.isPathfindingEnabledFromParams});
 
   @override
   FloorplanPageState createState() => FloorplanPageState();
@@ -35,6 +42,16 @@ class FloorplanPageState extends State<FloorplanPage> {
       _minFloorNumber = hospital.minFloorNumber;
     });
     _currentFloorNumber = widget.initialFloorNumber;
+    _startPoint = widget.initialStartPoint;
+    _endPoint = widget.initialEndPoint;
+    _isPathfindingEnabled = widget.isPathfindingEnabledFromParams ?? false;
+
+
+    // Trigger path fetching if both points are present
+    if (_startPoint != null && _endPoint != null && _isPathfindingEnabled) {
+      print('Path fetching started from initState...');
+      _fetchPath(_startPoint!, _endPoint!);
+    }
   }
 
   Future<custom_user.User?> _getCurrentUser() async {
@@ -79,6 +96,23 @@ class FloorplanPageState extends State<FloorplanPage> {
       _startPoint = startPoint;
       _endPoint = endPoint;
     });
+  }
+  
+  Future<void> _fetchPath(Point start, Point end) async {
+    print('Fetching path in FloorplanPage...');
+    try {
+      final path = await PathService.getPath(
+        start,
+        end,
+        widget.hospitalName,
+        _currentFloorNumber,
+      );
+      setState(() {
+        _path = path;
+      });
+    } catch (e) {
+      print('Error fetching path: $e');
+    }
   }
 
   @override

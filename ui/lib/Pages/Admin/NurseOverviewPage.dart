@@ -1,4 +1,6 @@
-﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+﻿import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ui/Models/Room.dart';
@@ -7,6 +9,7 @@ import '../../Services/UserService.dart';
 import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
 import '../Floorplan/FloorplanScreen.dart';
+import 'package:ui/Models/Point.dart' as custom_point;
 
 class NurseOverviewPage extends StatefulWidget {
   @override
@@ -88,6 +91,29 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
         SnackBar(content: Text('Error deleting patient: $e')),
       );
     }
+  }
+
+  void navigateToFloorplan(BuildContext context, RoomService roomService, domain.User user) async {
+    final Room userRoom = await roomService.getRoomByUserId(user.id!);
+    int floorNumber = 1;
+    if (userRoom.roomNumber < 0) {
+      floorNumber = (userRoom.roomNumber ~/ 100);
+    } else {
+      String numStr = userRoom.roomNumber.toString();
+      floorNumber = int.parse(numStr[0]);
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FloorplanPage(
+          hospitalName: 'UZ Groenplaats',
+          initialFloorNumber: floorNumber,
+          initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
+          initialEndPoint: userRoom.point,
+          isPathfindingEnabledFromParams: true,
+        ),
+      ),
+    );
   }
 
   @override
@@ -254,30 +280,10 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                   },
                 ),
                 IconButton(
-                  //TODO: doorverwijzen naar de floorplan en naar patient zijn kamer
                   icon: Icon(FontAwesomeIcons.locationDot, size: 24, color: Colors.blue),
-                  onPressed: () {
-                    Room userRoom = roomService.getRoomByUserId(user.id!) as Room;
-                    int floorNumber = 1;  // Default
-                    if (userRoom.roomNumber < 0) {
-                      // For negative numbers, take first digit after minus
-                      String numStr = userRoom.roomNumber.abs().toString();
-                      floorNumber = int.parse(numStr[0]);
-                    } else {
-                      // For positive numbers, take first digit
-                      String numStr = userRoom.roomNumber.toString();
-                      floorNumber = int.parse(numStr[0]);
-                    }
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FloorplanPage(
-                                hospitalName: "UZ Groenplaats",
-                                initialFloorNumber: floorNumber,
-                              )
-                          )
-                      );
-                    },
+                  onPressed: () async {
+                   navigateToFloorplan(context, roomService, user);
+                  },
                 ),
               ],
             ),
