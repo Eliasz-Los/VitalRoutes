@@ -45,7 +45,7 @@ namespace BL
 
             var notification = new Notification(dto.Message)
             {
-                Status = "te behandelen",
+                Status = "Te behandelen",
                 TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2)
             };
 
@@ -93,13 +93,39 @@ namespace BL
                     TimeStamp = notification.TimeStamp,
                     PatientId = patient.Id,
                     PatientName = $"{patient.FirstName} {patient.LastName}",
-                    RoomNumber = room?.RoomNumber ?? -101
+                    RoomNumber = room?.RoomNumber ?? -120
+                });
+            }
+
+            return result;
+        }
+        
+        public async Task<IEnumerable<NotificationDto>> GetNotificationsForPatient(Guid patientId)
+        {
+            var notifications = await _notificationRepository.GetNotificationsForPatient(patientId);
+            var result = new List<NotificationDto>();
+
+            foreach (var notification in notifications)
+            {
+                var patient = notification.Emergency?.User;
+                if (patient == null) continue;
+
+                result.Add(new NotificationDto
+                {
+                    Id = notification.Id,
+                    Message = notification.Message,
+                    Status = notification.Status,
+                    TimeStamp = notification.TimeStamp,
+                    PatientId = patient.Id,
+                    PatientName = $"{patient.FirstName} {patient.LastName}",
+                    RoomNumber = notification.Emergency?.ChamberNr ?? -120
                 });
             }
 
             return result;
         }
 
+        
         public async Task<IEnumerable<NotificationDto>> GetNotificationsForDoctor(Guid doctorId)
         {
             var notifications = await _notificationRepository.GetNotificationsForDoctor(doctorId);
@@ -124,7 +150,7 @@ namespace BL
                     // een aparte property maken in de DTO.
                     PatientId = nurseOrHeadNurse.Id,
                     PatientName = $"{nurseOrHeadNurse.FirstName} {nurseOrHeadNurse.LastName}",
-                    RoomNumber = room?.RoomNumber ?? -101
+                    RoomNumber = room?.RoomNumber ?? -120
                 });
             }
 

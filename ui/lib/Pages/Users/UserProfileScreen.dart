@@ -41,7 +41,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _lastNameController.text = user.lastName ?? '';
         _emailController.text = user.email ?? '';
         _telephoneNrController.text = user.telephoneNr ?? '';
-        _functionController.text = user.function?.name ?? 'Unknown';
+        _functionController.text = user.function?.name ?? 'Onbekend';
       });
     });
   }
@@ -67,7 +67,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Changes accepted'),
+          content: Text('Update geaccepteerd'),
           backgroundColor: Colors.green,
         ),
       );
@@ -97,7 +97,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
-            return Center(child: Text('No user data found'));
+            return Center(child: Text('Geen gebruiker data gevonden'));
           } else {
             return SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
@@ -115,7 +115,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ),
                         SizedBox(width: 10), // Add some space between the logo and the text
                         Text(
-                          'My VitalRoutes',
+                          'VitalRoutes',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -129,7 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'My Profile',
+                          'Mijn profiel',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -142,21 +142,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     TextFormField(
                       controller: _firstNameController,
                       decoration: InputDecoration(
-                        labelText: 'First Name',
+                        labelText: 'Voornaam',
                         labelStyle: TextStyle(color: Colors.blue[900]),
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) => value == null || value.isEmpty ? 'Please enter your first name' : null,
+                      validator: (value) => value == null || value.isEmpty ? 'Geef je voornaam in' : null,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
                       controller: _lastNameController,
                       decoration: InputDecoration(
-                        labelText: 'Last Name',
+                        labelText: 'Achternaam',
                         labelStyle: TextStyle(color: Colors.blue[900]),
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) => value == null || value.isEmpty ? 'Please enter your last name' : null,
+                      validator: (value) => value == null || value.isEmpty ? 'Geef je achternaam in' : null,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
@@ -166,18 +166,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         labelStyle: TextStyle(color: Colors.blue[900]),
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) => value == null || value.isEmpty ? 'Please enter your email' : null,
+                      validator: (value) => value == null || value.isEmpty ? 'Geef je email in' : null,
                     ),
                     SizedBox(height: 10),
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Paswoord',
                         labelStyle: TextStyle(color: Colors.blue[900]),
                         border: OutlineInputBorder(),
                       ),
                       obscureText: !_showPassword,
-                      validator: (value) => value == null || value.isEmpty ? 'Please enter your password' : null,
+                      validator: (value) => value == null || value.isEmpty ? 'Geef je paswoord in' : null,
                     ),
                     Row(
                       children: [
@@ -189,24 +189,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             });
                           },
                         ),
-                        Text('Show password'),
+                        Text('Laat paswoord zien'),
                       ],
                     ),
                     SizedBox(height: 10),
                     TextFormField(
                       controller: _telephoneNrController,
                       decoration: InputDecoration(
-                        labelText: 'Telephone Number',
+                        labelText: 'Telefoonnummer',
                         labelStyle: TextStyle(color: Colors.blue[900]),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your telephone number';
+                          return 'Geef je telefoonnummer in';
                         }
                         final phoneRegExp = RegExp(r'^\+[1-9]\d{0,2}\s?\d{1,14}$');
                         if (!phoneRegExp.hasMatch(value)) {
-                          return 'Please enter a valid phone number: +32 123456789';
+                          return 'Geef een geldig nummer in: +32 123456789';
                         }
                         return null;
                       },
@@ -215,7 +215,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     TextFormField(
                       controller: _functionController,
                       decoration: InputDecoration(
-                        labelText: 'Function',
+                        labelText: 'Functie',
                         labelStyle: TextStyle(color: Colors.blue[900]),
                         border: OutlineInputBorder(),
                       ),

@@ -16,6 +16,7 @@ import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../../Services/AuthService.dart';
 import '../Alert/AlertNursePage.dart';
+import '../Alert/PatientNotificationPage.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'MainScaffold.dart';
@@ -47,7 +48,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         setState(() {});
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error fetching user: $e')),
+          SnackBar(content: Text('Error bij ophalen gebruiker: $e')),
         );
       }
     }
@@ -63,7 +64,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
+        SnackBar(content: Text('Error bij uitloggen: $e')),
       );
     }
   }
@@ -78,23 +79,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
             decoration: BoxDecoration(color: Colors.indigo),
             child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
-          _buildDrawerItem(Icons.home, 'Home', context, 0, false),
-          if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
-          if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
-          if (domainUser != null && domainUser!.function != FunctionType.SystemAdmin) _buildDrawerItem(Icons.notifications, 'Notifications', context, 11, false),
-          if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Staff & Patients', context, 4, false),
-          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Doctor\'s panel', context, 3, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patients Overview', context, 7, false),
-          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Nurse\'s Panel', context, 8, false),
-          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.supervised_user_circle, 'Headnurse\'s Panel', context, 9, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.warning, 'Alert Nurse', context, 10, false),
-          if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
-          if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.assignment, 'Room Assignment', context, 6, false),
+          _buildDrawerItem(Icons.home, 'Startpagina', context, 0, false),
+          if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Login', context, 1, false),
+          if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profiel', context, 2, true),
+          if (domainUser != null && (domainUser!.function == FunctionType.Headnurse || domainUser!.function == FunctionType.Nurse)) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 11, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.list, 'Notificaties', context, 12, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Personeel & Patiënten', context, 4, false),
+          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Dokterspaneel', context, 3, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patiënten ovezicht', context, 7, false),
+          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Verplegerspaneel', context, 8, false),
+          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.supervised_user_circle, 'Hoofdverplegerspaneel', context, 9, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.warning, 'Alert verpleegkundige', context, 10, false),
+          if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.map, 'Vloerplan', context, 5, false),
+          if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.assignment, 'Kamerindeling', context, 6, false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
               leading: Icon(Icons.logout),
-              title: Text('Logout'),
+              title: Text('Uitloggen'),
               onTap: () => _signOut(context),
             ),
         ],
@@ -113,7 +115,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         if (index == 2) {
           if (widget.firebaseUser == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Please log in first!')),
+              SnackBar(content: Text('Gelieve eerst in te loggen!')),
             );
             return;
           }
@@ -208,6 +210,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return AlertNursePage();
       case 11:
         return NurseNotificationPage(userId: domainUser!.id.toString());
+      case 12:
+        return PatientNotificationPage(userId: domainUser!.id.toString());
       default:
         return HomePage();
     }

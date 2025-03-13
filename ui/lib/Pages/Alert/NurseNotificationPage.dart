@@ -23,7 +23,8 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   domain.User? domainUser;
   List<NotificationModel> notifications = [];
 
-  // Houd de (nieuwe) status per notificatie bij in deze map:
+  // Houd de (nieuwe) status per notificatie bij in deze map.
+  // (Voor als de user lokaal een dropdown selecteert, vóór de update)
   Map<String, String> selectedStatuses = {};
 
   @override
@@ -49,8 +50,8 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   }
 
   void _startNotificationPolling() {
-    // Elke 5 seconden notificaties verversen
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    // Elke 3 seconden notificaties verversen
+    Timer.periodic(Duration(seconds: 3), (timer) {
       if (mounted) {
         _fetchNotifications();
       } else {
@@ -65,6 +66,9 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
         final data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
         setState(() {
           notifications = data;
+
+          // Zorg ervoor dat de map van geselecteerde statussen
+          // ook eventuele nieuwe notificaties initieel hun DB-status meegeeft
           for (var notif in notifications) {
             selectedStatuses.putIfAbsent(notif.id, () => notif.status);
           }
@@ -94,12 +98,12 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
                   final notification = notifications[index];
+                  final dbStatus = notification.status;
                   final currSelectedStatus =
-                      selectedStatuses[notification.id] ?? notification.status;
-
+                      selectedStatuses[notification.id] ?? dbStatus;
+                  final isBehandeld = (dbStatus == 'Behandeld');
                   return InkWell(
                     onTap: () {
-                      // Voorbeeld: navigate naar MainScaffold
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -111,12 +115,14 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                       );
                     },
                     child: Card(
-                      // Geen borderSide, dus geen gele streep meer
+                      color: isBehandeld ? Colors.grey[350] : Colors.white,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.amber, width: 2),
+                        side: isBehandeld
+                            ? BorderSide(color: Colors.transparent, width: 0)
+                            : BorderSide(color: Colors.amber, width: 2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      margin: EdgeInsets.symmetric(vertical: 8),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
@@ -153,12 +159,12 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                               style: TextStyle(fontSize: 16, color: Colors.black),
                             ),
                             SizedBox(height: 8),
-                            // Status onderaan
+                            // Status-label
                             Text(
                               'Status:',
                               style: TextStyle(fontSize: 16, color: Colors.black),
                             ),
-                            // Dropdown voor status
+                            // Dropdown
                             DropdownButton<String>(
                               value: currSelectedStatus,
                               style: TextStyle(fontSize: 16, color: Colors.black),
@@ -177,18 +183,22 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                               },
                             ),
                             SizedBox(height: 8),
-                            // Knoppen op de onderste regel, rechts uitgelijnd
+                            // Update-knop + Navigatie-icoon
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 ElevatedButton(
                                   onPressed: () async {
                                     try {
+                                      // Status updaten op de server
                                       await NotificationService.updateNotificationStatus(
                                         notification.id,
                                         currSelectedStatus,
                                       );
+                                      // Opnieuw ophalen
                                       _fetchNotifications();
+
+                                      // Toast / snackBar
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           content: Text(
@@ -201,12 +211,11 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                                     } catch (e) {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text('Error bij updaten status: $e')
+                                          content: Text('Error bij updaten status: $e'),
                                         ),
                                       );
                                     }
                                   },
-
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.deepPurpleAccent.shade700,
                                   ),
@@ -216,7 +225,8 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                                   ),
                                 ),
                                 SizedBox(width: 8),
-                                const Icon(Icons.navigation, color: Colors.blueAccent, size: 56),
+                                const Icon(Icons.navigation,
+                                    color: Colors.blueAccent, size: 56),
                               ],
                             ),
                           ],

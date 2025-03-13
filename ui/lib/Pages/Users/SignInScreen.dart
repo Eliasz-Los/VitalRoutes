@@ -51,7 +51,7 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         _errorMessage = e.toString();
       });
-      print('Problem with signing in: \n$e');
+      print('Probleem met inloggen: \n$e');
     }
   }
 
@@ -72,7 +72,7 @@ class _SignInScreenState extends State<SignInScreen> {
           children: <Widget>[
             SizedBox(height: 40),
             Text(
-              'Login to',
+              'Login',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class _SignInScreenState extends State<SignInScreen> {
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: 'Paswoord',
                 labelStyle: TextStyle(color: Colors.blue[900]),
                 border: OutlineInputBorder(),
               ),
@@ -126,12 +126,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 backgroundColor: Colors.lightBlue,
                 minimumSize: Size(double.infinity, 50),
               ),
-              child: Text('Sign In', style: TextStyle(color: Colors.white)),
+              child: Text('Login', style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: _navigateToRegister,
               child: Text(
-                "Don't have an account? Register here",
+                "Nog geen account? Registreer hier",
                 style: TextStyle(color: Colors.blue[900]),
               ),
             ),

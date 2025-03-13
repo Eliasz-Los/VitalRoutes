@@ -49,4 +49,16 @@ class NotificationService {
     }
   }
 
+  static Future<List<NotificationModel>> getNotificationsForPatient(String patientId) async {
+    final response = await _dio.get('http://10.0.2.2:5028/api/notification/patient/$patientId');
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = response.data;
+      return data.map((item) => NotificationModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load patient notifications');
+    }
+  }
+
+
 }

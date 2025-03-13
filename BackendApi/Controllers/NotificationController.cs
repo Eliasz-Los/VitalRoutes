@@ -52,5 +52,26 @@ namespace BackendApi.Controllers
             var updated = await _notificationManager.UpdateNotificationStatus(notificationId, newStatus);
             return Ok(updated);
         }
+        
+        [HttpGet("patient/{patientId}")]
+        public async Task<IActionResult> GetNotificationsForPatient(Guid patientId)
+        {
+            if (patientId == Guid.Empty)
+            {
+                return BadRequest("PatientId is ongeldig!");
+            }
+
+            try
+            {
+                var notifications = await _notificationManager.GetNotificationsForPatient(patientId);
+                return Ok(notifications);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error bij ophalen notificaties patient: {ex.Message}");
+                return StatusCode(500, $"Fout bij ophalen notificaties: {ex.Message}");
+            }
+        }
+
     }
 }
