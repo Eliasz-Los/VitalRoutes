@@ -45,6 +45,5 @@ class RoomService {
       throw Exception('Error fetching room by userId $userId: $e');
     }
   }
-
-
+  
 }
