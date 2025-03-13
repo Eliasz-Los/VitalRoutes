@@ -48,10 +48,14 @@ class FloorplanPageState extends State<FloorplanPage> {
 
 
     // Trigger path fetching if both points are present
-    if (_startPoint != null && _endPoint != null && _isPathfindingEnabled) {
-      print('Path fetching started from initState...');
-      _fetchPath(_startPoint!, _endPoint!);
-    }
+   
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      if (_startPoint != null && _endPoint != null && _isPathfindingEnabled) {
+        print('Path fetching started from initState...');
+        _fetchPath(_startPoint!, _endPoint!);
+      }
+    });
+   
   }
 
   Future<custom_user.User?> _getCurrentUser() async {
@@ -99,19 +103,25 @@ class FloorplanPageState extends State<FloorplanPage> {
   }
   
   Future<void> _fetchPath(Point start, Point end) async {
-    print('Fetching path in FloorplanPage...');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Fetching path...'),
+        backgroundColor: Colors.green,
+        duration: Duration(minutes: 1), // Very long or remove duration
+      ),
+    );
+    
     try {
-      final path = await PathService.getPath(
-        start,
-        end,
-        widget.hospitalName,
-        _currentFloorNumber,
-      );
+      final path = await PathService.getPath(start, end, widget.hospitalName, _currentFloorNumber,);
       setState(() {
         _path = path;
       });
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
     } catch (e) {
       print('Error fetching path: $e');
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
     }
   }
 
