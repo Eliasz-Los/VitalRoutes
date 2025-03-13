@@ -45,7 +45,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching supervisions: $e')),
+        SnackBar(content: Text('Error ophalen supervisies: $e')),
       );
     } finally {
       setState(() {
@@ -76,12 +76,12 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
           _filterPatients();
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Patient removed successfully')),
+          SnackBar(content: Text('Patiënt succesvol verwijderd!')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting patient: $e')),
+        SnackBar(content: Text('Error verwijderen patiënt: $e')),
       );
     }
   }
@@ -130,7 +130,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        'Patients Overview',
+        'Patiënten overzicht',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 24,
@@ -153,7 +153,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
       child: TextField(
         controller: searchController,
         decoration: InputDecoration(
-          hintText: 'Search patients by name...',
+          hintText: 'Zoek patiënten op naam...',
           hintStyle: TextStyle(color: Colors.grey[600]),
           border: InputBorder.none,
           prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -213,7 +213,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                         ),
                         SizedBox(width: 5),
                         Text(
-                          'Active',
+                          'Actief',
                           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                         ),
                       ],
@@ -230,16 +230,16 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                     bool? confirm = await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Confirm Removal'),
-                        content: Text('Are you sure you want to remove ${user.firstName} ${user.lastName}?'),
+                        title: Text('Bevestig het verwijderen'),
+                        content: Text('Wil je zeker patiënt ${user.firstName} ${user.lastName} verwijderen?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
-                            child: Text('Cancel'),
+                            child: Text('Annuleren'),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: Text('Remove'),
+                            child: Text('Verwijderen'),
                           ),
                         ],
                       ),

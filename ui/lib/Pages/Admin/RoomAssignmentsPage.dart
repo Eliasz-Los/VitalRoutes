@@ -73,7 +73,7 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Assign Patient to Room ${room.roomNumber}'),
+          title: Text('Koppel patiënt aan kamer ${room.roomNumber}'),
           content: DropdownButtonFormField<User>(
             items: _patients.map((User patient) {
               return DropdownMenuItem<User>(
@@ -84,7 +84,7 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
             onChanged: (User? newValue) {
               selectedPatient = newValue;
             },
-            decoration: InputDecoration(labelText: 'Select Patient'),
+            decoration: InputDecoration(labelText: 'Selecteer Patiënt'),
           ),
           actions: [
             TextButton(
@@ -98,7 +98,7 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
                     await _roomService.assignPatientToRoom(dto);
                     if (mounted) {
                       setState(() {
-                        _message = 'Patient assigned successfully!';
+                        _message = 'Patiënt succesvol gekoppeld!';
                       });
                       Navigator.of(context).pop();
                       _fetchFloorsAndPatients();
@@ -112,13 +112,13 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
                   }
                 }
               },
-              child: Text('Assign'),
+              child: Text('Koppelen'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text('Annuleren'),
             ),
           ],
         );
@@ -135,7 +135,7 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
       await _roomService.assignPatientToRoom(dto);
       if (mounted) {
         setState(() {
-          _message = 'Patient removed successfully!';
+          _message = 'Patiënt succesvol verwijderd!';
         });
         _fetchFloorsAndPatients();
       }
@@ -152,7 +152,7 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Room Assignments'),
+        title: Text('Toegewezen Kamers'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -170,17 +170,17 @@ class RoomAssignmentsPageState extends State<RoomAssignmentsPage> {
                     return ExpansionPanel(
                       headerBuilder: (BuildContext context, bool isExpanded) {
                         return ListTile(
-                          title: Text('Floor $floor'),
+                          title: Text('Verdiep $floor'),
                           onTap: () => _toggleExpansion(floor),
                         );
                       },
                       body: Column(
                         children: _floors[floor]!.map<Widget>((Room room) {
                           return ListTile(
-                            title: Text('Room ${room.roomNumber}'),
+                            title: Text('Kamer ${room.roomNumber}'),
                             subtitle: Text(room.assignedPatient != null
-                                ? 'Assigned Patient: ${room.assignedPatient!.firstName} ${room.assignedPatient!.lastName}'
-                                : 'No patient assigned'),
+                                ? 'Toegewezen patiënt: ${room.assignedPatient!.firstName} ${room.assignedPatient!.lastName}'
+                                : 'geen patient toegewezen'),
                             onTap: () => _showAssignPatientDialog(room),
                             trailing: room.assignedPatient != null
                                 ? IconButton(

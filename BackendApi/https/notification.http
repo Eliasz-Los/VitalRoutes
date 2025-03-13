@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ### Update status of notification
-PUT http://localhost:5028/api/Notification/01958c99-aaf2-73b4-a228-08985762c4ee/status
+PUT http://localhost:5028/api/Notification/01958f31-a19a-7458-98e5-3798c31a4cfc/status
 Content-Type: application/json
 
 "Te behandelen"

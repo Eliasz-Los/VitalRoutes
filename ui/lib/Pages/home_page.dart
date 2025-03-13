@@ -75,7 +75,7 @@ class HomePage extends StatelessWidget {
                           onPressed: () {
                           },
                           child: Text(
-                            'Navigate',
+                            'Navigeer',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,

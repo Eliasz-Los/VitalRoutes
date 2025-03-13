@@ -15,12 +15,12 @@ class _NursePanelState extends State<NursePanel> {
     try {
       final nurseEmail = nurseController.text.trim();
       if (nurseEmail.isEmpty) {
-        throw Exception('Please enter a nurse email.');
+        throw Exception('Geef een verpleegkundige email.');
       }
 
       final nurse = await UserService.getUserByEmail(nurseEmail);
       if (nurse.function != FunctionType.Nurse) {
-        throw Exception('The user must be a valid nurse.');
+        throw Exception('De gebruiker moet een geldige verpleegkundige zijn.');
       }
 
       bool hasValidEntries = false;
@@ -29,7 +29,7 @@ class _NursePanelState extends State<NursePanel> {
         if (email.isNotEmpty) {
           final patient = await UserService.getUserByEmail(email);
           if (patient.function != FunctionType.Patient) {
-            throw Exception('Patient not found or invalid: $email');
+            throw Exception('Patiënt ongeldig: $email');
           }
           await UserService.addUnderSupervision(nurse.id.toString(), patient.id.toString());
           hasValidEntries = true;
@@ -37,11 +37,11 @@ class _NursePanelState extends State<NursePanel> {
       }
 
       if (!hasValidEntries) {
-        throw Exception('Please enter at least one patient.');
+        throw Exception('Geef minstens één patiënt in.');
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Assignment successfully created!')),
+        SnackBar(content: Text('Opdracht succesvol aangemaakt!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,7 +68,7 @@ class _NursePanelState extends State<NursePanel> {
                   border: Border.all(color: Colors.blue, width: 4),
                 ),
                 child: Text(
-                  'Nurse’s Supervision Panel',
+                  'Verplegerspaneel',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22,
@@ -79,13 +79,13 @@ class _NursePanelState extends State<NursePanel> {
               ),
               SizedBox(height: 40),
 
-              _buildSectionTitle('Nurse Email'),
-              _buildInputField(nurseController, 'Nurse email (required)'),
+              _buildSectionTitle('Verpleegkundige'),
+              _buildInputField(nurseController, 'Verpleegkundige email (verplicht)'),
 
               SizedBox(height: 30),
 
-              _buildSectionTitle('Patient(s)'),
-              _buildDynamicFields(patientControllers, 'Patient email (optional)', _addPatientField, _removePatientField),
+              _buildSectionTitle('Patiënt(en)'),
+              _buildDynamicFields(patientControllers, 'Patiënt email', _addPatientField, _removePatientField),
 
               SizedBox(height: 40),
 
@@ -96,7 +96,7 @@ class _NursePanelState extends State<NursePanel> {
                   foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: Text('Create Supervision', style: TextStyle(fontSize: 18)),
+                child: Text('Creëer opdracht', style: TextStyle(fontSize: 18)),
               ),
             ],
           ),

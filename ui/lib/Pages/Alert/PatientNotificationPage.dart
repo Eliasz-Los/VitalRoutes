@@ -76,22 +76,25 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
           children: [
-            // Vetgedrukte titel, gecentreerd
             Text(
               "Mijn verstuurde notificaties",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
 
-            // Lijst met notificaties
             Expanded(
               child: notifications.isEmpty
-                  ? Center(child: Text('Nog geen meldingen verstuurd.'))
+                  ? Center(
+                child: Text(
+                  'Nog geen meldingen verstuurd.',
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
                   : ListView.builder(
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
@@ -99,42 +102,41 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
                   final bool isTeBehandelen = notif.status == 'Te behandelen';
 
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 6), // Kleiner maken
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                    color: isTeBehandelen ? Colors.white : Colors.grey[200],
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: Colors.amber, width: 2), // Gouden rand
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(
+                        color: isTeBehandelen ? Colors.amber : Colors.grey,
+                        width: 2,
+                      ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0), // Minder padding
+                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 18),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Grote, vetgedrukte, gecentreerde titel
                           Text(
                             "Notificatie voor ${notif.message}",
-                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 18,
                               color: Colors.black87,
                             ),
                           ),
-                          SizedBox(height: 6),
+                          SizedBox(height: 8),
 
-                          // Status
                           Text(
                             isTeBehandelen
-                                ? "Status: Verzonden (nog niet opgepakt)"
-                                : "Status: Verwerkt (opgepakt)",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14, color: Colors.black),
+                                ? "Status: Verzonden"
+                                : "Status: Verwerkt",
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 6),
 
-                          // Kamerinfo
                           Text(
                             "Kamer: ${notif.roomNumber}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
                         ],
                       ),
