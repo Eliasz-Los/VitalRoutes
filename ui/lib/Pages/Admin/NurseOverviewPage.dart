@@ -1,5 +1,4 @@
 ﻿import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +9,7 @@ import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import 'package:ui/Models/Point.dart' as custom_point;
+import '../Navigation/MainScaffold.dart';
 
 class NurseOverviewPage extends StatefulWidget {
   @override
@@ -105,13 +105,15 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FloorplanPage(
-          hospitalName: 'UZ Groenplaats',
-          initialFloorNumber: floorNumber,
-          initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
-          initialEndPoint: userRoom.point,
-          isPathfindingEnabledFromParams: true,
+        builder: (context) => MainScaffold(
+          body: FloorplanPage(
+            hospitalName: 'UZ Groenplaats',
+            initialFloorNumber: floorNumber,
+            initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
+            initialEndPoint: userRoom.point,
+            isPathfindingEnabledFromParams: true,
         ),
+      ),
       ),
     );
   }
