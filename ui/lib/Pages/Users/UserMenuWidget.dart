@@ -24,7 +24,7 @@ class UserMenuWidget extends StatelessWidget {
         MaterialPageRoute(builder: (context) => MainScaffold(body: HomePage())),);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
+        SnackBar(content: Text('Error bij uitloggen: $e')),
       );
     }
   }
@@ -36,13 +36,13 @@ class UserMenuWidget extends StatelessWidget {
         showMenu(
             context: context, position: RelativeRect.fromLTRB(100, 100, 0, 0),
             items: <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(value: 'profile', child: Text('Profile')),
-              PopupMenuItem<String>(value: 'logout', child: Text('Logout')),
+              PopupMenuItem<String>(value: 'profiel', child: Text('Profiel')),
+              PopupMenuItem<String>(value: 'uitloggen', child: Text('Uitloggen')),
             ]
         ).then((value) {
-          if (value == 'profile') {
+          if (value == 'profiel') {
             onProfile();
-          } else if (value == 'logout') {
+          } else if (value == 'uitloggen') {
             _signOut(context);
           }
         });

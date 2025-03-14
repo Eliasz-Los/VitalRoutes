@@ -7,11 +7,15 @@ import 'package:ui/Services/UserService.dart';
 import 'package:ui/Models/NotificationModel.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
 import 'package:ui/Pages/Users/UserProvider.dart';
-
+import '../../Models/Room.dart';
+import '../../Services/RoomService.dart';
+import '../Floorplan/FloorplanScreen.dart';
 import '../Navigation/MainScaffold.dart';
+import 'package:ui/Models/Point.dart' as custom_point;
 
 class NurseNotificationPage extends StatefulWidget {
   final String userId;
+  final RoomService roomService = RoomService();
 
   NurseNotificationPage({required this.userId, Key? key}) : super(key: key);
 
@@ -23,6 +27,8 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   User? firebaseUser;
   domain.User? domainUser;
   List<NotificationModel> notifications = [];
+
+  Map<String, String> selectedStatuses = {};
 
   @override
   void initState() {
@@ -47,7 +53,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   }
 
   void _startNotificationPolling() {
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(Duration(seconds: 3), (timer) {
       if (mounted) {
         _fetchNotifications();
       } else {
@@ -62,10 +68,49 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
         final data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
         setState(() {
           notifications = data;
+          for (var notif in notifications) {
+            selectedStatuses.putIfAbsent(notif.id, () => notif.status);
+          }
         });
       } catch (e) {
         debugPrint('Error fetching notifications: $e');
       }
+    }
+  }
+
+  Future<void> navigateToFloorplanForPatient(BuildContext context, NotificationModel notification) async {
+    try {
+      final domain.User patientUser = await UserService.getUserById(notification.patientId);
+
+      final Room userRoom = await widget.roomService.getRoomByUserId(patientUser.id!);
+
+      int floorNumber = 1;
+      if (userRoom.roomNumber < 0) {
+        floorNumber = (userRoom.roomNumber ~/ 100);
+      } else {
+        String numStr = userRoom.roomNumber.toString();
+        floorNumber = int.parse(numStr[0]);
+      }
+
+      Navigator.push(
+        context,
+          MaterialPageRoute(
+              builder: (context) => MainScaffold(
+                body: FloorplanPage(
+                  hospitalName: 'UZ Groenplaats',
+                  initialFloorNumber: floorNumber,
+                  initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
+                  initialEndPoint: userRoom.point,
+                  isPathfindingEnabledFromParams: true,
+                ),
+                hasScaffold: true,
+              )
+          ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fout bij navigeren naar Floorplan: $e')),
+      );
     }
   }
 
@@ -75,7 +120,6 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               'Notificaties',
@@ -89,28 +133,45 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
                   final notification = notifications[index];
+                  final dbStatus = notification.status;
+                  final currSelectedStatus = selectedStatuses[notification.id] ?? dbStatus;
+                  final isBehandeld = (dbStatus == 'Behandeld');
+
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
+                    color: isBehandeld ? Colors.grey[350] : Colors.white,
                     shape: RoundedRectangleBorder(
+                      side: isBehandeld
+                          ? BorderSide(color: Colors.transparent, width: 0)
+                          : BorderSide(color: Colors.amber, width: 2),
                       borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.amber.shade600, width: 2),
                     ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey[300],
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      title: Text(
-                        notification.patientName,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                      subtitle: Column(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Status: ${notification.status}',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.grey[300],
+                                child: Icon(Icons.person, color: Colors.white),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  '${notification.patientName}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(height: 8),
                           Text(
                             'Kamer: ${notification.roomNumber}',
                             style: TextStyle(fontSize: 16, color: Colors.black),
@@ -119,20 +180,81 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                             'Boodschap: ${notification.message}',
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
+                          SizedBox(height: 8),
+                          // Status-label
+                          Text(
+                            'Status:',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                          // Dropdown
+                          DropdownButton<String>(
+                            value: currSelectedStatus,
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            items: <String>[
+                              'Te behandelen',
+                              'In behandeling',
+                              'Behandeld'
+                            ].map((String value) => DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            )).toList(),
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  selectedStatuses[notification.id] = newValue;
+                                });
+                              }
+                            },
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    await NotificationService.updateNotificationStatus(
+                                      notification.id,
+                                      currSelectedStatus,
+                                    );
+                                    _fetchNotifications();
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Update gelukt',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error bij updaten status: $e'),
+                                      ),
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepPurpleAccent.shade700,
+                                ),
+                                child: Text(
+                                  'Update',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              IconButton(
+                                icon: Icon(Icons.navigation, size: 44, color: Colors.blue),
+                                onPressed: () async {
+                                  await navigateToFloorplanForPatient(context, notification);
+                                },
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                      trailing: Icon(Icons.navigation, color: Colors.black),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MainScaffold(
-                              body: NurseNotificationPage(userId: widget.userId),
-                              hasScaffold: true,
-                            ),
-                          ),
-                        );
-                      },
                     ),
                   );
                 },

@@ -16,12 +16,12 @@ class _DoctorPanelState extends State<DoctorPanel> {
     try {
       final doctorEmail = doctorController.text.trim();
       if (doctorEmail.isEmpty) {
-        throw Exception('Please enter a doctor.');
+        throw Exception('Geef een dokter in.');
       }
 
       final doctor = await UserService.getUserByEmail(doctorEmail);
       if (doctor.function != FunctionType.Doctor) {
-        throw Exception('The first user must be a valid doctor.');
+        throw Exception('De eerste gebruiker moet een geldige dokter zijn.');
       }
 
       bool hasValidEntries = false;
@@ -30,7 +30,7 @@ class _DoctorPanelState extends State<DoctorPanel> {
         if (email.isNotEmpty) {
           final nurse = await UserService.getUserByEmail(email);
           if (nurse.function != FunctionType.Nurse) {
-            throw Exception('Nurse not found or invalid: $email');
+            throw Exception('Verpleegkundige ongeldig: $email');
           }
           await UserService.addUnderSupervision(doctor.id.toString(), nurse.id.toString());
           hasValidEntries = true;
@@ -42,7 +42,7 @@ class _DoctorPanelState extends State<DoctorPanel> {
         if (email.isNotEmpty) {
           final patient = await UserService.getUserByEmail(email);
           if (patient.function != FunctionType.Patient) {
-            throw Exception('Patient not found or invalid: $email');
+            throw Exception('Patient ongeldig: $email');
           }
           await UserService.addUnderSupervision(doctor.id.toString(), patient.id.toString());
           hasValidEntries = true;
@@ -50,15 +50,15 @@ class _DoctorPanelState extends State<DoctorPanel> {
       }
 
       if (!hasValidEntries) {
-        throw Exception('Please enter at least one patient or nurse.');
+        throw Exception('Geef minstens een patient of verpleegkundige.');
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Assignment successfully created!')),
+        SnackBar(content: Text('Opdracht succesvol aangemaakt!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error during assignment: $e')),
+        SnackBar(content: Text('Error voor aanmaken opdracht: $e')),
       );
     }
   }
@@ -81,7 +81,7 @@ class _DoctorPanelState extends State<DoctorPanel> {
                   border: Border.all(color: Colors.blue, width: 4),
                 ),
                 child: Text(
-                  'Doctor’s Supervision Panel',
+                  'Dokterspaneel',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22,
@@ -92,18 +92,18 @@ class _DoctorPanelState extends State<DoctorPanel> {
               ),
               SizedBox(height: 40),
 
-              _buildSectionTitle('Doctor'),
-              _buildDoctorInputField(doctorController, 'Doctor email (required)'),
+              _buildSectionTitle('Dokter'),
+              _buildDoctorInputField(doctorController, 'Dokter email (verplicht)'),
 
               SizedBox(height: 30),
 
-              _buildSectionTitle('Nurse(s)'),
-              _buildDynamicFields(nurseControllers, 'Nurse email (optional)', _addNurseField, _removeNurseField),
+              _buildSectionTitle('Verpleegkundige(n)'),
+              _buildDynamicFields(nurseControllers, 'Verpleegkundige email (optioneel)', _addNurseField, _removeNurseField),
 
               SizedBox(height: 30),
 
-              _buildSectionTitle('Patient(s)'),
-              _buildDynamicFields(patientControllers, 'Patient email (optional)', _addPatientField, _removePatientField),
+              _buildSectionTitle('Patiënt(en)'),
+              _buildDynamicFields(patientControllers, 'Patiënt email (optioneel)', _addPatientField, _removePatientField),
 
               SizedBox(height: 40),
 
@@ -114,7 +114,7 @@ class _DoctorPanelState extends State<DoctorPanel> {
                   foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: Text('Create Assignment', style: TextStyle(fontSize: 18)),
+                child: Text('Creëer opdracht', style: TextStyle(fontSize: 18)),
               ),
             ],
           ),

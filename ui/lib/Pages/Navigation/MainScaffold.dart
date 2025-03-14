@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:ui/Models/Enums/FunctionType.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
@@ -17,7 +18,11 @@ class MainScaffold extends StatefulWidget {
   final Widget body;
   final bool hasScaffold;
 
-  MainScaffold({required this.body, this.hasScaffold = false, Key? key}) : super(key: key);
+  const MainScaffold({
+    required this.body,
+    this.hasScaffold = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _MainScaffoldState createState() => _MainScaffoldState();
@@ -45,7 +50,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         _startNotificationPolling();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error fetching domain user: $e')),
+          SnackBar(content: Text('Error ophalen domein gebruiker: $e')),
         );
       }
     }
@@ -69,9 +74,15 @@ class _MainScaffoldState extends State<MainScaffold> {
           notifications = data;
         });
       } catch (e) {
-        debugPrint('Error fetching notifications: $e');
+        debugPrint('Error ophalen notificaties: $e');
       }
     }
+  }
+
+  /// Deze methode laat zien hoeveel notificaties 'Te behandelen' zijn.
+  /// We filteren notifications op status == 'Te behandelen'.
+  int get teBehandelenCount {
+    return notifications.where((n) => n.status == 'Te behandelen').length;
   }
 
   void _onItemTapped(int index) {
@@ -98,7 +109,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
+        SnackBar(content: Text('Error bij uitloggen: $e')),
       );
     }
   }
@@ -110,99 +121,121 @@ class _MainScaffoldState extends State<MainScaffold> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('VitalRoutes', style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
-              color: Colors.white,
-            ),),
+            Text(
+              'VitalRoutes',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+                color: Colors.white,
+              ),
+            ),
             if (firebaseUser != null)
-              Text(firebaseUser!.email ?? 'User', style: TextStyle(color: Colors.white, fontSize: 12)),
+              Text(
+                firebaseUser!.email ?? 'User',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
           ],
         ),
         backgroundColor: Colors.indigo,
         actions: [
-          if (firebaseUser != null) Stack(
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {
-                  _showNotificationsDropdown(context);
-                },
-              ),
-              if (notifications.isNotEmpty)
-                Positioned(
-                  right: 11,
-                  top: 11,
-                  child: GestureDetector(
-                    onTap: () {
-                      _showNotificationsDropdown(context);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: 18,
-                        minHeight: 18,
-                      ),
-                      child: Text(
-                        '${notifications.length}',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
+          if (firebaseUser != null && domainUser != null && domainUser!.function != FunctionType.Patient)
+            Stack(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.notifications, color: Colors.white),
+                  onPressed: () {
+                    _showNotificationsDropdown(context);
+                  },
+                ),
+                // Als er teBehandelen notificaties zijn, toon het rode badge
+                if (teBehandelenCount > 0)
+                  Positioned(
+                    right: 11,
+                    top: 11,
+                    child: GestureDetector(
+                      onTap: () {
+                        _showNotificationsDropdown(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        textAlign: TextAlign.center,
+                        constraints: BoxConstraints(
+                          minWidth: 18,
+                          minHeight: 18,
+                        ),
+                        child: Text(
+                          '$teBehandelenCount',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
-          ),
-          if (firebaseUser != null) PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'profile') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserProfileScreen(firebaseUser: firebaseUser!),
+              ],
+            ),
+          if (firebaseUser != null)
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'profiel') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(firebaseUser: firebaseUser!),
+                    ),
+                  );
+                } else if (value == 'uitloggen') {
+                  _signOut(context);
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem<String>(
+                  value: 'profiel',
+                  child: ListTile(
+                    leading: Icon(Icons.person, color: Colors.black),
+                    title: Text('Profiel'),
                   ),
-                );
-              } else if (value == 'logout') {
-                _signOut(context);
-              }
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem<String>(value: 'profile',
-                child: ListTile(
-                  leading: Icon(Icons.person, color: Colors.black),
-                  title: Text('Profile'),
                 ),
-              ),
-              PopupMenuItem<String>(value: 'logout',
-                child: ListTile(
-                  leading: Icon(Icons.logout, color: Colors.black),
-                  title: Text('Logout'),
+                PopupMenuItem<String>(
+                  value: 'uitloggen',
+                  child: ListTile(
+                    leading: Icon(Icons.logout, color: Colors.black),
+                    title: Text('Uitloggen'),
+                  ),
                 ),
-              ),
-            ],
-            icon: Icon(Icons.person, color: Colors.white),
-          ) else TextButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen()));
-            },
-            child: Text('Sign In', style: TextStyle(color: Colors.white)),
-          ),
+              ],
+              icon: Icon(Icons.person, color: Colors.white),
+            )
+          else
+            TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+              },
+              child: Text('Login', style: TextStyle(color: Colors.white)),
+            ),
         ],
       ),
-      drawer: CustomDrawer(onItemSelected: _onItemTapped, firebaseUser: firebaseUser,),
+      drawer: CustomDrawer(
+        onItemSelected: _onItemTapped,
+        firebaseUser: firebaseUser,
+      ),
       body: widget.body,
     );
   }
 
+  /// Hier laten we enkel de "Te behandelen" notificaties in de pop-up zien.
   void _showNotificationsDropdown(BuildContext context) {
+    // Filter enkel notificaties die 'Te behandelen' zijn
+    final teBehandelenList = notifications
+        .where((n) => n.status == 'Te behandelen')
+        .toList();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -210,11 +243,13 @@ class _MainScaffoldState extends State<MainScaffold> {
           title: Text('Notificaties'),
           content: Container(
             width: double.maxFinite,
-            child: ListView.builder(
+            child: teBehandelenList.isEmpty
+                ? Text('Geen te behandelen notificaties')
+                : ListView.builder(
               shrinkWrap: true,
-              itemCount: notifications.length,
+              itemCount: teBehandelenList.length,
               itemBuilder: (BuildContext context, int index) {
-                final notification = notifications[index];
+                final notification = teBehandelenList[index];
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
@@ -224,7 +259,11 @@ class _MainScaffoldState extends State<MainScaffold> {
                   child: ListTile(
                     title: Text(
                       notification.patientName,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
+                      ),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +277,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                           style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                         Text(
-                          'Boodschap: ${notification.message}', 
+                          'Boodschap: ${notification.message}',
                           style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                       ],
@@ -262,7 +301,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           ),
           actions: [
             TextButton(
-              child: Text('Close'),
+              child: Text('Sluiten'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -272,5 +311,4 @@ class _MainScaffoldState extends State<MainScaffold> {
       },
     );
   }
-  
 }

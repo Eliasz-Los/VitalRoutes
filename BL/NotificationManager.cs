@@ -32,20 +32,20 @@ namespace BL
                 var errorMessage = $" [FOUT] Patiënt met ID {dto.PatientId} niet gevonden.";
                 throw new Exception(errorMessage);
             }
-            
+
             EmergencyLevel emergencyLevel = dto.Status switch
             {
                 "Dringend" => EmergencyLevel.Medium,
                 "Nood" => EmergencyLevel.High,
                 _ => EmergencyLevel.Low
             };
-            
+
             var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(patient.Id);
             int chamberNr = room?.RoomNumber ?? -101;
-            
+
             var notification = new Notification(dto.Message)
             {
-                Status = "te behandelen",
+                Status = "Te behandelen",
                 TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2)
             };
 
@@ -93,13 +93,39 @@ namespace BL
                     TimeStamp = notification.TimeStamp,
                     PatientId = patient.Id,
                     PatientName = $"{patient.FirstName} {patient.LastName}",
-                    RoomNumber = room?.RoomNumber ?? -101
+                    RoomNumber = room?.RoomNumber ?? -120
+                });
+            }
+
+            return result;
+        }
+        
+        public async Task<IEnumerable<NotificationDto>> GetNotificationsForPatient(Guid patientId)
+        {
+            var notifications = await _notificationRepository.GetNotificationsForPatient(patientId);
+            var result = new List<NotificationDto>();
+
+            foreach (var notification in notifications)
+            {
+                var patient = notification.Emergency?.User;
+                if (patient == null) continue;
+
+                result.Add(new NotificationDto
+                {
+                    Id = notification.Id,
+                    Message = notification.Message,
+                    Status = notification.Status,
+                    TimeStamp = notification.TimeStamp,
+                    PatientId = patient.Id,
+                    PatientName = $"{patient.FirstName} {patient.LastName}",
+                    RoomNumber = notification.Emergency?.ChamberNr ?? -120
                 });
             }
 
             return result;
         }
 
+        
         public async Task<IEnumerable<NotificationDto>> GetNotificationsForDoctor(Guid doctorId)
         {
             var notifications = await _notificationRepository.GetNotificationsForDoctor(doctorId);
@@ -124,7 +150,7 @@ namespace BL
                     // een aparte property maken in de DTO.
                     PatientId = nurseOrHeadNurse.Id,
                     PatientName = $"{nurseOrHeadNurse.FirstName} {nurseOrHeadNurse.LastName}",
-                    RoomNumber = room?.RoomNumber ?? -101
+                    RoomNumber = room?.RoomNumber ?? -120
                 });
             }
 
@@ -141,8 +167,10 @@ namespace BL
                 Id = updated.Id,
                 Message = updated.Message,
                 Status = updated.Status,
+                PatientName = updated.Emergency?.User.FirstName + " " + updated.Emergency?.User.LastName,
+                RoomNumber = updated.Emergency?.ChamberNr ?? -120,
                 TimeStamp = updated.TimeStamp,
-                PatientId = updated.Emergency?.User?.Id ?? Guid.Empty
+                PatientId = updated.Emergency?.User.Id ?? Guid.Empty
             };
         }
 
