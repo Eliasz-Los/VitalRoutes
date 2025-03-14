@@ -10,6 +10,7 @@ import '../../Services/UserService.dart';
 import 'FloorplanImage.dart';
 import 'RoomLocations.dart';
 import '../../Models/Users/User.dart' as custom_user;
+import 'dart:ui' as ui;
 
 class FloorplanPage extends StatefulWidget {
   final String hospitalName;
@@ -31,6 +32,7 @@ class FloorplanPageState extends State<FloorplanPage> {
   List<Point> _path = [];
   Point? _startPoint;
   Point? _endPoint;
+  ui.Image? _floorplanImage;
 
   @override
   void initState() {
@@ -56,10 +58,9 @@ class FloorplanPageState extends State<FloorplanPage> {
       _bluetoothService.startScan(context);
     }
   }
-  
-  
+
   void _incrementFloor() {
-    if(_currentFloorNumber < _maxFloorNumber) {
+    if (_currentFloorNumber < _maxFloorNumber) {
       setState(() {
         _currentFloorNumber++;
         _path = [];
@@ -70,7 +71,7 @@ class FloorplanPageState extends State<FloorplanPage> {
   }
 
   void _decrementFloor() {
-    if(_currentFloorNumber > _minFloorNumber) {
+    if (_currentFloorNumber > _minFloorNumber) {
       setState(() {
         _currentFloorNumber--;
         _path = [];
@@ -79,7 +80,7 @@ class FloorplanPageState extends State<FloorplanPage> {
       });
     }
   }
-  
+
   void _togglePathfinding() {
     setState(() {
       _isPathfindingEnabled = !_isPathfindingEnabled;
@@ -91,6 +92,12 @@ class FloorplanPageState extends State<FloorplanPage> {
       _path = path;
       _startPoint = startPoint;
       _endPoint = endPoint;
+    });
+  }
+
+  void _onFloorplanLoaded(ui.Image image) {
+    setState(() {
+      _floorplanImage = image;
     });
   }
 
@@ -109,7 +116,7 @@ class FloorplanPageState extends State<FloorplanPage> {
             onPressed: _decrementFloor,
           ),
           IconButton(
-              icon: Icon(_isPathfindingEnabled ? Icons.map : Icons.map_outlined),
+            icon: Icon(_isPathfindingEnabled ? Icons.map : Icons.map_outlined),
             onPressed: _togglePathfinding,
           ),
         ],
@@ -138,20 +145,24 @@ class FloorplanPageState extends State<FloorplanPage> {
                       maxScale: 4,
                       child: Stack(
                         children: [
-                          FloorplanImage(hospitalName: widget.hospitalName, 
-                              floorNumber: _currentFloorNumber,
-                              isPathfindingEnabled: _isPathfindingEnabled,
-                              path: _path,
-                              startPoint: _startPoint,
-                              endPoint: _endPoint,
-                              onPathUpdated: _updatePath),
+                          FloorplanImage(
+                            hospitalName: widget.hospitalName,
+                            floorNumber: _currentFloorNumber,
+                            isPathfindingEnabled: _isPathfindingEnabled,
+                            path: _path,
+                            startPoint: _startPoint,
+                            endPoint: _endPoint,
+                            onPathUpdated: _updatePath,
+                            onFloorplanLoaded: _onFloorplanLoaded,
+                          ),
                           RoomLocations(user: user, floorNumber: _currentFloorNumber),
-                          UserPosition()
+                          if (_floorplanImage != null)
+                            UserPosition(floorplanImage: _floorplanImage!),
                         ],
                       ),
                     ),
-                  ),  
-              ],
+                  ),
+                ],
               ),
             );
           }

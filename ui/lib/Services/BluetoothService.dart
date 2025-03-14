@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:ui/Services/PermissionService.dart';
 import 'package:ui/Services/PositioningService.dart';
 
+import 'ScalingService.dart';
+
 class BluetoothService {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
   final PositioningService _positioningService = PositioningService();
   StreamSubscription? _scanSubscription;
   final Set<DiscoveredDevice> _scannedBeacons = {};
   final Map<String, Offset> _beaconPositions = {
-    'Pepes in action': Offset(100.01, 168.01),
-    'Pepes in action2': Offset(305.01, 128.01),
-    'Pepes in action3': Offset(120.01, 115.01),
+    'Pepes in action': Offset(ScalingService.scaleX(1061.0), ScalingService.scaleY(1479.0)), //-102
+    'Pepes in action2': Offset(ScalingService.scaleX(1592.0), ScalingService.scaleY(1449.0)),//-101
+    'Pepes in action3': Offset(ScalingService.scaleX(3469.0), ScalingService.scaleY(974.0)),//-111
   };
 
   Future<void> startScan(BuildContext context) async {
