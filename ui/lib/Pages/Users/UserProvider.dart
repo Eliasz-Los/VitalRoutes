@@ -15,8 +15,9 @@ class UserProvider with ChangeNotifier {
     _domainUser = domainUser;
     notifyListeners();
   }
-
+  
   UserProvider() {
+    _user = _auth.currentUser;
     _auth.authStateChanges().listen((User? user) {
       _user = user;
       notifyListeners();
