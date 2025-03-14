@@ -117,7 +117,7 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Notificatie voor ${notif.message}",
+                            "Notificatie voor: ${notif.message}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,

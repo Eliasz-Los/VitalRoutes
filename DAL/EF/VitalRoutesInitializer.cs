@@ -167,11 +167,119 @@ public class VitalRoutesInitializer
             // 3045.0 ,368.0
         };
         
+        // ********************************************* User Supervisions *********************************************
+        //nurses to headnurse
+        user4.UnderSupervisions.Add(user5);
+        user4.UnderSupervisions.Add(user6);
+        user4.UnderSupervisions.Add(user6);
+        user4.UnderSupervisions.Add(user7);
+        user5.Supervisors.Add(user4);
+        user6.Supervisors.Add(user4);
+        user6.Supervisors.Add(user4);
+        user7.Supervisors.Add(user4);
+        
+        //nurses to one doctor
+        user1.UnderSupervisions.Add(user5);
+        user2.UnderSupervisions.Add(user6);
+        user3.UnderSupervisions.Add(user7);
+        user5.Supervisors.Add(user1);
+        user6.Supervisors.Add(user2);
+        user7.Supervisors.Add(user3);
+        
+        //patients to doctors
+        user1.UnderSupervisions.Add(user8);
+        user1.UnderSupervisions.Add(user9);
+        user2.UnderSupervisions.Add(user10);
+        user2.UnderSupervisions.Add(user11);
+        user3.UnderSupervisions.Add(user12);
+        user3.UnderSupervisions.Add(user1);
+        user8.Supervisors.Add(user1);
+        user9.Supervisors.Add(user1);
+        user10.Supervisors.Add(user2);
+        user11.Supervisors.Add(user2);
+        user12.Supervisors.Add(user3);
+        user13.Supervisors.Add(user3);
+        
+        //patients to nurses
+        user5.UnderSupervisions.Add(user8);
+        user5.UnderSupervisions.Add(user9);
+        user5.UnderSupervisions.Add(user10);
+        user6.UnderSupervisions.Add(user11);
+        user6.UnderSupervisions.Add(user12);
+        user6.UnderSupervisions.Add(user13);
+        user7.UnderSupervisions.Add(user14);
+        user7.UnderSupervisions.Add(user15);
+        user7.UnderSupervisions.Add(user16);
+        user7.UnderSupervisions.Add(user17);
+        user8.Supervisors.Add(user5);
+        user9.Supervisors.Add(user5);
+        user10.Supervisors.Add(user5);
+        user11.Supervisors.Add(user6);
+        user12.Supervisors.Add(user6);
+        user13.Supervisors.Add(user6);
+        user14.Supervisors.Add(user7);
+        user15.Supervisors.Add(user7);
+        user16.Supervisors.Add(user7);
+        user17.Supervisors.Add(user7);
+
+        // Voeg alles toe aan de database
         context.Hospitals.Add(hospital1);
         context.UserLocations.AddRange(userLocation1, userLocation2, userLocation3, userLocation4);
         context.Users.AddRange(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18);
         context.Floorplans.AddRange(gpFloorplans);
         context.Rooms.AddRange(roomsFloorMinus1Groenplaats);
+        context.SaveChanges();
+        
+        // *********************************************** Notifications ***********************************************
+         List<Notification> notifications = new List<Notification>();
+
+        // Notificaties voor user8
+        Emergency emergency8_1 = new Emergency(user8.Room?.RoomNumber ?? -120, EmergencyLevel.Medium) { User = user8 };
+        Emergency emergency8_2 = new Emergency(user8.Room?.RoomNumber ?? -120, EmergencyLevel.Low) { User = user8 };
+
+        Notification notification8_1 = new Notification("Dringend - Toilet") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency8_1 
+        };
+        
+
+        Notification notification8_2 = new Notification("Verzoek - Eten/drinken") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency8_2 
+        };
+
+        // Notificaties voor user11
+        Emergency emergency11_1 = new Emergency(user11.Room?.RoomNumber ?? -120, EmergencyLevel.High) { User = user11 };
+        Emergency emergency11_2 = new Emergency(user11.Room?.RoomNumber ?? -120, EmergencyLevel.Medium) { User = user11 };
+
+        Notification notification11_1 = new Notification("Nood - Medicatie") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency11_1 
+        };
+
+        Notification notification11_2 = new Notification("Dringend - Hulp") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency11_2 
+        };
+
+        // Notificaties voor user14
+        Emergency emergency14_1 = new Emergency(user14.Room?.RoomNumber ?? -120, EmergencyLevel.High) { User = user14 };
+        Emergency emergency14_2 = new Emergency(user14.Room?.RoomNumber ?? -120, EmergencyLevel.Medium) { User = user14 };
+
+        Notification notification14_1 = new Notification("Nood - Pijn") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency14_1 
+        };
+
+        Notification notification14_2 = new Notification("Dringend - Toilet") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency14_2 
+        };
+
+        // Voeg notificaties toe aan de lijst
+        notifications.AddRange(new[] { notification8_1, notification8_2, notification11_1, notification11_2, notification14_1, notification14_2 });
+        context.Emergencies.AddRange(emergency8_1, emergency8_2, emergency11_1, emergency11_2, emergency14_1, emergency14_2);
+        context.Notifications.AddRange(notifications);
         context.SaveChanges();
         context.ChangeTracker.Clear();
     }
