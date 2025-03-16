@@ -39,8 +39,8 @@ var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" )
 Console.WriteLine($"Start point: ({start.XWidth}, {start.YHeight})");
 Console.WriteLine($"End point: ({end.XWidth}, {end.YHeight})");
 
-var path = AStarPathfinding.FindPath( start, end, walkablePoints);
-//var path = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
+//var path = AStarPathfinding.FindPath( start, end, walkablePoints);
+var path = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
 
 
 stopwatch.Stop();

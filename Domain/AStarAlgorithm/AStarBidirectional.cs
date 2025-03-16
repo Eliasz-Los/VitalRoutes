@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace Domain.AStarAlgorithm;
+﻿namespace Domain.AStarAlgorithm;
 
 public class AStarBidirectional
 {
