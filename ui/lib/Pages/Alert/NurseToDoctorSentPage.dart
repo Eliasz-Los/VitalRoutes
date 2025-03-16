@@ -62,7 +62,7 @@ class _NurseToDoctorSentPageState extends State<NurseToDoctorSentPage> {
         sentNotifications = data;
       });
     } catch (e) {
-      debugPrint('Fout bij ophalen notificaties nurse->doctor: $e');
+      debugPrint('Fout bij ophalen notificaties van verpleger naar dokter: $e');
     }
   }
 

@@ -181,12 +181,10 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           SizedBox(height: 8),
-                          // Status-label
                           Text(
                             'Status:',
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
-                          // Dropdown
                           DropdownButton<String>(
                             value: currSelectedStatus,
                             style: TextStyle(fontSize: 16, color: Colors.black),

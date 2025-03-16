@@ -52,6 +52,42 @@ class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
     }
   }
 
+  Future<void> navigateToFloorplanForNurse(BuildContext context, NotificationModel notification) async {
+    try {
+      final domain.User patientUser = await UserService.getUserById(notification.userId);
+
+      final Room userRoom = await widget.roomService.getRoomByUserId(patientUser.id!);
+
+      int floorNumber = 1;
+      if (userRoom.roomNumber < 0) {
+        floorNumber = (userRoom.roomNumber ~/ 100);
+      } else {
+        String numStr = userRoom.roomNumber.toString();
+        floorNumber = int.parse(numStr[0]);
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainScaffold(
+              body: FloorplanPage(
+                hospitalName: 'UZ Groenplaats',
+                initialFloorNumber: floorNumber,
+                initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
+                initialEndPoint: userRoom.point,
+                isPathfindingEnabledFromParams: true,
+              ),
+              hasScaffold: true,
+            )
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fout bij navigeren naar Floorplan: $e')),
+      );
+    }
+  }
+  
   void _startNotificationPolling() {
     Timer.periodic(Duration(seconds: 3), (timer) {
       if (mounted) {
@@ -84,7 +120,6 @@ class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Titel
             Text(
               'Notificaties',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
@@ -116,12 +151,11 @@ class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Rij met avatar + userName
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                backgroundColor: Colors.grey[300],
+                                backgroundColor: Colors.grey[300],  
                                 child: Icon(Icons.person, color: Colors.white),
                               ),
                               SizedBox(width: 10),
@@ -138,24 +172,23 @@ class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
                             ],
                           ),
                           SizedBox(height: 8),
-                          // Kamer + Boodschap
                           Text(
                             'Kamer: ${notif.roomNumber}',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
                           Text(
                             'Boodschap: ${notif.message}',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
                           SizedBox(height: 8),
                           // Status
                           Text(
                             'Status:',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
                           DropdownButton<String>(
                             value: currSelectedStatus,
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                             items: ['Te behandelen', 'In behandeling', 'Behandeld']
                                 .map((s) => DropdownMenuItem(
                               value: s,
@@ -171,8 +204,6 @@ class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
                             },
                           ),
                           SizedBox(height: 8),
-
-                          // Update-knop + Navigatie-icoon
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -211,6 +242,12 @@ class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
                                 ),
                               ),
                               SizedBox(width: 8),
+                              IconButton(
+                                icon: Icon(Icons.navigation, size: 44, color: Colors.blue),
+                                onPressed: () async {
+                                  await navigateToFloorplanForNurse(context, notif);
+                                },
+                              ),
                             ],
                           ),
                         ],
