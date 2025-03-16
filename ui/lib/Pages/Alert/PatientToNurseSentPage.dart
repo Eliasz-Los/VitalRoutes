@@ -9,16 +9,16 @@ import 'package:ui/Models/Users/User.dart' as domain;
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../Navigation/MainScaffold.dart';
 
-class PatientNotificationPage extends StatefulWidget {
+class PatientToNurseSentPage extends StatefulWidget {
   final String userId;
 
-  PatientNotificationPage({required this.userId, Key? key}) : super(key: key);
+  PatientToNurseSentPage({required this.userId, Key? key}) : super(key: key);
 
   @override
-  _PatientNotificationPageState createState() => _PatientNotificationPageState();
+  _PatientToNurseSentPageState createState() => _PatientToNurseSentPageState();
 }
 
-class _PatientNotificationPageState extends State<PatientNotificationPage> {
+class _PatientToNurseSentPageState extends State<PatientToNurseSentPage> {
   User? firebaseUser;
   domain.User? domainUser;
   List<NotificationModel> notifications = [];
@@ -59,7 +59,7 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
   Future<void> _fetchNotifications() async {
     if (domainUser != null) {
       try {
-        final data = await NotificationService.getNotificationsForPatient(domainUser!.id.toString());
+        final data = await NotificationService.getSentNotificationsForPatient(domainUser!.id.toString());
         setState(() {
           notifications = data;
         });

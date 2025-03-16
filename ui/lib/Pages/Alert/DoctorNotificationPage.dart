@@ -7,23 +7,23 @@ import 'package:ui/Services/UserService.dart';
 import 'package:ui/Models/NotificationModel.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/Models/Point.dart' as custom_point;
 import '../../Models/Room.dart';
 import '../../Services/RoomService.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../Navigation/MainScaffold.dart';
-import 'package:ui/Models/Point.dart' as custom_point;
 
-class NurseNotificationPage extends StatefulWidget {
-  final String userId;
+class DoctorNotificationPage extends StatefulWidget {
   final RoomService roomService = RoomService();
+  final String userId;
 
-  NurseNotificationPage({required this.userId, Key? key}) : super(key: key);
+  DoctorNotificationPage({Key? key, required this.userId}) : super(key: key);
 
   @override
-  _NurseNotificationPageState createState() => _NurseNotificationPageState();
+  _DoctorNotificationPageState createState() => _DoctorNotificationPageState();
 }
 
-class _NurseNotificationPageState extends State<NurseNotificationPage> {
+class _DoctorNotificationPageState extends State<DoctorNotificationPage> {
   User? firebaseUser;
   domain.User? domainUser;
   List<NotificationModel> notifications = [];
@@ -46,7 +46,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
         _startNotificationPolling();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error fetching domain user: $e')),
+          SnackBar(content: Text('Fout bij ophalen doctor-user: $e')),
         );
       }
     }
@@ -63,54 +63,17 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
   }
 
   Future<void> _fetchNotifications() async {
-    if (domainUser != null) {
-      try {
-        final data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
-        setState(() {
-          notifications = data;
-          for (var notif in notifications) {
-            selectedStatuses.putIfAbsent(notif.id, () => notif.status);
-          }
-        });
-      } catch (e) {
-        debugPrint('Error fetching notifications: $e');
-      }
-    }
-  }
-
-  Future<void> navigateToFloorplanForPatient(BuildContext context, NotificationModel notification) async {
+    if (domainUser == null) return;
     try {
-      final domain.User patientUser = await UserService.getUserById(notification.userId);
-
-      final Room userRoom = await widget.roomService.getRoomByUserId(patientUser.id!);
-
-      int floorNumber = 1;
-      if (userRoom.roomNumber < 0) {
-        floorNumber = (userRoom.roomNumber ~/ 100);
-      } else {
-        String numStr = userRoom.roomNumber.toString();
-        floorNumber = int.parse(numStr[0]);
-      }
-
-      Navigator.push(
-        context,
-          MaterialPageRoute(
-              builder: (context) => MainScaffold(
-                body: FloorplanPage(
-                  hospitalName: 'UZ Groenplaats',
-                  initialFloorNumber: floorNumber,
-                  initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
-                  initialEndPoint: userRoom.point,
-                  isPathfindingEnabledFromParams: true,
-                ),
-                hasScaffold: true,
-              )
-          ),
-      );
+      final data = await NotificationService.getNotificationsForDoctor(domainUser!.id.toString());
+      setState(() {
+        notifications = data;
+        for (var notif in data) {
+          selectedStatuses.putIfAbsent(notif.id, () => notif.status);
+        }
+      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fout bij navigeren naar Floorplan: $e')),
-      );
+      debugPrint('Fout bij ophalen doctor-notificaties: $e');
     }
   }
 
@@ -121,20 +84,22 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Titel
             Text(
               'Notificaties',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
             ),
             SizedBox(height: 16),
+
             Expanded(
               child: notifications.isEmpty
                   ? Center(child: Text('Geen notificaties'))
                   : ListView.builder(
                 itemCount: notifications.length,
                 itemBuilder: (context, index) {
-                  final notification = notifications[index];
-                  final dbStatus = notification.status;
-                  final currSelectedStatus = selectedStatuses[notification.id] ?? dbStatus;
+                  final notif = notifications[index];
+                  final dbStatus = notif.status;
+                  final currSelectedStatus = selectedStatuses[notif.id] ?? dbStatus;
                   final isBehandeld = (dbStatus == 'Behandeld');
 
                   return Card(
@@ -151,6 +116,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Rij met avatar + userName
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -161,7 +127,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                               SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  '${notification.userName}',
+                                  notif.userName,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -172,41 +138,41 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                             ],
                           ),
                           SizedBox(height: 8),
+                          // Kamer + Boodschap
                           Text(
-                            'Kamer: ${notification.roomNumber}',
+                            'Kamer: ${notif.roomNumber}',
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           Text(
-                            'Boodschap: ${notification.message}',
+                            'Boodschap: ${notif.message}',
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                           SizedBox(height: 8),
-                          // Status-label
+                          // Status
                           Text(
                             'Status:',
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
-                          // Dropdown
                           DropdownButton<String>(
                             value: currSelectedStatus,
                             style: TextStyle(fontSize: 16, color: Colors.black),
-                            items: <String>[
-                              'Te behandelen',
-                              'In behandeling',
-                              'Behandeld'
-                            ].map((String value) => DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            )).toList(),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
+                            items: ['Te behandelen', 'In behandeling', 'Behandeld']
+                                .map((s) => DropdownMenuItem(
+                              value: s,
+                              child: Text(s),
+                            ))
+                                .toList(),
+                            onChanged: (val) {
+                              if (val != null) {
                                 setState(() {
-                                  selectedStatuses[notification.id] = newValue;
+                                  selectedStatuses[notif.id] = val;
                                 });
                               }
                             },
                           ),
                           SizedBox(height: 8),
+
+                          // Update-knop + Navigatie-icoon
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -214,7 +180,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                                 onPressed: () async {
                                   try {
                                     await NotificationService.updateNotificationStatus(
-                                      notification.id,
+                                      notif.id,
                                       currSelectedStatus,
                                     );
                                     _fetchNotifications();
@@ -231,7 +197,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Text('Error bij updaten status: $e'),
+                                        content: Text('Fout bij updaten status: $e'),
                                       ),
                                     );
                                   }
@@ -245,12 +211,6 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                                 ),
                               ),
                               SizedBox(width: 8),
-                              IconButton(
-                                icon: Icon(Icons.navigation, size: 44, color: Colors.blue),
-                                onPressed: () async {
-                                  await navigateToFloorplanForPatient(context, notification);
-                                },
-                              ),
                             ],
                           ),
                         ],

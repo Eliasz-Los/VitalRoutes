@@ -1,16 +1,17 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:ui/Services/NotificationService.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/Services/NotificationService.dart';
+import 'package:ui/Models/Users/User.dart' as domain;
 
-import '../../Services/RoomService.dart';
+class AlertDoctorPage extends StatefulWidget {
+  const AlertDoctorPage({Key? key}) : super(key: key);
 
-class AlertNursePage extends StatefulWidget {
   @override
-  _AlertNursePageState createState() => _AlertNursePageState();
+  State<AlertDoctorPage> createState() => _AlertDoctorPageState();
 }
 
-class _AlertNursePageState extends State<AlertNursePage> {
+class _AlertDoctorPageState extends State<AlertDoctorPage> {
   String? _selectedUrgency;
   String? _selectedRequest;
   final TextEditingController _customRequestController = TextEditingController();
@@ -53,7 +54,7 @@ class _AlertNursePageState extends State<AlertNursePage> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: const Text(
-        'Roep een Verpleegkundige',
+        'Roep een Dokter',
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
       ),
@@ -63,7 +64,10 @@ class _AlertNursePageState extends State<AlertNursePage> {
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black)),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+      ),
     );
   }
 
@@ -107,7 +111,7 @@ class _AlertNursePageState extends State<AlertNursePage> {
   Widget _buildRequestOptions() {
     return Column(
       children: [
-        for (String option in ['Pijn', 'Medicatie', 'Eten/drinken', 'Toilet', 'Hulp'])
+        for (String option in ['Spoedgeval', 'Consultatie', 'Onderzoek', 'Afspraak', 'Overig'])
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 1),
             child: RadioListTile<String>(
@@ -150,36 +154,35 @@ class _AlertNursePageState extends State<AlertNursePage> {
           if (_selectedUrgency != null &&
               (_selectedRequest != null || _customRequestController.text.isNotEmpty)) {
 
-            String message = _selectedUrgency! + ' - ' + (_customRequestController.text.isNotEmpty ? _customRequestController.text : _selectedRequest!);
-
             final userProvider = Provider.of<UserProvider>(context, listen: false);
-            final patient = userProvider.domainUser;
-
-            if (patient == null) {
+            final nurseUser = userProvider.domainUser;
+            if (nurseUser == null) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Geen ingelogde patiënt gevonden.')),
+                const SnackBar(content: Text('Geen ingelogde Nurse/HeadNurse gevonden.')),
               );
               return;
             }
 
+            // Bouw message-string
+            final requestText = _customRequestController.text.isNotEmpty
+                ? _customRequestController.text
+                : _selectedRequest!;
+            final message = '$_selectedUrgency - $requestText';
+
+            // Bouw JSON-body voor createNurseToDoctorNotification
+            final notificationData = {
+              'message': message,
+              'status': _selectedUrgency, // 'Verzoek', 'Dringend', 'Nood'
+              'timeStamp': DateTime.now().toIso8601String(),
+              'userId': nurseUser.id,   // Nurse/HeadNurse ID
+              'userName': '${nurseUser.firstName ?? ''} ${nurseUser.lastName ?? ''}',
+            };
+
             try {
-              final roomService = RoomService();
-              final patientRoom = await roomService.getRoomByUserId(patient.id.toString());
-
-              final notificationData = {
-                'message': message,
-                'status': _selectedUrgency,
-                'timeStamp': DateTime.now().toIso8601String(),
-                'userId': patient.id,
-                'roomNumber': patientRoom.roomNumber,
-                'userName': (patient.firstName ?? '') + ' ' + (patient.lastName ?? ''),
-              };
-
-              print('Sending notification data: $notificationData');
-              await NotificationService.createPatientToNurseNotification(notificationData);
-
+              print('Sending Nurse->Doctor data: $notificationData');
+              await NotificationService.createNurseToDoctorNotification(notificationData);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Verzoek succesvol verzonden!')),
+                const SnackBar(content: Text('Notificatie succesvol verzonden!')),
               );
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -203,5 +206,4 @@ class _AlertNursePageState extends State<AlertNursePage> {
       ),
     );
   }
-
 }

@@ -15,8 +15,11 @@ import '../../Models/Enums/FunctionType.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../../Services/AuthService.dart';
+import '../Alert/AlertDoctorPage.dart';
 import '../Alert/AlertNursePage.dart';
-import '../Alert/PatientNotificationPage.dart';
+import '../Alert/DoctorNotificationPage.dart';
+import '../Alert/NurseToDoctorSentPage.dart';
+import '../Alert/PatientToNurseSentPage.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'MainScaffold.dart';
@@ -92,6 +95,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.campaign , 'Alert verpleegkundige', context, 10, false),
           if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.map, 'Vloerplan', context, 5, false),
           if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.assignment, 'Kamerindeling', context, 6, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.campaign, 'Alert Dokter', context, 13, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.send, 'Verzonden alerts ', context, 14, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 15, false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
@@ -211,7 +217,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
       case 11:
         return NurseNotificationPage(userId: domainUser!.id.toString());
       case 12:
-        return PatientNotificationPage(userId: domainUser!.id.toString());
+        return PatientToNurseSentPage(userId: domainUser!.id.toString());
+      case 13:
+        return AlertDoctorPage();
+      case 14:
+        return NurseToDoctorSentPage(userId: domainUser!.id.toString());
+      case 15:
+        return DoctorNotificationPage(userId: domainUser!.id.toString());
       default:
         return HomePage();
     }
