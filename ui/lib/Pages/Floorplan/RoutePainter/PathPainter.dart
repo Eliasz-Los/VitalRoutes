@@ -13,7 +13,6 @@ class PathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (path.isEmpty) {
-      print("Path is empty?????");
       return;}
 
     final paint = Paint()

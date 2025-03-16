@@ -3,9 +3,9 @@
   late double _r; // Measurement noise covariance
   late double _x; // Value
   late double _p; // Estimation error covariance
-  late double _k; // Kalman gain
+  late double _k = 0.0; // Kalman gain
 
-  KalmanFilter({double q = 0.001, double r = 0.1, double initialValue = 0.0}) {
+  KalmanFilter({double q = 0.001, double r = 0.01, double initialValue = 0.0}) {
     _q = q;
     _r = r;
     _x = initialValue;
@@ -15,7 +15,7 @@
   double filter(double measurement) {
     // Prediction update
     _p = _p + _q;
-
+    
     // Measurement update
     _k = _p / (_p + _r);
     _x = _x + _k * (measurement - _x);

@@ -3,7 +3,6 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/Services/PermissionService.dart';
 import 'package:ui/Services/PositioningService.dart';
-
 import 'ScalingService.dart';
 
 class BluetoothService {
@@ -12,9 +11,9 @@ class BluetoothService {
   StreamSubscription? _scanSubscription;
   final Set<DiscoveredDevice> _scannedBeacons = {};
   final Map<String, Offset> _beaconPositions = {
-    'Pepes in action': Offset(ScalingService.scaleX(1061.0), ScalingService.scaleY(1479.0)), //-102
-    'Pepes in action2': Offset(ScalingService.scaleX(1592.0), ScalingService.scaleY(1449.0)),//-101
-    'Pepes in action3': Offset(ScalingService.scaleX(3469.0), ScalingService.scaleY(974.0)),//-111
+    'Pepes in action': Offset(ScalingService.scaleX(419.0), ScalingService.scaleX(1284.0)),
+    'Pepes in action2': Offset(ScalingService.scaleX(1800.0), ScalingService.scaleX(650.0)),
+    'Pepes in action3': Offset(ScalingService.scaleX(1350.0), ScalingService.scaleX(1515.0)),
   };
 
   Future<void> startScan(BuildContext context) async {
@@ -33,7 +32,6 @@ class BluetoothService {
       if (_beaconPositions.containsKey(device.name)) {
         _scannedBeacons.removeWhere((beacon) => beacon.name == device.name);
         _scannedBeacons.add(device);
-        print('Device found: ${device.id}, RSSI: ${device.rssi}');
       }
     });
   }

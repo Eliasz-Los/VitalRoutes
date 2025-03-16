@@ -19,7 +19,6 @@ class FloorplanImage extends StatefulWidget {
   final Point? startPoint;
   final Point? endPoint;
   final Function(List<Point>, Point?, Point?) onPathUpdated;
-  final Function(ui.Image) onFloorplanLoaded;
 
   const FloorplanImage(
       {Key? key, required this.hospitalName, required this.floorNumber, 
@@ -28,7 +27,6 @@ class FloorplanImage extends StatefulWidget {
          this.startPoint,
          this.endPoint,
          required this.onPathUpdated,
-         required this.onFloorplanLoaded
       })
       : super(key: key);
 
@@ -92,7 +90,6 @@ class _FloorplanImageState extends State<FloorplanImage> {
               future: _loadImage(decodedImageData),
               builder: (context, imageSnapshot) {
                 return StateHandler(snapshot: imageSnapshot, builder: (image) {
-                  widget.onFloorplanLoaded(image);
                   return GestureDetector(
                     onTapDown: _handleTap,
                     child: Stack(

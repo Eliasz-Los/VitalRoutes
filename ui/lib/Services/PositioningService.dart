@@ -22,7 +22,7 @@ class PositioningService {
   }
 
   double _calculateDistance(int rssi) {
-    int txPower = -50; // RSSI value at 1 meter distance
+    int txPower = -42; // RSSI value at 1 meter distance
     if (rssi == 0) {
       return -1.0; // if we cannot determine distance
     }
@@ -53,28 +53,25 @@ class PositioningService {
     return {'x': _kalmanFilterX.filter(x), 'y': _kalmanFilterY.filter(y)};
   }
 
-  Map<String, double> _trilaterate(List<DiscoveredDevice> beacons, Map<String, Offset> beaconPositions) {
-    double x1 = beaconPositions[beacons[0].name]!.dx;
-    double y1 = beaconPositions[beacons[0].name]!.dy;
-    double r1 = _calculateDistance(beacons[0].rssi);
+Map<String, double> _trilaterate(List<DiscoveredDevice> beacons, Map<String, Offset> beaconPositions) {
+    double totalWeight = 0.0;
+    double weightedX = 0.0;
+    double weightedY = 0.0;
 
-    double x2 = beaconPositions[beacons[1].name]!.dx;
-    double y2 = beaconPositions[beacons[1].name]!.dy;
-    double r2 = _calculateDistance(beacons[1].rssi);
+    for (var beacon in beacons) {
+      final position = beaconPositions[beacon.name]!;
+      final distance = _calculateDistance(beacon.rssi);
+      final weight = 1 / (distance * distance); // Weight inversely proportional to the square of the distance
 
-    double x3 = beaconPositions[beacons[2].name]!.dx;
-    double y3 = beaconPositions[beacons[2].name]!.dy;
-    double r3 = _calculateDistance(beacons[2].rssi);
+      weightedX += position.dx * weight;
+      weightedY += position.dy * weight;
+      totalWeight += weight;
 
-    double A = 2 * x2 - 2 * x1;
-    double B = 2 * y2 - 2 * y1;
-    num C = pow(r1, 2) - pow(r2, 2) - pow(x1, 2) + pow(x2, 2) - pow(y1, 2) + pow(y2, 2);
-    double D = 2 * x3 - 2 * x2;
-    double E = 2 * y3 - 2 * y2;
-    num F = pow(r2, 2) - pow(r3, 2) - pow(x2, 2) + pow(x3, 2) - pow(y2, 2) + pow(y3, 2);
+      print('Beacon: ${beacon.name}, RSSI: ${beacon.rssi}, Distance: $distance, Weight: $weight');
+    }
 
-    double x = (C * E - F * B) / (E * A - B * D);
-    double y = (C * D - A * F) / (B * D - A * E);
+    final x = weightedX / totalWeight;
+    final y = weightedY / totalWeight;
 
     return {'x': _kalmanFilterX.filter(x), 'y': _kalmanFilterY.filter(y)};
   }

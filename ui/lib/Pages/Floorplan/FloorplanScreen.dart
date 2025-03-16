@@ -32,7 +32,6 @@ class FloorplanPageState extends State<FloorplanPage> {
   List<Point> _path = [];
   Point? _startPoint;
   Point? _endPoint;
-  ui.Image? _floorplanImage;
 
   @override
   void initState() {
@@ -95,12 +94,6 @@ class FloorplanPageState extends State<FloorplanPage> {
     });
   }
 
-  void _onFloorplanLoaded(ui.Image image) {
-    setState(() {
-      _floorplanImage = image;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,11 +146,9 @@ class FloorplanPageState extends State<FloorplanPage> {
                             startPoint: _startPoint,
                             endPoint: _endPoint,
                             onPathUpdated: _updatePath,
-                            onFloorplanLoaded: _onFloorplanLoaded,
                           ),
                           RoomLocations(user: user, floorNumber: _currentFloorNumber),
-                          if (_floorplanImage != null)
-                            UserPosition(floorplanImage: _floorplanImage!),
+                          UserPosition(),
                         ],
                       ),
                     ),

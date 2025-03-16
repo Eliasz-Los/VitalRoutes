@@ -1,17 +1,12 @@
 ﻿import 'dart:async';
-import 'dart:collection';
-import 'dart:js/js_wasm.dart';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../../Services/BluetoothService.dart';
 import '../../Services/PermissionService.dart';
-import '../../Services/ScalingService.dart';
+import '../../Services/SensorFusionService.dart';
 
 class UserPosition extends StatefulWidget {
-  final ui.Image floorplanImage;
 
-  const UserPosition({Key? key, required this.floorplanImage}) : super(key: key);
+  const UserPosition({Key? key}) : super(key: key);
 
   @override
   _UserPositionState createState() => _UserPositionState();
@@ -20,14 +15,16 @@ class UserPosition extends StatefulWidget {
 class _UserPositionState extends State<UserPosition> {
   final BluetoothService _bluetoothService = BluetoothService();
   final PermissionService _permissionService = PermissionService();
+  final SensorFusionService _sensorFusionService = SensorFusionService();
   late Map<String, double> _userPosition;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _userPosition = {'x': 0.0, 'y': 0.0};
     _checkAndRequestPermissions();
-    _startUpdatingPosition();
+    Future.microtask(() => _startUpdatingPosition());
   }
 
   @override
@@ -45,14 +42,15 @@ class _UserPositionState extends State<UserPosition> {
 
   void _startUpdatingPosition() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        _userPosition = _bluetoothService.getEstimatedPosition();
-        _userPosition = _correctPosition(_userPosition) as Map<String, double>;
-      });
-    });
+          final estimatedPosition = _bluetoothService.getEstimatedPosition();
+          final refinedPosition = _sensorFusionService.refinePosition(estimatedPosition);
+          setState(() {
+            _userPosition = refinedPosition;
+          });
+        });
   }
 
-  Future<Map<String, double>> _correctPosition(Map<String, double> position) async {
+  /*Future<Map<String, double>> _correctPosition(Map<String, double> position) async {
     int x = position['x']!.toInt();
     int y = position['y']!.toInt();
     if (await isValidPosition(x, y)) {
@@ -107,10 +105,14 @@ class _UserPositionState extends State<UserPosition> {
     }
 
     return {'x': 0.0, 'y': 0.0};
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
+    if (_userPosition['x'] == 0.0 && _userPosition['y'] == 0.0) {
+      return SizedBox.shrink();
+    }
+
     return Positioned(
       left: _userPosition['x']!,
       top: _userPosition['y']!,
