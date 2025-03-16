@@ -2,7 +2,6 @@
 import 'package:provider/provider.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import 'package:ui/Services/NotificationService.dart';
-import 'package:ui/Models/Users/User.dart' as domain;
 
 class AlertDoctorPage extends StatefulWidget {
   const AlertDoctorPage({Key? key}) : super(key: key);

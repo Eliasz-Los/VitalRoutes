@@ -4,10 +4,7 @@ import 'package:ui/Pages/Alert/AlertNursePage.dart';
 import 'package:ui/Pages/Users/SignInScreen.dart';
 import 'package:ui/Pages/Floorplan/FloorplanScreen.dart';
 import 'package:ui/Services/UserService.dart';
-import 'package:ui/Models/Users/User.dart' as custom_user;
 import 'package:ui/Models/Enums/FunctionType.dart';
-import 'package:provider/provider.dart';
-import 'package:ui/Pages/Users/UserProvider.dart';
 
 import 'Navigation/MainScaffold.dart';
 

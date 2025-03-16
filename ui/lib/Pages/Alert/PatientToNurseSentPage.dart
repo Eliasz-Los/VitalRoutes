@@ -7,7 +7,6 @@ import 'package:ui/Services/UserService.dart';
 import 'package:ui/Models/NotificationModel.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
 import 'package:ui/Pages/Users/UserProvider.dart';
-import '../Navigation/MainScaffold.dart';
 
 class PatientToNurseSentPage extends StatefulWidget {
   final String userId;
