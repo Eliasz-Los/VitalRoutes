@@ -86,6 +86,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Login', context, 1, false),
           if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profiel', context, 2, true),
           if (domainUser != null && (domainUser!.function == FunctionType.Headnurse || domainUser!.function == FunctionType.Nurse)) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 11, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 15, false),
           if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.send, 'Verzonden alerts', context, 12, false),
           if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Personeel & Patiënten', context, 4, false),
           if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Dokterspaneel', context, 3, false),
@@ -97,7 +98,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
           if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.assignment, 'Kamerindeling', context, 6, false),
           if (domainUser != null && (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.campaign, 'Alert Dokter', context, 13, false),
           if (domainUser != null && (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.send, 'Verzonden alerts ', context, 14, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 15, false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
