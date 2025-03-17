@@ -19,7 +19,7 @@ public class AStarPathfinding
 
         
         // Bounded Search Space
-        double margin = 500;
+        double margin = 350; 
         double minX = Math.Min(start.XWidth, end.XWidth) - margin;
         double maxX = Math.Max(start.XWidth, end.XWidth) + margin;
         double minY = Math.Min(start.YHeight, end.YHeight) - margin;
