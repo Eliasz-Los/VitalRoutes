@@ -18,11 +18,12 @@ string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\Ba
 
 
 
-Stopwatch stopwatch = new Stopwatch();
-stopwatch.Start();
+Stopwatch stopwatchAnalyzer = new Stopwatch();
+Stopwatch stopwatchAStar = new Stopwatch();
+stopwatchAnalyzer.Start();
 
 Point startCoord = new Point(807.0, 1289.0);
-Point endCoord = new Point(3858.0, 262.0);
+Point endCoord = new Point(2256.0, 534.0 ); //3858.0, 262.0 ;2256.0, 534.0
 
 var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, startCoord,endCoord);
 if (walkablePoints == null || walkablePoints.Count == 0)
@@ -30,6 +31,14 @@ if (walkablePoints == null || walkablePoints.Count == 0)
     Console.WriteLine("No walkable points found.");
     return;
 }
+stopwatchAnalyzer.Stop();
+TimeSpan tsAnalyzer = stopwatchAnalyzer.Elapsed;
+string elapsedTimeAnalyzer = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+    tsAnalyzer.Hours, tsAnalyzer.Minutes, tsAnalyzer.Seconds,
+    tsAnalyzer.Milliseconds / 10);
+Console.WriteLine("Analyzer RunTime: " + elapsedTimeAnalyzer);
+
+
 
 var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" ) 
 {
@@ -38,16 +47,17 @@ var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" )
 
 Console.WriteLine($"Start point: ({start.XWidth}, {start.YHeight})");
 Console.WriteLine($"End point: ({end.XWidth}, {end.YHeight})");
-
+stopwatchAStar.Start();
 var path = AStarPathfinding.FindPath( start, end, walkablePoints);
 //var path = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
 
 
-stopwatch.Stop();
-TimeSpan ts = stopwatch.Elapsed;
+stopwatchAStar.Stop();
+TimeSpan ts = stopwatchAStar.Elapsed;
 string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
     ts.Hours, ts.Minutes, ts.Seconds,
     ts.Milliseconds / 10);
-Console.WriteLine("RunTime " + elapsedTime);
+Console.WriteLine("A Star only RunTime: " + elapsedTime);
+
 // Draw the path on the floorplan image
 FloorplanVisualizer.DrawFloorplanWithPath(floorplan, path, start, end, imagePath);

@@ -1,9 +1,14 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ui/Models/Room.dart';
+import 'package:ui/Services/RoomService.dart';
 import '../../Services/UserService.dart';
 import '../../Models/Users/User.dart' as domain;
 import '../../Models/Enums/FunctionType.dart';
+import '../Floorplan/FloorplanScreen.dart';
+import 'package:ui/Models/Point.dart' as custom_point;
+import '../Navigation/MainScaffold.dart';
 
 class NurseOverviewPage extends StatefulWidget {
   @override
@@ -15,6 +20,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
   List<domain.User> filteredPatients = [];
   bool isLoading = true;
   TextEditingController searchController = TextEditingController();
+  final RoomService roomService = RoomService();
 
   @override
   void initState() {
@@ -45,7 +51,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching supervisions: $e')),
+        SnackBar(content: Text('Error ophalen supervisies: $e')),
       );
     } finally {
       setState(() {
@@ -76,14 +82,39 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
           _filterPatients();
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Patient removed successfully')),
+          SnackBar(content: Text('Patiënt succesvol verwijderd!')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting patient: $e')),
+        SnackBar(content: Text('Error verwijderen patiënt: $e')),
       );
     }
+  }
+
+  void navigateToFloorplan(BuildContext context, RoomService roomService, domain.User user) async {
+    final Room userRoom = await roomService.getRoomByUserId(user.id!);
+    int floorNumber = 1;
+    if (userRoom.roomNumber < 0) {
+      floorNumber = (userRoom.roomNumber ~/ 100);
+    } else {
+      String numStr = userRoom.roomNumber.toString();
+      floorNumber = int.parse(numStr[0]);
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainScaffold(
+          body: FloorplanPage(
+            hospitalName: 'UZ Groenplaats',
+            initialFloorNumber: floorNumber,
+            initialStartPoint: custom_point.Point(x: 807.0, y: 1289.0),
+            initialEndPoint: userRoom.point,
+            isPathfindingEnabledFromParams: true,
+        ),
+      ),
+      ),
+    );
   }
 
   @override
@@ -130,7 +161,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        'Patients Overview',
+        'Patiënten overzicht',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 24,
@@ -153,7 +184,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
       child: TextField(
         controller: searchController,
         decoration: InputDecoration(
-          hintText: 'Search patients by name...',
+          hintText: 'Zoek patiënten op naam...',
           hintStyle: TextStyle(color: Colors.grey[600]),
           border: InputBorder.none,
           prefixIcon: Icon(Icons.search, color: Colors.grey),
@@ -213,7 +244,7 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                         ),
                         SizedBox(width: 5),
                         Text(
-                          'Active',
+                          'Actief',
                           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                         ),
                       ],
@@ -230,16 +261,16 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                     bool? confirm = await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Confirm Removal'),
-                        content: Text('Are you sure you want to remove ${user.firstName} ${user.lastName}?'),
+                        title: Text('Bevestig het verwijderen'),
+                        content: Text('Wil je zeker patiënt ${user.firstName} ${user.lastName} verwijderen?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
-                            child: Text('Cancel'),
+                            child: Text('Annuleren'),
                           ),
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
-                            child: Text('Remove'),
+                            child: Text('Verwijderen'),
                           ),
                         ],
                       ),
@@ -250,9 +281,9 @@ class _NurseOverviewPageState extends State<NurseOverviewPage> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(FontAwesomeIcons.mapMarkerAlt, size: 24, color: Colors.blue),
-                  onPressed: () {
-                    // Eventueeel map-functionaliteit toevoegen
+                  icon: Icon(FontAwesomeIcons.locationDot, size: 24, color: Colors.blue),
+                  onPressed: () async {
+                   navigateToFloorplan(context, roomService, user);
                   },
                 ),
               ],

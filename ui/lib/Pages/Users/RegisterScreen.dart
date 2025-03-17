@@ -66,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: <Widget>[
             SizedBox(height: 40),
             Text(
-              'Register in',
+              'Registreer',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: _firstNameController,
               decoration: InputDecoration(
-                labelText: 'First Name',
+                labelText: 'Voornaam',
                 labelStyle: TextStyle(color: Colors.blue[900]),
                 border: OutlineInputBorder(),
               ),
@@ -106,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: _lastNameController,
               decoration: InputDecoration(
-                labelText: 'Last Name',
+                labelText: 'Achternaam',
                 labelStyle: TextStyle(color: Colors.blue[900]),
                 border: OutlineInputBorder(),
               ),
@@ -125,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: 'Paswoord',
                 labelStyle: TextStyle(color: Colors.blue[900]),
                 border: OutlineInputBorder(),
               ),
@@ -135,7 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextField(
               controller: _telephoneNrController,
               decoration: InputDecoration(
-                labelText: 'Telephone Number',
+                labelText: 'Telefoonnummer',
                 labelStyle: TextStyle(color: Colors.blue[900]),
                 border: OutlineInputBorder(),
               ),
@@ -147,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 backgroundColor: Colors.lightBlue,
                 minimumSize: Size(double.infinity, 50),
               ),
-              child: Text('Register', style: TextStyle(color: Colors.white)),
+              child: Text('Registreer', style: TextStyle(color: Colors.white)),
             ),
             if (_errorMessage != null) ...[
               SizedBox(height: 20),

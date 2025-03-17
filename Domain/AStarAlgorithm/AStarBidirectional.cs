@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace Domain.AStarAlgorithm;
+﻿namespace Domain.AStarAlgorithm;
 
 public class AStarBidirectional
 {
@@ -9,122 +7,106 @@ public class AStarBidirectional
 public static List<Point> FindPathBidirectional(Point start, Point end, HashSet<Point> walkablePoints)
 {
     if (!walkablePoints.Contains(start) || !walkablePoints.Contains(end))
-    {
-        Console.WriteLine("Start or end point is not walkable.");
         return new List<Point>();
-    }
 
-        var openSetStart = new PriorityQueue<Node, double>();
-        var openSetEnd = new PriorityQueue<Node, double>();
-        var nodeDictionary = walkablePoints.ToDictionary(p => p, p => new Node(p));
-        var closedSetStart = new HashSet<Node>();
-        var closedSetEnd = new HashSet<Node>();
+    var openSetStart = new PriorityQueue<Node, double>();
+    var openSetEnd = new PriorityQueue<Node, double>();
+    var nodeDictionary = new Dictionary<Point, Node>();
+    var closedSetStart = new HashSet<Point>();
+    var closedSetEnd = new HashSet<Point>();
 
-        var startNode = nodeDictionary[start];
-        var endNode = nodeDictionary[end];
-        startNode.GCost = 0;
-        startNode.HCost = GetDistance(start, end);
-        endNode.GCost = 0;
-        endNode.HCost = GetDistance(end, start);
-        openSetStart.Enqueue(startNode, startNode.FCost);
-        openSetEnd.Enqueue(endNode, endNode.FCost);
+    var startNode = GetOrCreateNode(start, nodeDictionary);
+    var endNode = GetOrCreateNode(end, nodeDictionary);
+    startNode.GCost = 0;
+    startNode.HCost = GetDistance(start, end);
+    endNode.GCost = 0;
+    endNode.HCost = GetDistance(end, start);
+    openSetStart.Enqueue(startNode, startNode.FCost);
+    openSetEnd.Enqueue(endNode, endNode.FCost);
 
-        int iterationCount = 0;
-        const int maxIterations = 7000000;
-
-        Console.WriteLine("Start bidirectional pathfinding...");
-        while (openSetStart.Count > 0 && openSetEnd.Count > 0)
-        {
-            iterationCount++;
-            if (iterationCount > maxIterations)
-            {
-                Console.WriteLine("Exceeded maximum iterations, breaking out of loop.");
-                break;
-            }
-
-            var currentNodeStart = openSetStart.Dequeue();
-            var currentNodeEnd = openSetEnd.Dequeue();
-
-            if (closedSetEnd.Contains(currentNodeStart) || closedSetStart.Contains(currentNodeEnd))
-            {
-                Console.WriteLine("Path found.");
-                return RetracePathBidirectional(nodeDictionary[start], nodeDictionary[end], currentNodeStart, currentNodeEnd);
-            }
-
-            closedSetStart.Add(currentNodeStart);
-            closedSetEnd.Add(currentNodeEnd);
-
-            Parallel.Invoke(
-                () => ProcessNeighbors(currentNodeStart, nodeDictionary, closedSetStart, openSetStart, end),
-                () => ProcessNeighbors(currentNodeEnd, nodeDictionary, closedSetEnd, openSetEnd, start)
-            );
-        }
-
-        Console.WriteLine("No path found.");
-        return new List<Point>();
-    }
-
-    private static void ProcessNeighbors(Node currentNode, Dictionary<Point, Node> nodeDictionary, HashSet<Node> closedSet, PriorityQueue<Node, double> openSet, Point target)
+    while (openSetStart.Count > 0 && openSetEnd.Count > 0)
     {
-        foreach (var neighbor in GetNeighbors(currentNode.Point, nodeDictionary))
-        {
-            if (closedSet.Contains(neighbor)) continue;
+        var currentNodeStart = openSetStart.Dequeue();
+        var currentNodeEnd = openSetEnd.Dequeue();
 
-            var tentativeGCost = currentNode.GCost + GetDistance(currentNode.Point, neighbor.Point);
+        if (closedSetEnd.Contains(currentNodeStart.Point) || closedSetStart.Contains(currentNodeEnd.Point))
+            return RetracePathBidirectional(startNode, endNode, currentNodeStart, currentNodeEnd);
 
-            if (tentativeGCost < neighbor.GCost)
-            {
-                neighbor.GCost = tentativeGCost;
-                neighbor.HCost = GetDistance(neighbor.Point, target);
-                neighbor.Parent = currentNode;
-                openSet.Enqueue(neighbor, neighbor.FCost);
-            }
-        }
+        closedSetStart.Add(currentNodeStart.Point);
+        closedSetEnd.Add(currentNodeEnd.Point);
+
+        ProcessNeighbors(currentNodeStart, nodeDictionary, closedSetStart, openSetStart, walkablePoints, end);
+        ProcessNeighbors(currentNodeEnd, nodeDictionary, closedSetEnd, openSetEnd, walkablePoints, start);
     }
+    return new List<Point>();
+}
 
-    private static IEnumerable<Node> GetNeighbors(Point point, Dictionary<Point, Node> nodeDictionary)
+private static void ProcessNeighbors(
+    Node currentNode,
+    Dictionary<Point, Node> nodeDictionary,
+    HashSet<Point> closedSet,
+    PriorityQueue<Node, double> openSet,
+    HashSet<Point> walkablePoints,
+    Point target)
+{
+    foreach (var (dx, dy) in new[] {(-1, 0), (1, 0), (0, -1), (0, 1)})
     {
-        var directions = new List<(double, double)>
-        {
-            (-1, 0), (1, 0), (0, -1), (0, 1),
-            (-1, -1), (1, -1), (-1, 1), (1, 1)
-        };
+        var neighborPoint = new Point(currentNode.Point.XWidth + dx, currentNode.Point.YHeight + dy);
+        if (!walkablePoints.Contains(neighborPoint) || closedSet.Contains(neighborPoint)) continue;
 
-        foreach (var (dx, dy) in directions)
+        var neighbor = GetOrCreateNode(neighborPoint, nodeDictionary);
+        var tentativeGCost = currentNode.GCost + 1;
+        if (tentativeGCost < neighbor.GCost)
         {
-            var neighborPoint = new Point(point.XWidth + dx, point.YHeight + dy);
-            if (nodeDictionary.TryGetValue(neighborPoint, out var neighbor))
-            {
-                yield return neighbor;
-            }
+            neighbor.GCost = tentativeGCost;
+            neighbor.HCost = GetDistance(neighbor.Point, target);
+            neighbor.Parent = currentNode;
+            openSet.Enqueue(neighbor, neighbor.FCost);
         }
     }
+}
 
-    private static double GetDistance(Point a, Point b)
+private static Node GetOrCreateNode(Point point, Dictionary<Point, Node> nodeDictionary)
+{
+    if (!nodeDictionary.TryGetValue(point, out var node))
     {
-        return Math.Abs(a.XWidth - b.XWidth) + Math.Abs(a.YHeight - b.YHeight); // Manhattan distance
+        node = new Node(point);
+        nodeDictionary.Add(point, node);
     }
+    return node;
+}
 
-    private static List<Point> RetracePathBidirectional(Node startNode, Node endNode, Node meetingNodeStart, Node meetingNodeEnd)
+private static double GetDistance(Point a, Point b)
+{
+    return Math.Abs(a.XWidth - b.XWidth) + Math.Abs(a.YHeight - b.YHeight);
+}
+
+private static List<Point> RetracePathBidirectional(
+    Node startNode,
+    Node endNode,
+    Node meetingNodeStart,
+    Node meetingNodeEnd)
+{
+    var pathFromStart = new List<Point>();
+    var current = meetingNodeStart;
+    while (current != null && current != startNode)
     {
-        var path = new List<Point>();
-        var currentNode = meetingNodeStart;
-
-        while (currentNode != null && !currentNode.Equals(startNode))
-        {
-            path.Add(currentNode.Point);
-            currentNode = currentNode.Parent;
-        }
-
-        path.Reverse();
-        currentNode = meetingNodeEnd.Parent;
-
-        while (currentNode != null && !currentNode.Equals(endNode))
-        {
-            path.Add(currentNode.Point);
-            currentNode = currentNode.Parent;
-        }
-
-        return path;
+        pathFromStart.Add(current.Point);
+        current = current.Parent;
     }
+    if (current == startNode) pathFromStart.Add(startNode.Point);
+    pathFromStart.Reverse();
+
+    var pathFromEnd = new List<Point>();
+    current = meetingNodeEnd;
+    while (current != null && current != endNode)
+    {
+        pathFromEnd.Add(current.Point);
+        current = current.Parent;
+    }
+    if (current == endNode) pathFromEnd.Add(endNode.Point);
+
+    pathFromStart.AddRange(pathFromEnd);
+    return pathFromStart;
+}
 }

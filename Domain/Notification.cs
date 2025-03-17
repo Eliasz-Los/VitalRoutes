@@ -6,6 +6,7 @@ public class Notification
 {
     public Guid Id {get; set;}
     public string Message {get; set;}
+    public string Status { get; set; } = "Te behandelen"; 
     public DateTime TimeStamp {get; set;} =  DateTime.UtcNow.ToUniversalTime().AddHours(2);
     public Emergency Emergency {get; set;}
     

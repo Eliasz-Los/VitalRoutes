@@ -65,7 +65,6 @@ public class RoomManager
         await _roomRepository.UpdateRoom(room);
     }
     
-       
     public async Task<RoomDto?> GetRoomsWithPointAndAssignedPatientByUserId(Guid userId)
     {
         var room = await _roomRepository.ReadRoomWithPointAndAssignedPatientByUserId(userId);

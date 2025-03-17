@@ -1,9 +1,11 @@
-﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:provider/provider.dart';
-import 'package:ui/Pages/Admin/HeadNursePanel.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/Pages/Alert/NurseNotificationPage.dart';
+import 'package:ui/Services/UserService.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
+import '../Admin/HeadNursePanel.dart';
 import '../Admin/RoomAssignmentsPage.dart';
 import '../Admin/NurseOverviewPage.dart';
 import '../Admin/NursePanel.dart';
@@ -13,7 +15,11 @@ import '../../Models/Enums/FunctionType.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
 import '../../Services/AuthService.dart';
-import '../../Services/UserService.dart';
+import '../Alert/AlertDoctorPage.dart';
+import '../Alert/AlertNursePage.dart';
+import '../Alert/DoctorNotificationPage.dart';
+import '../Alert/NurseToDoctorSentPage.dart';
+import '../Alert/PatientToNurseSentPage.dart';
 import '../Floorplan/FloorplanScreen.dart';
 import '../home_page.dart';
 import 'MainScaffold.dart';
@@ -41,10 +47,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
     if (widget.firebaseUser != null) {
       try {
         domainUser = await UserService.getUserByEmail(widget.firebaseUser!.email!);
+        Provider.of<UserProvider>(context, listen: false).setUser(widget.firebaseUser, domainUser);
         setState(() {});
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error fetching user: $e')),
+          SnackBar(content: Text('Error bij ophalen gebruiker: $e')),
         );
       }
     }
@@ -53,14 +60,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Future<void> _signOut(BuildContext context) async {
     try {
       await AuthService.signOut();
-      Provider.of<UserProvider>(context, listen: false).setUser(null);
+      Provider.of<UserProvider>(context, listen: false).setUser(null, null);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error signing out: $e')),
+        SnackBar(content: Text('Error bij uitloggen: $e')),
       );
     }
   }
@@ -75,21 +82,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
             decoration: BoxDecoration(color: Colors.indigo),
             child: Text('Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
-          _buildDrawerItem(Icons.home, 'Home', context, 0, false),
-          if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Sign In', context, 1, false),
-          if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profile', context, 2, true),
-          if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Staff & Patients', context, 4, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.dashboard, 'Doctor\'s panel', context, 3, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patients Overview', context, 7, false),
-          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.dashboard, 'Nurse\'s Panel', context, 8, false), 
-          if (domainUser != null && domainUser!.function == FunctionType.Headnurse) _buildDrawerItem(Icons.supervised_user_circle, 'Headnurse Panel', context, 9, false),
-          _buildDrawerItem(Icons.map, 'Floorplan', context, 5, false),
-          _buildDrawerItem(Icons.assignment, 'Room Assignment',context,6,false),
+          _buildDrawerItem(Icons.home, 'Startpagina', context, 0, false),
+          if (widget.firebaseUser == null) _buildDrawerItem(Icons.login, 'Login', context, 1, false),
+          if (widget.firebaseUser != null) _buildDrawerItem(Icons.person, 'Profiel', context, 2, true),
+          if (domainUser != null && (domainUser!.function == FunctionType.Headnurse || domainUser!.function == FunctionType.Nurse)) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 11, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Doctor) _buildDrawerItem(Icons.notifications, 'Notificaties', context, 15, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.send, 'Verzonden alerts', context, 12, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Doctor || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.supervised_user_circle, 'Personeel & Patiënten', context, 4, false),
+          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Dokterspaneel', context, 3, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Nurse) _buildDrawerItem(Icons.supervised_user_circle, 'Patiënten ovezicht', context, 7, false),
+          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.dashboard, 'Verplegerspaneel', context, 8, false),
+          if (domainUser != null && domainUser!.function == FunctionType.SystemAdmin) _buildDrawerItem(Icons.supervised_user_circle, 'Hoofdverplegerspaneel', context, 9, false),
+          if (domainUser != null && domainUser!.function == FunctionType.Patient) _buildDrawerItem(Icons.campaign , 'Alert verpleegkundige', context, 10, false),
+          if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.map, 'Vloerplan', context, 5, false),
+          if (domainUser != null && domainUser!.function != FunctionType.Patient) _buildDrawerItem(Icons.assignment, 'Kamerindeling', context, 6, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.campaign, 'Alert Dokter', context, 13, false),
+          if (domainUser != null && (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse)) _buildDrawerItem(Icons.send, 'Verzonden alerts ', context, 14, false),
           Divider(),
           if (widget.firebaseUser != null)
             ListTile(
               leading: Icon(Icons.logout),
-              title: Text('Logout'),
+              title: Text('Uitloggen'),
               onTap: () => _signOut(context),
             ),
         ],
@@ -108,7 +121,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         if (index == 2) {
           if (widget.firebaseUser == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Please log in first!')),
+              SnackBar(content: Text('Gelieve eerst in te loggen!')),
             );
             return;
           }
@@ -155,6 +168,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ),
           );
+        } else if (index == 11) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScaffold(
+                body: NurseNotificationPage(userId: widget.firebaseUser!.uid),
+                hasScaffold: true,
+              ),
+            ),
+          );
         } else {
           Navigator.push(
             context,
@@ -180,7 +203,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
       case 4:
         return OverviewPage();
       case 5:
-        return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0,);
+        return FloorplanPage(hospitalName: "UZ Groenplaats", initialFloorNumber: 0);
       case 6:
         return RoomAssignmentsPage();
       case 7:
@@ -189,6 +212,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
         return NursePanel();
       case 9:
         return HeadNursePanel();
+      case 10:
+        return AlertNursePage();
+      case 11:
+        return NurseNotificationPage(userId: domainUser!.id.toString());
+      case 12:
+        return PatientToNurseSentPage(userId: domainUser!.id.toString());
+      case 13:
+        return AlertDoctorPage();
+      case 14:
+        return NurseToDoctorSentPage(userId: domainUser!.id.toString());
+      case 15:
+        return DoctorNotificationPage(userId: domainUser!.id.toString());
       default:
         return HomePage();
     }

@@ -51,11 +51,11 @@ public class VitalRoutesDbContext : DbContext
             .HasMany(u => u.UnderSupervisions)
             .WithMany(u => u.Supervisors)
             .UsingEntity(j => j.ToTable("UserSupervisions"));
-
+        
         modelBuilder.Entity<Emergency>()
             .HasOne(emergency => emergency.Notification)
             .WithOne(notification => notification.Emergency)
-            .HasForeignKey<Emergency>("EmergencyFK");
+            .HasForeignKey<Emergency>("NotificationFK");
         
         modelBuilder.Entity<Emergency>()
             .HasOne(em => em.User)
@@ -82,7 +82,7 @@ public class VitalRoutesDbContext : DbContext
 
         modelBuilder.Entity<Room>()
             .HasOne(r => r.AssignedPatient)
-            .WithOne()
+            .WithOne(user => user.Room)
             .HasForeignKey<Room>("AssignedPatientFK");
 
         modelBuilder.Entity<Room>()
