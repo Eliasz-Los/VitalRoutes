@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Microsoft.Extensions.ObjectPool;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -6,10 +7,6 @@ namespace Domain.AStarAlgorithm;
 
 public class FloorplanAnalyzer
 {
-    /*
-     * Blijft synchronous zodat de analyze vna de image nog nie meer complex wordt voor het systeem.
-     * Het bevat al multithreading en concurrentie list.
-     */
     public static (Point start, Point end, HashSet<Point>) GetWalkablePoints(string imagePath, Point startCoords, Point endCoords)
     {
         // ConcurrentBag is thread-safe
@@ -49,5 +46,7 @@ public class FloorplanAnalyzer
     public static bool IsBlackWall(Rgba32 pixel)
     {
         return pixel is { R: 0, G: 0, B: 0 }; // black
+        //return pixel.R < 50 && pixel.G < 50 && pixel.B < 50;
+
     }
 }
