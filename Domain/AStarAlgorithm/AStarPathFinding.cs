@@ -18,6 +18,13 @@ public class AStarPathfinding
         }
 
         
+        // Bounded Search Space
+        double margin = 500;
+        double minX = Math.Min(start.XWidth, end.XWidth) - margin;
+        double maxX = Math.Max(start.XWidth, end.XWidth) + margin;
+        double minY = Math.Min(start.YHeight, end.YHeight) - margin;
+        double maxY = Math.Max(start.YHeight, end.YHeight) + margin;
+        
         var openSet = new PriorityQueue<Node, double>();
         var openSetLookup = new HashSet<Point>(); // New HashSet voor snelle lookup, O(1) als de node in de queue zit
         var nodeDictionary = new Dictionary<Point, Node>();
@@ -66,12 +73,20 @@ public class AStarPathfinding
             //ipv dure functie GetNeighbors te callen, pakken we onmiddelijk de kardinale richtingen in array samen met de breedte en hoogte van de huidige node
             foreach (var (dx, dy) in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
             {
-                var neighborPoint = new Point(currentNode.Point.XWidth + dx, currentNode.Point.YHeight + dy);
+                
+                var newWidth = currentNode.Point.XWidth + dx;
+                var newHeight = currentNode.Point.YHeight + dy;
+
+                // Skippen als buiten de bounded search space
+                if (newWidth < minX || newWidth > maxX || newHeight < minY || newHeight > maxY)
+                    continue;
+                
+                var neighborPoint = new Point(newWidth, newHeight);
                 
                 if (!walkablePoints.Contains(neighborPoint) || closedSet.Contains(neighborPoint)) continue; // Skip already processed nodes
                 
                 var neighbor = GetOrCreateNode(neighborPoint);
-                var tentativeGCost = currentNode.GCost + 1;
+                var tentativeGCost = currentNode.GCost + 1.0;
 
                 if (tentativeGCost < neighbor.GCost)
                 {
@@ -80,9 +95,9 @@ public class AStarPathfinding
                     neighbor.Parent = currentNode;
                     if (!openSetLookup.Contains(neighbor.Point))
                     {
-                        openSet.Enqueue(neighbor, neighbor.FCost);
-                        openSetLookup.Add(neighbor.Point); // Add to lookup set for fast check
-
+                        //WHAZT NO WAY 00.00.00.44 milisecond from 4-8 seconds
+                        openSet.Enqueue(neighbor, neighbor.GCost + 5.0 * neighbor.HCost); //neighbor.FCost
+                        openSetLookup.Add(neighbor.Point); 
                     }
                 }
             }

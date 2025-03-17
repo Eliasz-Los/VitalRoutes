@@ -46,7 +46,7 @@ public class FloorplanAnalyzer
     public static bool IsBlackWall(Rgba32 pixel)
     {
         return pixel is { R: 0, G: 0, B: 0 }; // black
-        //return pixel.R < 50 && pixel.G < 50 && pixel.B < 50;
+      //  return pixel.R < 10 && pixel.G < 10 && pixel.B < 10;
 
     }
 }

@@ -23,7 +23,7 @@ Stopwatch stopwatchAStar = new Stopwatch();
 stopwatchAnalyzer.Start();
 
 Point startCoord = new Point(807.0, 1289.0);
-Point endCoord = new Point(2256.0, 534.0); //3858.0, 262.0 ;2256.0, 534.0
+Point endCoord = new Point(3858.0, 262.0); //3858.0, 262.0 ;2256.0, 534.0
 
 var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, startCoord,endCoord);
 if (walkablePoints == null || walkablePoints.Count == 0)
@@ -48,8 +48,8 @@ var floorplan = new Floorplan("Kelder", 1, "1:100","floor_minus1.png" )
 Console.WriteLine($"Start point: ({start.XWidth}, {start.YHeight})");
 Console.WriteLine($"End point: ({end.XWidth}, {end.YHeight})");
 stopwatchAStar.Start();
-//var path = AStarPathfinding.FindPath( start, end, walkablePoints);
-var path = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
+var path = AStarPathfinding.FindPath( start, end, walkablePoints);
+//var path = AStarBidirectional.FindPathBidirectional(start, end, walkablePoints);
 
 
 stopwatchAStar.Stop();
