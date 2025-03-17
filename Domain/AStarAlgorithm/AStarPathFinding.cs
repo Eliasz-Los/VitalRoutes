@@ -18,15 +18,33 @@ public class AStarPathfinding
         }
 
         
-        var openSet = new PriorityQueue<Node, double>();
+        // Bounded Search Space
+        double margin = 350; 
+        double minX = Math.Min(start.XWidth, end.XWidth) - margin;
+        double maxX = Math.Max(start.XWidth, end.XWidth) + margin;
+        double minY = Math.Min(start.YHeight, end.YHeight) - margin;
+        double maxY = Math.Max(start.YHeight, end.YHeight) + margin;
         
-        var nodeDictionary = walkablePoints.ToDictionary(p => p, p => new Node(p));
-        var closedSet = new HashSet<Node>();
+        var openSet = new PriorityQueue<Node, double>();
+        var openSetLookup = new HashSet<Point>(); // New HashSet voor snelle lookup, O(1) als de node in de queue zit
+        var nodeDictionary = new Dictionary<Point, Node>();
+        var closedSet = new HashSet<Point>();
+        //ipv in begin alle 6-7miljoen punten in dictionary in te steken gaan we dat doen wnr het nodig is
+        Node GetOrCreateNode(Point point)
+        {
+            if (!nodeDictionary.TryGetValue(point, out var node))
+            {
+                node = new Node(point);
+                nodeDictionary.Add(point, node);
+            }
+            return node;
+        }
 
-        var startNode = nodeDictionary[start];
+        var startNode = GetOrCreateNode(start);
         startNode.GCost = 0;
         startNode.HCost = GetDistance(start, end);
         openSet.Enqueue(startNode, startNode.FCost);
+        openSetLookup.Add(start); // om straks te checken
         
         int iterationCount = 0;
         const int maxIterations = 7000000;//1 mil maar kan tot 6.988.086 gaan omdat da allemaal walkable points zijn
@@ -42,27 +60,45 @@ public class AStarPathfinding
             }
 
             var currentNode = openSet.Dequeue();
-            
+            openSetLookup.Remove(currentNode.Point); // Remove from lookup set when processing
+
             if (currentNode.Point.Equals(end))
             {
                 Console.WriteLine("Path found.");
                 return RetracePath(nodeDictionary[start], currentNode);
             }
             
-            closedSet.Add(currentNode);
+            closedSet.Add(currentNode.Point);
 
-            foreach (var neighbor in GetNeighbors(currentNode.Point, nodeDictionary))
+            //ipv dure functie GetNeighbors te callen, pakken we onmiddelijk de kardinale richtingen in array samen met de breedte en hoogte van de huidige node
+            foreach (var (dx, dy) in new[] { (-1, 0), (1, 0), (0, -1), (0, 1) })
             {
-                if (closedSet.Contains(neighbor)) continue; // Skip already processed nodes
                 
-                var tentativeGCost = currentNode.GCost + GetDistance(currentNode.Point, neighbor.Point);
+                var newWidth = currentNode.Point.XWidth + dx;
+                var newHeight = currentNode.Point.YHeight + dy;
+
+                // Skippen als buiten de bounded search space
+                if (newWidth < minX || newWidth > maxX || newHeight < minY || newHeight > maxY)
+                    continue;
+                
+                var neighborPoint = new Point(newWidth, newHeight);
+                
+                if (!walkablePoints.Contains(neighborPoint) || closedSet.Contains(neighborPoint)) continue; // Skip already processed nodes
+                
+                var neighbor = GetOrCreateNode(neighborPoint);
+                var tentativeGCost = currentNode.GCost + 1.0;
 
                 if (tentativeGCost < neighbor.GCost)
                 {
                     neighbor.GCost = tentativeGCost;
                     neighbor.HCost = GetDistance(neighbor.Point, end); 
                     neighbor.Parent = currentNode;
-                    openSet.Enqueue(neighbor, neighbor.FCost);
+                    if (!openSetLookup.Contains(neighbor.Point))
+                    {
+                        //WHAZT NO WAY 00.00.00.44 milisecond from 4-8 seconds
+                        openSet.Enqueue(neighbor, neighbor.GCost + 5.0 * neighbor.HCost); //neighbor.FCost
+                        openSetLookup.Add(neighbor.Point); 
+                    }
                 }
             }
         }
@@ -71,7 +107,7 @@ public class AStarPathfinding
         return new List<Point>();
     }
 
-    private static IEnumerable<Node> GetNeighbors(Point point, Dictionary<Point, Node> nodeDictionary)
+    /*private static IEnumerable<Node> GetNeighbors(Point point, Dictionary<Point, Node> nodeDictionary)
     {
         var directions = new List<(double, double)>
         {
@@ -87,7 +123,7 @@ public class AStarPathfinding
                 yield return neighbor;
             }
         }
-    }
+    }*/
 
     private static double GetDistance(Point a, Point b)
     {

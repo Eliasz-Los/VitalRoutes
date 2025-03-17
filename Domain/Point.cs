@@ -9,6 +9,7 @@ public class Point
     public double YHeight {get; set;}
     public Floorplan Floorplan {get; set;}
     
+    public Point(){}
     public Point(double xWidth, double yHeight)
     {
         XWidth = xWidth;
