@@ -3,8 +3,8 @@
   final String message;
   String status;
   final DateTime timeStamp;
-  final String patientId;
-  final String patientName;
+  final String userId;
+  final String userName;
   final String emergencyLevel;
   final int roomNumber; // Toegevoegd
 
@@ -13,8 +13,8 @@
     required this.message,
     required this.status,
     required this.timeStamp,
-    required this.patientId,
-    required this.patientName,
+    required this.userId,
+    required this.userName,
     required this.emergencyLevel,
     required this.roomNumber,
   });
@@ -25,8 +25,8 @@
       message: json['message'],
       status: json['status'],
       timeStamp: DateTime.parse(json['timeStamp']),
-      patientId: json['patientId'],
-      patientName: json['patientName'] ?? 'Onbekend',
+      userId: json['userId'],
+      userName: json['userName'] ?? 'Onbekend',
       emergencyLevel: json['emergencyLevel'] ?? 'Onbekend',
       roomNumber: json['roomNumber'] ?? -101,
     );

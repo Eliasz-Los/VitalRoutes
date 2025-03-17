@@ -1,27 +1,26 @@
 ﻿import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/Services/NotificationService.dart';
 import 'package:ui/Services/UserService.dart';
 import 'package:ui/Models/NotificationModel.dart';
 import 'package:ui/Models/Users/User.dart' as domain;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
-import '../Navigation/MainScaffold.dart';
 
-class PatientNotificationPage extends StatefulWidget {
+class NurseToDoctorSentPage extends StatefulWidget {
   final String userId;
 
-  PatientNotificationPage({required this.userId, Key? key}) : super(key: key);
+  const NurseToDoctorSentPage({Key? key, required this.userId}) : super(key: key);
 
   @override
-  _PatientNotificationPageState createState() => _PatientNotificationPageState();
+  _NurseToDoctorSentPageState createState() => _NurseToDoctorSentPageState();
 }
 
-class _PatientNotificationPageState extends State<PatientNotificationPage> {
+class _NurseToDoctorSentPageState extends State<NurseToDoctorSentPage> {
   User? firebaseUser;
   domain.User? domainUser;
-  List<NotificationModel> notifications = [];
+  List<NotificationModel> sentNotifications = [];
 
   @override
   void initState() {
@@ -35,39 +34,38 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
       try {
         domainUser = await UserService.getUserByEmail(firebaseUser!.email!);
         Provider.of<UserProvider>(context, listen: false).setUser(firebaseUser, domainUser);
-
-        _fetchNotifications();
-        _startNotificationPolling();
+        _fetchSentNotifications();
+        _startPolling();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error ophalen domein gebruiker: $e')),
+          SnackBar(content: Text('Fout bij ophalen Nurse user: $e')),
         );
       }
     }
   }
 
-  void _startNotificationPolling() {
-    Timer.periodic(Duration(seconds: 3), (timer) {
+  void _startPolling() {
+    Timer.periodic(Duration(seconds: 5), (timer) {
       if (mounted) {
-        _fetchNotifications();
+        _fetchSentNotifications();
       } else {
         timer.cancel();
       }
     });
   }
 
-  Future<void> _fetchNotifications() async {
-    if (domainUser != null) {
-      try {
-        final data = await NotificationService.getNotificationsForPatient(domainUser!.id.toString());
-        setState(() {
-          notifications = data;
-        });
-      } catch (e) {
-        debugPrint('Error ophalen patiënt notificaties: $e');
-      }
+  Future<void> _fetchSentNotifications() async {
+    if (domainUser == null) return;
+    try {
+      final data = await NotificationService.getSentNotificationsForNurse(domainUser!.id.toString());
+      setState(() {
+        sentNotifications = data;
+      });
+    } catch (e) {
+      debugPrint('Fout bij ophalen notificaties van verpleger naar dokter: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +86,7 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
             SizedBox(height: 20),
 
             Expanded(
-              child: notifications.isEmpty
+              child: sentNotifications.isEmpty
                   ? Center(
                 child: Text(
                   'Nog geen meldingen verstuurd.',
@@ -96,9 +94,9 @@ class _PatientNotificationPageState extends State<PatientNotificationPage> {
                 ),
               )
                   : ListView.builder(
-                itemCount: notifications.length,
+                itemCount: sentNotifications.length,
                 itemBuilder: (context, index) {
-                  final notif = notifications[index];
+                  final notif = sentNotifications[index];
                   final bool isTeBehandelen = notif.status == 'Te behandelen';
 
                   return Card(

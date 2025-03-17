@@ -6,6 +6,7 @@ import 'package:ui/Models/Enums/FunctionType.dart';
 import 'package:ui/Pages/Users/UserProvider.dart';
 import '../../Pages/Users/SignInScreen.dart';
 import '../../Pages/Users/UserProfileScreen.dart';
+import '../Alert/DoctorNotificationPage.dart';
 import 'custom_drawer.dart';
 import '../../Services/AuthService.dart';
 import '../../Services/NotificationService.dart';
@@ -69,7 +70,14 @@ class _MainScaffoldState extends State<MainScaffold> {
   Future<void> _fetchNotifications() async {
     if (domainUser != null) {
       try {
-        final data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
+        List<NotificationModel> data = [];
+        if (domainUser!.function == FunctionType.Nurse || domainUser!.function == FunctionType.Headnurse) {
+          data = await NotificationService.getNotificationsForNurse(domainUser!.id.toString());
+        }
+        else if (domainUser!.function == FunctionType.Doctor) {
+          // Doctor => getNotificationsForDoctor
+          data = await NotificationService.getNotificationsForDoctor(domainUser!.id.toString());
+        }
         setState(() {
           notifications = data;
         });
@@ -79,8 +87,7 @@ class _MainScaffoldState extends State<MainScaffold> {
     }
   }
 
-  /// Deze methode laat zien hoeveel notificaties 'Te behandelen' zijn.
-  /// We filteren notifications op status == 'Te behandelen'.
+
   int get teBehandelenCount {
     return notifications.where((n) => n.status == 'Te behandelen').length;
   }
@@ -258,7 +265,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                   ),
                   child: ListTile(
                     title: Text(
-                      notification.patientName,
+                      notification.userName,
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -284,15 +291,28 @@ class _MainScaffoldState extends State<MainScaffold> {
                     ),
                     trailing: Icon(Icons.navigation, color: Colors.black),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MainScaffold(
-                            body: NurseNotificationPage(userId: firebaseUser!.uid),
-                            hasScaffold: true,
+                      if (domainUser!.function == FunctionType.Doctor) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainScaffold(
+                              body: DoctorNotificationPage(userId: firebaseUser!.uid),
+                              hasScaffold: true,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      } else if (domainUser!.function == FunctionType.Nurse
+                          || domainUser!.function == FunctionType.Headnurse) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainScaffold(
+                              body: NurseNotificationPage(userId: firebaseUser!.uid),
+                              hasScaffold: true,
+                            ),
+                          ),
+                        );
+                      }
                     },
                   ),
                 );

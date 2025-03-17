@@ -1,12 +1,14 @@
-﻿POST http://localhost:5028/api/Notification/create
+﻿
+### create notification for patient to nurse
+POST http://localhost:5028/api/Notification/createPatientToNurseNotification
 Content-Type: application/json
 
 {
   "message": "Dringend - toilet",
-  "status": "te behandelen",
-  "PatientName": "Walter heisenberg",
-  "timeStamp": "2024-03-11T12:00:00Z",
-  "patientId": "019527ff-c8a3-79e7-b7db-c76ade287fc3"
+  "status": "Te behandelen",
+  "userName": "Timmy Neutron",
+  "timeStamp": "2024-03-16T12:00:00Z",
+  "UserId": "019527ff-c8a3-79e7-b7db-c76ade287f11"
 }
 
 ### Update status of notification
@@ -16,7 +18,34 @@ Content-Type: application/json
 "Te behandelen"
 
 ### Get Notifications for Nurse or doctor
-GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc4
+GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc5
 Accept: application/json
 Content-Type: application/json
 
+### Get Notifications for patient
+GET http://localhost:5028/api/notification/patient/019527ff-c8a3-79e7-b7db-c76ade287fc9
+Accept: application/json
+Content-Type: application/json
+
+### Create notification for nurse to Doctor (Nood voor emergencyLevel, status is altijd te behandelen)
+POST http://localhost:5028/api/Notification/createNurseToDoctorNotification
+Content-Type: application/json
+
+{
+  "message": "Dringend - Afspraak afdeling 2",
+  "status": "Dringend",
+  "userName": "Mike Ehrmentraut",
+  "timeStamp": "2024-03-16T12:00:00Z",
+  "UserId": "019527ff-c8a3-79e7-b7db-c76ade287fc5"
+}
+
+### Get Notifications for Doctor
+GET http://localhost:5028/api/notification/doctor/019527ff-c8a3-79e7-b7db-c76ade287fc1
+Accept: application/json
+Content-Type: application/json
+
+
+### Get Notifications for Doctor
+GET http://localhost:5028/api/notification/nurse/019527ff-c8a3-79e7-b7db-c76ade287fc5
+Accept: application/json
+Content-Type: application/json

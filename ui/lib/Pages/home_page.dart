@@ -1,13 +1,10 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ui/Pages/Alert/AlertNursePage.dart';  // Voor patient
-import 'package:ui/Pages/Users/SignInScreen.dart';    // Voor login
-import 'package:ui/Pages/Floorplan/FloorplanScreen.dart'; // Voor andere functies
+import 'package:ui/Pages/Alert/AlertNursePage.dart';
+import 'package:ui/Pages/Users/SignInScreen.dart';
+import 'package:ui/Pages/Floorplan/FloorplanScreen.dart';
 import 'package:ui/Services/UserService.dart';
-import 'package:ui/Models/Users/User.dart' as custom_user;
-import 'package:ui/Models/Enums/FunctionType.dart'; // Als je het enum wilt checken
-import 'package:provider/provider.dart';
-import 'package:ui/Pages/Users/UserProvider.dart';
+import 'package:ui/Models/Enums/FunctionType.dart';
 
 import 'Navigation/MainScaffold.dart';
 
@@ -20,7 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  // We maken een Future om te checken of de user is ingelogd en zo ja, welke functie
   Future<(bool isLoggedIn, FunctionType? function)> _checkLoginAndFunction() async {
     final firebaseUser = FirebaseAuth.instance.currentUser;
     if (firebaseUser == null) {
@@ -63,10 +59,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MainScaffold(
-                        body: SignInScreen(),
-                        hasScaffold: true,
-                      ),
+                      builder: (context) => SignInScreen(),
                     ),
                   );
                 };
