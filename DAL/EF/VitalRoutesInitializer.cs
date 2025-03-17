@@ -145,6 +145,7 @@ public class VitalRoutesInitializer
         
         List<Room> roomsFloorMinus1Groenplaats = new List<Room>
         {
+            //Patienten
             new (new Point(1061.0,1479.0, floorplanGPMinus1), user8, -102),
             // NEW 1061.0,1479.0 : OLD 100.01, 168.01
             new (new Point(1592.0,1449.0, floorplanGPMinus1), user9, -101),
@@ -164,6 +165,11 @@ public class VitalRoutesInitializer
             new (new Point(447.0 ,1482.0, floorplanGPMinus1), user16, -103),
             // 447.0 ,1482.0
             new (new Point(3045.0 ,368.0, floorplanGPMinus1), user17, -110),
+            
+            //nurses
+            new (new Point(2198.0 ,613.0, floorplanGPMinus1), user5, -120),
+            new (new Point(2198.0 ,613.0, floorplanGPMinus1), user6, -120),
+            new (new Point(2198.0 ,613.0, floorplanGPMinus1), user7, -120),
             // 3045.0 ,368.0
         };
         
@@ -233,6 +239,7 @@ public class VitalRoutesInitializer
         // *********************************************** Notifications ***********************************************
          List<Notification> notifications = new List<Notification>();
 
+        // Notificaties voor patienten - nurses
         // Notificaties voor user8
         Emergency emergency8_1 = new Emergency(user8.Room?.RoomNumber ?? -120, EmergencyLevel.Medium) { User = user8 };
         Emergency emergency8_2 = new Emergency(user8.Room?.RoomNumber ?? -120, EmergencyLevel.Low) { User = user8 };
@@ -275,10 +282,24 @@ public class VitalRoutesInitializer
             TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
             Emergency = emergency14_2 
         };
+        
+        // Notificaties voor patienten - nurses 
+        Emergency emergency5_1 = new Emergency(user5.Room?.RoomNumber ?? -120, EmergencyLevel.Medium) { User = user5 };
+        Emergency emergency5_2 = new Emergency(user5.Room?.RoomNumber ?? -120, EmergencyLevel.High) { User = user5 };
+
+        Notification notification5_1 = new Notification("Dringend - Consultatie") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency5_1 
+        };
+
+        Notification notification5_2 = new Notification("Nood - Spoedoperatie") { 
+            TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
+            Emergency = emergency5_2 
+        };
 
         // Voeg notificaties toe aan de lijst
-        notifications.AddRange(new[] { notification8_1, notification8_2, notification11_1, notification11_2, notification14_1, notification14_2 });
-        context.Emergencies.AddRange(emergency8_1, emergency8_2, emergency11_1, emergency11_2, emergency14_1, emergency14_2);
+        notifications.AddRange(new[] { notification8_1, notification8_2, notification11_1, notification11_2, notification14_1, notification14_2, notification5_1, notification5_2 });
+        context.Emergencies.AddRange(emergency8_1, emergency8_2, emergency11_1, emergency11_2, emergency14_1, emergency14_2, emergency5_1, emergency5_2);
         context.Notifications.AddRange(notifications);
         context.SaveChanges();
         context.ChangeTracker.Clear();

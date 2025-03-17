@@ -37,12 +37,22 @@ namespace DAL
                 .ToListAsync();
         }
         
-        public async Task<IEnumerable<Notification>> GetNotificationsForPatient(Guid patientId)
+        public async Task<IEnumerable<Notification>> GetSentNotificationsForPatient(Guid patientId)
         {
             return await _context.Notifications
                 .Include(n => n.Emergency)
                 .ThenInclude(e => e.User)
                 .Where(n => n.Emergency.User.Id == patientId)
+                .OrderByDescending(n => n.TimeStamp)
+                .ToListAsync();
+        }
+        
+        public async Task<IEnumerable<Notification>> GetSentNotificationsForNurse(Guid nurseId)
+        {
+            return await _context.Notifications
+                .Include(n => n.Emergency)
+                .ThenInclude(e => e.User)
+                .Where(n => n.Emergency.User.Id == nurseId)
                 .OrderByDescending(n => n.TimeStamp)
                 .ToListAsync();
         }

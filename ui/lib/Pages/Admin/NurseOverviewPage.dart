@@ -1,5 +1,4 @@
-﻿import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+﻿import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ui/Models/Room.dart';
