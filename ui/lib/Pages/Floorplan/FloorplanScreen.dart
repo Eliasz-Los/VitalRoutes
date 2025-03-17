@@ -141,7 +141,7 @@ class FloorplanPageState extends State<FloorplanPage> {
       // AppBar
       appBar: AppBar(
         title: Text(
-          '${widget.hospitalName} - Floor $_currentFloorNumber',
+          'Verdieping $_currentFloorNumber',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
