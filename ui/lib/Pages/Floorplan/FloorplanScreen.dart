@@ -129,6 +129,9 @@ class FloorplanPageState extends State<FloorplanPage> {
       debugPrint('Error fetching path: $e');
     } finally {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      setState(() {
+        _isPathfindingEnabled = false;
+      });
     }
   }
 
