@@ -8,7 +8,8 @@ import '../../Models/Point.dart';
 class UserPosition extends StatefulWidget {
   final Function(Point) onPositionUpdated; // Add this callback
 
-  const UserPosition({Key? key, required this.onPositionUpdated}) : super(key: key);
+  const UserPosition({Key? key, required this.onPositionUpdated})
+      : super(key: key);
 
   @override
   _UserPositionState createState() => _UserPositionState();
@@ -45,20 +46,18 @@ class _UserPositionState extends State<UserPosition> {
   void _startUpdatingPosition() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       final estimatedPosition = _bluetoothService.getEstimatedPosition();
-      final refinedPosition = _sensorFusionService.refinePosition(estimatedPosition);
+      final refinedPosition =
+          _sensorFusionService.refinePosition(estimatedPosition);
       setState(() {
         _userPosition = refinedPosition;
-        widget.onPositionUpdated(Point(x: _userPosition['x']!, y: _userPosition['y']!)); // Notify parent
+        widget.onPositionUpdated(Point(
+            x: _userPosition['x']!, y: _userPosition['y']!)); // Notify parent
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_userPosition['x'] == 0.0 && _userPosition['y'] == 0.0) {
-      return SizedBox.shrink();
-    }
-
     return Positioned(
       left: _userPosition['x']!,
       top: _userPosition['y']!,
