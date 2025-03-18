@@ -20,7 +20,7 @@ void main() async {
   String envFile = String.fromEnvironment('ENV_FILE', defaultValue: e2);
   print('Using env file: $envFile');
   await dotenv.load(fileName: envFile);
-  runApp(const MyApp());
+  runApp(MyApp(userProvider: UserProvider()));
 }
 
 class MyApp extends StatelessWidget {

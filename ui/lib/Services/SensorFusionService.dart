@@ -47,10 +47,6 @@ class SensorFusionService {
     double refinedX = estimatedPosition['x']! + _velocityX * deltaTime + _gyroscopeX * 0.1;
     double refinedY = estimatedPosition['y']! + _velocityY * deltaTime + _gyroscopeY * 0.1;
 
-    print('Acceleration: $_accelerationX, $_accelerationY');
-    print('Velocity: $_velocityX, $_velocityY');
-    print('Refined position: $refinedX, $refinedY');
-
     return {'x': refinedX, 'y': refinedY};
   }
 }

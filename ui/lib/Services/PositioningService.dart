@@ -66,8 +66,6 @@ Map<String, double> _trilaterate(List<DiscoveredDevice> beacons, Map<String, Off
       weightedX += position.dx * weight;
       weightedY += position.dy * weight;
       totalWeight += weight;
-
-      print('Beacon: ${beacon.name}, RSSI: ${beacon.rssi}, Distance: $distance, Weight: $weight');
     }
 
     final x = weightedX / totalWeight;
