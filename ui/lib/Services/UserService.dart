@@ -2,13 +2,16 @@ import 'package:dio/dio.dart';
 import 'package:ui/Models/Users/UpdateUser.dart';
 import 'package:ui/Models/Users/User.dart';
 
+import '../Config.dart';
+
 class UserService{
   static final Dio _dio = Dio();
+  static final String baseUrl = Config.apiUrl;
 
  static Future<void> updateUser(UpdateUser updateUser) async{
     try{
       final response = await _dio.put(
-        'http://10.0.2.2:5028/api/user/update',
+        '$baseUrl/api/user/update',
         data: updateUser.toJson(),
         options: Options(
           headers: {
@@ -27,7 +30,7 @@ class UserService{
   static Future<void> addUnderSupervision(String supervisorId, String superviseeId) async {
     try {
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/user/$supervisorId/addUnderSupervision/$superviseeId',
+        '$baseUrl/api/user/$supervisorId/addUnderSupervision/$superviseeId',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -44,7 +47,7 @@ class UserService{
 
   static Future<User> getUserByEmail(String email) async {
     try {
-      final response = await _dio.get('http://10.0.2.2:5028/api/user/$email');
+      final response = await _dio.get('$baseUrl/api/user/$email');
       if (response.statusCode != 200) {
         throw Exception('Failed to load user data');
       }
@@ -59,7 +62,7 @@ class UserService{
 
   static Future<User> getUserById(String id) async {
     try {
-      final response = await _dio.get('http://10.0.2.2:5028/api/user/id/$id');
+      final response = await _dio.get('$baseUrl/api/user/id/$id');
       if (response.statusCode != 200) {
         throw Exception('Failed to load user data');
       }
@@ -74,7 +77,7 @@ class UserService{
   
   static Future<List<User>> getUsersByFunction(String function) async {
     try {
-      final response = await _dio.get('http://10.0.2.2:5028/api/user/getUsers/$function');
+      final response = await _dio.get('$baseUrl/api/user/getUsers/$function');
       if (response.statusCode != 200) {
         throw Exception('Failed to load user data');
       }
@@ -93,7 +96,7 @@ class UserService{
   static Future<void> removeUnderSupervision(String supervisorId, String superviseeId) async {
     try {
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/user/$supervisorId/removeUnderSupervision/$superviseeId',
+        '$baseUrl/api/user/$supervisorId/removeUnderSupervision/$superviseeId',
         options: Options(
           headers: {
             'Content-Type': 'application/json',

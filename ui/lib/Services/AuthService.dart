@@ -5,14 +5,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ui/Models/Users/RegisterUser.dart';
 import 'package:ui/Models/Users/UserCredentials.dart';
 
+import '../Config.dart';
+
 class AuthService {
+  static final String baseUrl = Config.apiUrl;
   static final Dio _dio = Dio();
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   static Future<void> registerUser(RegisterUser registerUser) async {
     try {
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/firebaseauth/register',
+        '$baseUrl/api/firebaseauth/register',
         data: registerUser.toJson(),
         options: Options(
           headers: {
@@ -32,7 +35,7 @@ class AuthService {
   static Future<void> signInWithEmailAndPassword(UserCredentials userCredentials) async{
     try{
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/firebaseauth/login',
+        '$baseUrl/api/firebaseauth/login',
         data: userCredentials.toJson(),
         options: Options(
           headers: {

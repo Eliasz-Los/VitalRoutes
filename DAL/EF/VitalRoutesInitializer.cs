@@ -19,13 +19,14 @@ public class VitalRoutesInitializer
         Hospital hospital1 = new Hospital("UZ Groenplaats");
         
         Floorplan floorplanGPMinus1 = new Floorplan("kelder", -1, "1/200", "floor_minus1.png");
+        Floorplan floorplanGp2 = new Floorplan("tweede verdiep", 2, "1/200", "floor2.png");
 
         List<Floorplan> gpFloorplans = new List<Floorplan>
         {
             floorplanGPMinus1,
             new ("gelijkvloers", 0, "1/200","floor0.png"),
             new ("eerste verdiep", 1, "1/200","floor1.png"),
-            new ("tweede verdiep", 2, "1/200","floor2.png"),
+            floorplanGp2,
             new ("derde verdiep", 3, "1/200","floor3.png"),
             new ("vierde verdiep", 4, "1/200","floor4.png"),
             new ("vijfde verdiep", 5, "1/200","floor5.png"),
@@ -173,6 +174,27 @@ public class VitalRoutesInitializer
             // 3045.0 ,368.0
         };
         
+        List<Room> roomsFloor2Groenplaats = new List<Room>
+        {
+            new (new Point(419.0, 1284.0, floorplanGp2), null, 217),
+            new (new Point(1350.0, 1515.0, floorplanGp2), null, 215),
+            new (new Point(2109.0, 1500.0, floorplanGp2), null, 212),
+            new (new Point(2500.0, 1500.0, floorplanGp2), null, 211),
+            new (new Point(1335.0, 750.0, floorplanGp2), null, 218),
+            new (new Point(1800.0, 650.0, floorplanGp2), null, 219),
+            new (new Point(2180.0, 560.0, floorplanGp2), null, 220),
+            new (new Point(2600.0, 600.0, floorplanGp2), null, 221),
+            new (new Point(3000.0, 400.0, floorplanGp2), null, 200),
+            new (new Point(3400.0, 315.0, floorplanGp2), null, 201),
+            new (new Point(3820.0, 240.0, floorplanGp2), null, 202),
+            new (new Point(4000.0, 560.0, floorplanGp2), null, 203),
+            new (new Point(4100.0, 940.0, floorplanGp2), null, 204),
+            new (new Point(4235.0, 1490.0, floorplanGp2), null, 206),
+            new (new Point(3800.0, 1500.0, floorplanGp2), null, 207),
+            new (new Point(3400.0, 1500.0, floorplanGp2), null, 208),
+            new (new Point(2850.0, 1500.0, floorplanGp2), null, 210),
+        };
+        
         // ********************************************* User Supervisions *********************************************
         //nurses to headnurse
         user4.UnderSupervisions.Add(user5);
@@ -250,7 +272,7 @@ public class VitalRoutesInitializer
         };
         
 
-        Notification notification8_2 = new Notification("Verzoek - Eten/drinken") { 
+        Notification notification8_2 = new Notification("Dringend - Hulp") { 
             TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
             Emergency = emergency8_2 
         };

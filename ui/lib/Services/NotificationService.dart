@@ -1,11 +1,13 @@
 ﻿import 'package:dio/dio.dart';
 import '../Models/NotificationModel.dart';
+import '../Config.dart';
 
 class NotificationService {
+  static final String baseUrl = Config.apiUrl;
   static final Dio _dio = Dio();
 
   static Future<List<NotificationModel>> getNotificationsForNurse(String nurseId) async {
-    final response = await _dio.get('http://10.0.2.2:5028/api/notification/nurse/$nurseId');
+    final response = await _dio.get('$baseUrl/api/notification/nurse/$nurseId');
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data;
@@ -16,7 +18,7 @@ class NotificationService {
   }
 
   static Future<List<NotificationModel>> getNotificationsForDoctor(String doctorId) async {
-    final response = await _dio.get('http://10.0.2.2:5028/api/notification/doctor/$doctorId');
+    final response = await _dio.get('$baseUrl/api/notification/doctor/$doctorId');
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data;
@@ -30,7 +32,7 @@ class NotificationService {
   static Future<void> createPatientToNurseNotification(Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/Notification/createPatientToNurseNotification',
+        '$baseUrl/api/Notification/createPatientToNurseNotification',
         data: data,
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
@@ -51,7 +53,7 @@ class NotificationService {
   static Future<void> createNurseToDoctorNotification(Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(
-        'http://10.0.2.2:5028/api/Notification/createNurseToDoctorNotification',
+        '$baseUrl/api/Notification/createNurseToDoctorNotification',
         data: data,
         options: Options(headers: {'Content-Type': 'application/json'}),
       );
@@ -72,7 +74,7 @@ class NotificationService {
   static Future<void> updateNotificationStatus(String notificationId, String newStatus) async {
     // Let op de extra quotes: data: '"$newStatus"'
     final response = await _dio.put(
-      'http://10.0.2.2:5028/api/Notification/$notificationId/status',
+      '$baseUrl/api/Notification/$notificationId/status',
       data: '"$newStatus"',
       options: Options(headers: {'Content-Type': 'application/json'}),
     );
@@ -83,7 +85,7 @@ class NotificationService {
   }
 
   static Future<List<NotificationModel>> getSentNotificationsForPatient(String patientId) async {
-    final response = await _dio.get('http://10.0.2.2:5028/api/notification/sent/patient/$patientId');
+    final response = await _dio.get('$baseUrl/api/notification/sent/patient/$patientId');
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data;
@@ -94,7 +96,7 @@ class NotificationService {
   }
 
   static Future<List<NotificationModel>> getSentNotificationsForNurse(String nurseId) async {
-    final response = await _dio.get('http://10.0.2.2:5028/api/notification/sent/patient/$nurseId');
+    final response = await _dio.get('$baseUrl/api/notification/sent/patient/$nurseId');
 
     if (response.statusCode == 200) {
       List<dynamic> data = response.data;

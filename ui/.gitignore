@@ -10,6 +10,8 @@
 .history
 .svn/
 .swiftpm/
+.env.develoment
+.env.production
 migrate_working_dir/
 
 # IntelliJ related
@@ -46,3 +48,5 @@ app.*.map.json
 
 # Flutter SDK
 ui/.idea/libraries/Dart_SDK.xml
+/.env.development
+/.env.production

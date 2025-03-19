@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:ui/Models/Point.dart';
 
+import '../Config.dart';
+
 class PathService {
+  static final String baseUrl = Config.apiUrl;
   static final Dio _dio = Dio();
   
   static Future<List<Point>> getPath(Point start, Point end, String hospitalName, int floorNumber) async {
@@ -15,7 +18,7 @@ class PathService {
    print('Request payload: $requestPayload');
    try {
      final response = await _dio.get(
-       'http://10.0.2.2:5028/api/path/route',
+       '$baseUrl/api/path/route',
        data: requestPayload,
        options: Options(
          headers: {

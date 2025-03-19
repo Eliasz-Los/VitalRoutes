@@ -13,7 +13,6 @@ class PathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (path.isEmpty) {
-      print("Path is empty?????");
       return;}
 
     final paint = Paint()
@@ -22,7 +21,7 @@ class PathPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final double scaleX = (size.width / image.width);
-    final double scaleY = (image.height / 1624.0) *0.092 ; //IDK EVEN FK KNOW 0.09
+    final double scaleY = (image.height / 1624.0) *0.08 ; //IDK EVEN FK KNOW 0.09 / 0.092
     // print('PATHPAINTER scale: x ${scaleX}, y ${scaleY}');
     final pathToDraw = Path();
     pathToDraw.moveTo(path[0].x * scaleX, path[0].y * scaleY);
