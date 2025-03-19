@@ -52,7 +52,7 @@ class _FloorplanImageState extends State<FloorplanImage> {
     final RenderBox box = context.findRenderObject() as RenderBox;
     final Offset localOffset = box.globalToLocal(details.globalPosition);
 
-    final double scaledX = localOffset.dx *10.77; //TODO hardcoded scaling *10.77, *7.46
+    final double scaledX = localOffset.dx *12.5; //TODO hardcoded scaling *10.77, *7.46
     final double scaledY = (localOffset.dy *7.46) *1.5;
     final Point point = Point(x: scaledX.roundToDouble(), y: scaledY.roundToDouble());
 

@@ -36,8 +36,10 @@ class RoomLocations extends StatelessWidget {
                             dotColor = Colors.green;
                           }
                         }
-                        double scaledX = (room.point.x / 10.77);
-                        double scaledY = (room.point.y / 7.46) *0.65 ; //TODO: deze scaling is de omgekeerde van die in FloorplanImage
+                        /*double scaledX = (room.point.x / 10.77);
+                        double scaledY = (room.point.y / 7.46) *0.65 ; *///TODO: deze scaling is de omgekeerde van die in FloorplanImage
+                        double scaledX = (room.point.x / 12.5);
+                        double scaledY = (room.point.y / 7.46) *0.55 ;
                         print("Room: ${room.id}, X: $scaledX, Y: $scaledY"); // Debugging
 
                         return Positioned(

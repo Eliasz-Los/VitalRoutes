@@ -272,7 +272,7 @@ public class VitalRoutesInitializer
         };
         
 
-        Notification notification8_2 = new Notification("Verzoek - Eten/drinken") { 
+        Notification notification8_2 = new Notification("Dringend - Hulp") { 
             TimeStamp = DateTime.UtcNow.ToUniversalTime().AddHours(2), 
             Emergency = emergency8_2 
         };

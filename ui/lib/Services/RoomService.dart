@@ -36,7 +36,7 @@ class RoomService {
   Future<Room> getRoomByUserId(String userId) async {
     try {
       final response = await _dio.get(
-        'http://10.0.2.2:5028/api/Room/getRoomByUser/$userId',
+        '$baseUrl/api/Room/getRoomByUser/$userId',
       );
       if (response.statusCode == 200) {
         return Room.fromJson(response.data);

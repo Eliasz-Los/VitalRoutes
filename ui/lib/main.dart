@@ -14,7 +14,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp(userProvider: UserProvider()));
   String e1 = ".env.development";
   String e2 = ".env.production";
   String envFile = String.fromEnvironment('ENV_FILE', defaultValue: e2);
