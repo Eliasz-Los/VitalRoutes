@@ -21,12 +21,7 @@ class BluetoothService {
       _showPermissionDialog(context);
       return;
     }
-
-    BleStatus bleStatus = await _ble.statusStream.first;
-    if (bleStatus != BleStatus.ready) {
-      _showBluetoothDialog(context);
-      return;
-    }
+    
     print('Scanning for devices...');
     _scanSubscription = _ble.scanForDevices(withServices: []).listen((device) {
       if (_beaconPositions.containsKey(device.name)) {
@@ -43,26 +38,6 @@ class BluetoothService {
 
   Map<String, double> getEstimatedPosition() {
     return _positioningService.estimatePosition(_scannedBeacons.toList(), _beaconPositions);
-  }
-
-  void _showBluetoothDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Bluetooth is off'),
-          content: Text('Please enable Bluetooth to scan for beacons.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _showPermissionDialog(BuildContext context) {

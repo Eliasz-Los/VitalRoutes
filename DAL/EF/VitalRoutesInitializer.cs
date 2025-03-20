@@ -256,6 +256,7 @@ public class VitalRoutesInitializer
         context.Users.AddRange(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12, user13, user14, user15, user16, user17, user18);
         context.Floorplans.AddRange(gpFloorplans);
         context.Rooms.AddRange(roomsFloorMinus1Groenplaats);
+        context.Rooms.AddRange(roomsFloor2Groenplaats);
         context.SaveChanges();
         
         // *********************************************** Notifications ***********************************************
