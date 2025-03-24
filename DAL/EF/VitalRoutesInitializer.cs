@@ -147,7 +147,7 @@ public class VitalRoutesInitializer
         List<Room> roomsFloorMinus1Groenplaats = new List<Room>
         {
             //Patienten
-            new (new Point(1061.0,1479.0, floorplanGPMinus1), user8, -102),
+            new (new Point(1061.0,1479.0, floorplanGPMinus1), null, -102),
             // NEW 1061.0,1479.0 : OLD 100.01, 168.01
             new (new Point(1592.0,1449.0, floorplanGPMinus1), user9, -101),
             // 1592.0,1449.0 : 147.01, 168.01
@@ -190,7 +190,7 @@ public class VitalRoutesInitializer
             new (new Point(4000.0, 560.0, floorplanGp2), null, 203),
             new (new Point(4100.0, 940.0, floorplanGp2), null, 204),
             new (new Point(4235.0, 1490.0, floorplanGp2), null, 206),
-            new (new Point(3800.0, 1500.0, floorplanGp2), null, 207),
+            new (new Point(3800.0, 1500.0, floorplanGp2), user8, 207),
             new (new Point(3400.0, 1500.0, floorplanGp2), null, 208),
             new (new Point(2850.0, 1500.0, floorplanGp2), null, 210),
         };

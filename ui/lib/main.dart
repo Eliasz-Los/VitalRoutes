@@ -16,7 +16,7 @@ void main() async {
   );
   String e1 = ".env.development";
   String e2 = ".env.production";
-  String envFile = String.fromEnvironment('ENV_FILE', defaultValue: e1);
+  String envFile = String.fromEnvironment('ENV_FILE', defaultValue: e2);
   await dotenv.load(fileName: envFile);
   runApp(MyApp(userProvider: UserProvider()));
 }

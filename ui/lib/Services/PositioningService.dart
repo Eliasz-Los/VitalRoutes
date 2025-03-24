@@ -1,12 +1,12 @@
 ﻿import 'dart:ui';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:ui/Services/ScalingService.dart';
 import 'dart:math';
 import 'KalmanFilter.dart';
 
 class PositioningService {
   final KalmanFilter _kalmanFilterX = KalmanFilter();
   final KalmanFilter _kalmanFilterY = KalmanFilter();
-
   Map<String, double> estimatePosition(List<DiscoveredDevice> beacons, Map<String, Offset> beaconPositions) {
     if (beacons.isEmpty) {
       return {'x': 0.0, 'y': 0.0};
@@ -71,6 +71,6 @@ Map<String, double> _trilaterate(List<DiscoveredDevice> beacons, Map<String, Off
     final x = weightedX / totalWeight;
     final y = weightedY / totalWeight;
 
-    return {'x': _kalmanFilterX.filter(x), 'y': _kalmanFilterY.filter(y)};
+    return {'x': (_kalmanFilterX.filter(x)), 'y': (_kalmanFilterY.filter(y))};
   }
 }
