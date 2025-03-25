@@ -11,9 +11,9 @@ class BluetoothService {
   StreamSubscription? _scanSubscription;
   final Set<DiscoveredDevice> _scannedBeacons = {};
   final Map<String, Offset> _beaconPositions = {
-    'Pepes in action': Offset(ScalingService.scaleX(3800.0), ScalingService.scaleY(1500.0)),
-    'Pepes in action2': Offset(ScalingService.scaleX(2110.0), ScalingService.scaleY(1158.0)),
-    'Pepes in action3': Offset(ScalingService.scaleX(3400.0), ScalingService.scaleY(315.0)),
+    'Pepes in action': Offset(ScalingService.scaleX(3819.0), ScalingService.scaleY(1181.0)),//206
+    'Pepes in action2': Offset(ScalingService.scaleX(3172.0), ScalingService.scaleY(1582.0)),//208
+    'Pepes in action3': Offset(ScalingService.scaleX(3573.0), ScalingService.scaleY(496.0)),//201 gang
   };
 
   Future<void> startScan(BuildContext context) async {

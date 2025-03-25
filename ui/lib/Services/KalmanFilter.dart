@@ -5,7 +5,7 @@
   late double _p; // Estimation error covariance
   late double _k = 0.0; // Kalman gain
 
-  KalmanFilter({double q = 0.01, double r = 0.1, double initialValue = 0.0}) {
+  KalmanFilter({double q = 0.005, double r = 0.2, double initialValue = 0.0}) {
     _q = q;
     _r = r;
     _x = initialValue;

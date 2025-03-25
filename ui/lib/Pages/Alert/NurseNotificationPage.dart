@@ -99,7 +99,7 @@ class _NurseNotificationPageState extends State<NurseNotificationPage> {
                 body: FloorplanPage(
                   hospitalName: 'UZ Groenplaats',
                   initialFloorNumber: floorNumber,
-                  initialStartPoint: custom_point.Point(x: 3036.0, y: 1142.0),
+                  initialStartPoint: custom_point.Point(x: 3621.0, y: 643.0),
                   initialEndPoint: userRoom.point,
                   isPathfindingEnabledFromParams: true,
                 ),
