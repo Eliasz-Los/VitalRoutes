@@ -5,9 +5,7 @@ using Domain;
 using Domain.AStarAlgorithm;
 using PathfindingConsole;
 
-string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minus1.png";
-
-//string imagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\floor_minus1C.png";
+string imagePath = @"..\..\..\..\BackendApi\Floorplans\test_floorplan.png";
 /*
  *  Gelijksvloer, 2573.0, 1621.0: 4010.0,345.0
  *  Rechtboven naar fietsenstalling:  4010.0,345.0 :1473.0, 808.0
@@ -22,8 +20,8 @@ Stopwatch stopwatchAnalyzer = new Stopwatch();
 Stopwatch stopwatchAStar = new Stopwatch();
 stopwatchAnalyzer.Start();
 
-Point startCoord = new Point(807.0, 1289.0);
-Point endCoord = new Point(2256.0, 534.0 ); //3858.0, 262.0 ;2256.0, 534.0
+Point startCoord = new Point(807.0, 1289.0); //609.0 1379.0
+Point endCoord = new Point(3802.0, 354.0 ); //3858.0, 262.0 ;2256.0, 534.0 
 
 var (start, end, walkablePoints) = FloorplanAnalyzer.GetWalkablePoints(imagePath, startCoord,endCoord);
 if (walkablePoints == null || walkablePoints.Count == 0)

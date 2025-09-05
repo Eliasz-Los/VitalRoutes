@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using Domain;
 using Point = Domain.Point;
 
@@ -42,8 +43,9 @@ public class FloorplanVisualizer
                 }
             }
             
-            /*        string outputImagePath = Path.Combine(Path.GetDirectoryName(imagePath), "output_path.png");*/
-            string outputImagePath = @"C:\Users\peril\Documents\KDG4\TheLab\Project\VitalRoutes\BackendApi\Floorplans\UZ_Groenplaats\TestHashPoint.png";
+            string outputImagePath = Path.Combine(Path.GetDirectoryName(imagePath) ?? string.Empty, "output_path.png");
+            // string outputImagePath = @"..\..\..\PathfindingConsole\out_test_floorplan.png";            
+            Debug.Assert(outputImagePath != null, nameof(outputImagePath) + " != null");
             bitmap.Save(outputImagePath);
             Console.WriteLine($"Path drawn and saved to {outputImagePath}");
         }
