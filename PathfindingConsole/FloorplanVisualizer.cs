@@ -44,7 +44,6 @@ public class FloorplanVisualizer
             }
             
             string outputImagePath = Path.Combine(Path.GetDirectoryName(imagePath) ?? string.Empty, "output_path.png");
-            // string outputImagePath = @"..\..\..\PathfindingConsole\out_test_floorplan.png";            
             Debug.Assert(outputImagePath != null, nameof(outputImagePath) + " != null");
             bitmap.Save(outputImagePath);
             Console.WriteLine($"Path drawn and saved to {outputImagePath}");

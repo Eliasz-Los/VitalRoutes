@@ -50,3 +50,6 @@ app.*.map.json
 ui/.idea/libraries/Dart_SDK.xml
 /.env.development
 /.env.production
+
+# Firebase
+ui/firebase.json

@@ -107,7 +107,10 @@ public class AStarPathfinding
         return new List<Point>();
     }
 
-    /*private static IEnumerable<Node> GetNeighbors(Point point, Dictionary<Point, Node> nodeDictionary)
+    /*
+     In herinnering houden voor later, deze functie is duurder dan de inline versie hierboven
+    
+     private static IEnumerable<Node> GetNeighbors(Point point, Dictionary<Point, Node> nodeDictionary)
     {
         var directions = new List<(double, double)>
         {
